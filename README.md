@@ -1,6 +1,6 @@
-# banhae_client
+# krrng_client
 
-banhae flutter project
+krrng flutter project
 
 ## Getting Started
 

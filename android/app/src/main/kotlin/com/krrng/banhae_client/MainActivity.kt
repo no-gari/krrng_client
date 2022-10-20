@@ -1,4 +1,4 @@
-package com.krrng.banhae_client
+package com.krrng.krrng_client
 
 import io.flutter.embedding.android.FlutterActivity
 
