@@ -88,12 +88,12 @@ class _MainPageState extends State<MainPage> {
                                   size: 32)
                               : Image.asset('assets/icons/mypage.png'))),
                   onTap: (context) {
-                    if (state.status != AuthenticationStatus.authenticated &&
-                        context == 3) {
-                      showSocialLoginNeededDialog(ScaffoldContext);
-                    } else {
-                      _onItemTapped(context);
-                    }
+                    // if (state.status != AuthenticationStatus.authenticated &&
+                    //     context == 3) {
+                    //   showSocialLoginNeededDialog(ScaffoldContext);
+                    // } else {
+                    _onItemTapped(context);
+                    // }
                   },
                   selectedItemColor: Theme.of(context).accentColor,
                   unselectedItemColor: const Color(0xFF979797),

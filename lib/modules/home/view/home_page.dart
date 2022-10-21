@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:krrng_client/modules/mypage/view/mypage_screen.dart';
+import 'package:krrng_client/modules/notification/view/notification_screen.dart';
 import 'package:krrng_client/modules/search/view/search_screen.dart';
 import 'package:vrouter/vrouter.dart';
-
 import '../components/menus.dart';
 
 class HomePage extends StatefulWidget {
@@ -34,9 +35,11 @@ class _HomePageState extends State<HomePage> {
                   child: SvgPicture.asset('assets/icons/search_icon.svg')),
               SizedBox(width: 20),
               GestureDetector(
+                  onTap: () => context.vRouter.to(NotificationScreen.routeName),
                   child: SvgPicture.asset('assets/icons/noti_icon.svg')),
               SizedBox(width: 20),
               GestureDetector(
+                onTap: () => context.vRouter.to(MyPageScreen.routeName),
                 child: CircleAvatar(
                     backgroundColor: Colors.white,
                     child: Image.asset('assets/images/default_image.png')),

@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:vrouter/vrouter.dart';
 
 class SearchTextField extends StatelessWidget {
   SearchTextField({this.focusNode, this.textEditingController});
@@ -28,7 +29,9 @@ class SearchTextField extends StatelessWidget {
         controller: textEditingController,
         textAlignVertical: TextAlignVertical.center,
         decoration: InputDecoration(
-            icon: Icon(Icons.arrow_back_ios, color: Colors.black),
+            icon: GestureDetector(
+                onTap: () => context.vRouter.pop(),
+                child: Icon(Icons.arrow_back_ios, color: Colors.black)),
             isCollapsed: true,
             contentPadding: EdgeInsets.symmetric(horizontal: 15),
             enabledBorder: OutlineInputBorder(
