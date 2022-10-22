@@ -1,5 +1,11 @@
-import 'package:flutter/material.dart';
+import 'package:krrng_client/modules/ads_request/view/ads_request_screen.dart';
+import 'package:krrng_client/modules/delete_account/delete_account_screen.dart';
 import 'package:krrng_client/modules/mypage/components/sub_menu.dart';
+import 'package:flutter/material.dart';
+import 'package:krrng_client/modules/terms_of_use/personal_info_screen.dart';
+import 'package:krrng_client/modules/terms_of_use/terms_of_use_screen.dart';
+import 'package:krrng_client/modules/version_info/page/version_info_screen.dart';
+import 'package:vrouter/vrouter.dart';
 
 class SettingPage extends StatefulWidget {
   const SettingPage({Key? key}) : super(key: key);
@@ -29,7 +35,9 @@ class _SettingPageState extends State<SettingPage> {
           buildProfileSetting(textEditingController: textEditingController),
           Container(
               height: 0.5, width: double.maxFinite, color: Colors.black12),
-          SubMenu(title: '제휴 및 광고 문의'),
+          SubMenu(
+              title: '제휴 및 광고 문의',
+              onTap: () => context.vRouter.to(AdsRequestScreen.routeName)),
           Container(
               margin: EdgeInsets.symmetric(horizontal: 16),
               height: 0.5,
@@ -41,36 +49,44 @@ class _SettingPageState extends State<SettingPage> {
               height: 0.5,
               width: double.maxFinite,
               color: Colors.black12),
-          SubMenu(title: '버전 정보'),
+          SubMenu(
+              title: '버전 정보',
+              onTap: () => context.vRouter.to(VersionInfoScreen.routeName)),
           Container(
               margin: EdgeInsets.symmetric(horizontal: 16),
               height: 0.5,
               width: double.maxFinite,
               color: Colors.black12),
-          SubMenu(title: '오픈 라이선스'),
+          // SubMenu(title: '오픈 라이선스'),
           Container(
               margin: EdgeInsets.symmetric(horizontal: 16),
               height: 0.5,
               width: double.maxFinite,
               color: Colors.black12),
-          SubMenu(title: '이용약관'),
+          SubMenu(
+              title: '이용약관',
+              onTap: () => context.vRouter.to(TermsOfUseScreen.routeName)),
           Container(
               margin: EdgeInsets.symmetric(horizontal: 16),
               height: 0.5,
               width: double.maxFinite,
               color: Colors.black12),
-          SubMenu(title: '개인정보 및 취급방침'),
-          Container(
-              margin: EdgeInsets.symmetric(horizontal: 16),
-              height: 0.5,
-              width: double.maxFinite,
-              color: Colors.black12),
-          SubMenu(title: '마케팅 수신 동의'),
+          SubMenu(
+              title: '개인정보 및 취급방침',
+              onTap: () => context.vRouter.to(PersonalInfoScreen.routeName)),
+          // Container(
+          //     margin: EdgeInsets.symmetric(horizontal: 16),
+          //     height: 0.5,
+          //     width: double.maxFinite,
+          //     color: Colors.black12),
+          // SubMenu(title: '마케팅 수신 동의'),
           Padding(
               padding: EdgeInsets.symmetric(vertical: 30),
               child:
                   Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                 GestureDetector(
+                    onTap: () =>
+                        context.vRouter.to(DeleteAccountScreen.routeName),
                     child: Text('회원탈퇴',
                         style: TextStyle(
                             fontSize: 16,
