@@ -1,3 +1,5 @@
+import 'package:krrng_client/modules/authentication/signin/view/signin_screen.dart';
+import 'package:krrng_client/modules/authentication/signup/view/signup_screen.dart';
 import 'package:krrng_client/modules/ads_request/view/ads_request_screen.dart';
 import 'package:krrng_client/modules/delete_account/delete_account_result_screen.dart';
 import 'package:krrng_client/modules/delete_account/delete_account_screen.dart';
@@ -13,11 +15,15 @@ import 'package:krrng_client/modules/profile_change/view/profile_change_screen.d
 import 'package:krrng_client/modules/search/view/search_screen.dart';
 import 'package:krrng_client/modules/search_result/view/search_result_screen.dart';
 import 'package:krrng_client/modules/settings/view/setting_screen.dart';
+import 'package:krrng_client/modules/splash/splash_screen.dart';
 import 'package:krrng_client/modules/store/view/store_screen.dart';
 import 'package:krrng_client/modules/terms_of_use/personal_info_screen.dart';
 import 'package:krrng_client/modules/terms_of_use/terms_of_use_screen.dart';
 import 'package:krrng_client/modules/version_info/page/version_info_screen.dart';
 import 'package:vrouter/vrouter.dart';
+
+import 'modules/authentication/finding/views/views.dart';
+
 
 final routes = [
   VWidget(path: MainScreen.routeName, widget: MainScreen(), stackedRoutes: [
@@ -55,5 +61,11 @@ final routes = [
         path: DeleteAccountResultScreen.routeName,
         widget: DeleteAccountResultScreen()),
   ]),
-  VWidget(path: '*', widget: MainScreen())
+  VWidget(path: SplashScreen.routeName, widget: SplashScreen()),
+  VWidget(path: SigninScreen.routeName, widget: SigninScreen(),
+    stackedRoutes: [
+      VWidget(path: SignupScreen.routeName, widget: SignupScreen()),
+      VWidget(path: FindingScreen.routeName, widget: FindingScreen()),
+    ]
+  ),
 ];

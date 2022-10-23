@@ -1,4 +1,9 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+
+final Color primaryColor = const Color(0xFF6656B7);
+final Color dividerColor = const Color(0xFFDFE2E9);
 
 final theme = ThemeData(
     appBarTheme: const AppBarTheme(
@@ -11,8 +16,8 @@ final theme = ThemeData(
     backgroundColor: const Color(0xFFF2EFF6),
     focusColor: Colors.blue,
     scaffoldBackgroundColor: const Color(0xFFFFFFFF),
-    accentColor: const Color(0xFF6656B7),
-    primaryColor: const Color(0xFF6656B7),
+    accentColor: primaryColor,
+    primaryColor: primaryColor,
     textSelectionTheme: const TextSelectionThemeData(cursorColor: Colors.black),
     textTheme: const TextTheme(
         headline1: TextStyle(

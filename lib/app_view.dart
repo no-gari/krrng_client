@@ -1,3 +1,5 @@
+import 'package:krrng_client/modules/splash/splash_screen.dart';
+
 import 'modules/authentication/bloc/authentication_bloc.dart';
 import 'package:krrng_client/support/networks/dio_client.dart';
 import 'package:krrng_client/modules/main/main_screen.dart';
@@ -42,7 +44,7 @@ class _AppViewState extends State<AppView> with WidgetsBindingObserver {
               data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
               child: buildMultiBlocListener(child));
         },
-        initialUrl: MainScreen.routeName,
+        initialUrl: SplashScreen.routeName,
         routes: routes);
   }
 
