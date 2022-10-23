@@ -45,7 +45,10 @@ class NotificationCell extends StatelessWidget {
                 Text(time!, style: TextStyle(fontSize: 14, color: Colors.grey))
               ]),
               SizedBox(height: 10),
-              Text(content!, style: TextStyle(fontSize: 14))
+              Text(content!,
+                  style: TextStyle(fontSize: 14),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis)
             ])));
   }
 }

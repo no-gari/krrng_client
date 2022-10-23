@@ -45,7 +45,7 @@ class AuthenticationRepository {
 
   void signOut() async {
     try {
-      _dioClient.delete('/api/v1/user/profile/').whenComplete(() async {
+      _dioClient.delete('/api/v1/user/profile_change/').whenComplete(() async {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.remove("refresh");
         await prefs.remove("access").whenComplete(
@@ -122,7 +122,8 @@ class AuthenticationRepository {
       Map<String, dynamic> updateUserProfile) async {
     try {
       String body = json.encode(updateUserProfile);
-      var response = await _dioClient.put('/api/v1/user/profile/', data: body);
+      var response =
+          await _dioClient.put('/api/v1/user/profile_change/', data: body);
 
       return ApiResult.success(
         data: response,
