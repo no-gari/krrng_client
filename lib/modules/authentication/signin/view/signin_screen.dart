@@ -6,6 +6,8 @@ import 'package:krrng_client/repositories/authentication_repository/authenticati
 import 'signin_page.dart';
 
 class SigninScreen extends StatefulWidget {
+  static const String routeName = "/login";
+
   @override
   _SigninScreenState createState() => _SigninScreenState();
 }
