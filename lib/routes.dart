@@ -3,6 +3,7 @@ import 'package:krrng_client/modules/delete_account/delete_account_result_screen
 import 'package:krrng_client/modules/delete_account/delete_account_screen.dart';
 import 'package:krrng_client/modules/faq/page/faq_screen.dart';
 import 'package:krrng_client/modules/hospital/view/hospital_screen.dart';
+import 'package:krrng_client/modules/invite/page/invite_screen.dart';
 import 'package:krrng_client/modules/mypage/view/mypage_screen.dart';
 import 'package:krrng_client/modules/main/main_screen.dart';
 import 'package:krrng_client/modules/notice/view/notice_screen.dart';
@@ -41,6 +42,7 @@ final routes = [
     VWidget(path: FaqScreen.routeName, widget: FaqScreen()),
     VWidget(path: PointScreen.routeName, widget: PointScreen()),
     VWidget(path: NoticeScreen.routeName, widget: NoticeScreen()),
+    VWidget(path: InviteScreen.routeName, widget: InviteScreen()),
     VWidget(path: ProfileChangeScreen.routeName, widget: ProfileChangeScreen()),
     VWidget(
         path: DeleteAccountResultScreen.routeName,

@@ -1,4 +1,5 @@
 import 'package:krrng_client/modules/faq/page/faq_screen.dart';
+import 'package:krrng_client/modules/invite/page/invite_screen.dart';
 import 'package:krrng_client/modules/mypage/components/sub_menu.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
@@ -79,7 +80,9 @@ class _MyPagePageState extends State<MyPagePage> {
                   ])),
           Container(
               width: double.maxFinite, height: 12, color: Color(0xFFF3F3F3)),
-          SubMenu(title: '친구초대'),
+          SubMenu(
+              title: '친구초대',
+              onTap: () => context.vRouter.to(InviteScreen.routeName)),
           SubMenu(title: '내가 쓴 리뷰'),
           // SubMenu(title: '내가 즐겨찾는 상품'),
           SubMenu(
