@@ -68,4 +68,5 @@ final routes = [
         ]),
   ]),
   VWidget(path: SplashScreen.routeName, widget: SplashScreen()),
+  VWidget(path: '*', widget: MainScreen()),
 ];
