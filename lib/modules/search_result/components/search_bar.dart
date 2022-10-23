@@ -2,19 +2,16 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:krrng_client/modules/search_result/view/search_result_screen.dart';
 import 'package:vrouter/vrouter.dart';
 
-class SearchTextField extends StatelessWidget {
-  SearchTextField({this.focusNode, this.textEditingController});
+class SearchBar extends StatelessWidget {
+  SearchBar({this.textEditingController});
 
-  final FocusNode? focusNode;
   final TextEditingController? textEditingController;
 
   @override
   Widget build(BuildContext context) {
     return TextField(
-        focusNode: focusNode,
         textInputAction: TextInputAction.go,
         onSubmitted: (value) {
           if (value.trim() != '') {
@@ -48,7 +45,6 @@ class SearchTextField extends StatelessWidget {
                 icon:
                     SvgPicture.asset('assets/icons/search_icon.svg', width: 20),
                 color: Colors.black,
-                onPressed: () =>
-                    context.vRouter.to(SearchResultScreen.routeName))));
+                onPressed: () => textEditingController!.clear())));
   }
 }
