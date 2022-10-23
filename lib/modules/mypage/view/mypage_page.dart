@@ -1,3 +1,4 @@
+import 'package:krrng_client/modules/authentication/signin/view/signin_screen.dart';
 import 'package:krrng_client/modules/faq/page/faq_screen.dart';
 import 'package:krrng_client/modules/invite/page/invite_screen.dart';
 import 'package:krrng_client/modules/mypage/components/sub_menu.dart';
@@ -43,12 +44,15 @@ class _MyPagePageState extends State<MyPagePage> {
                       Image.asset('assets/images/default_image.png',
                           width: 44, height: 44),
                       SizedBox(width: 10),
-                      Text('로그인',
-                          style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.w900,
-                              color: Theme.of(context).accentColor,
-                              decoration: TextDecoration.underline))
+                      GestureDetector(
+                          onTap: () =>
+                              context.vRouter.to(SigninScreen.routeName),
+                          child: Text('로그인',
+                              style: TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w900,
+                                  color: Theme.of(context).accentColor,
+                                  decoration: TextDecoration.underline)))
                     ]),
                     GestureDetector(
                         onTap: () {

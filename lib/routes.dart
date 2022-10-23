@@ -24,7 +24,6 @@ import 'package:vrouter/vrouter.dart';
 
 import 'modules/authentication/finding/views/views.dart';
 
-
 final routes = [
   VWidget(path: MainScreen.routeName, widget: MainScreen(), stackedRoutes: [
     VWidget(path: MyPageScreen.routeName, widget: MyPageScreen()),
@@ -60,12 +59,13 @@ final routes = [
     VWidget(
         path: DeleteAccountResultScreen.routeName,
         widget: DeleteAccountResultScreen()),
+    VWidget(
+        path: SigninScreen.routeName,
+        widget: SigninScreen(),
+        stackedRoutes: [
+          VWidget(path: SignupScreen.routeName, widget: SignupScreen()),
+          VWidget(path: FindingScreen.routeName, widget: FindingScreen())
+        ]),
   ]),
   VWidget(path: SplashScreen.routeName, widget: SplashScreen()),
-  VWidget(path: SigninScreen.routeName, widget: SigninScreen(),
-    stackedRoutes: [
-      VWidget(path: SignupScreen.routeName, widget: SignupScreen()),
-      VWidget(path: FindingScreen.routeName, widget: FindingScreen()),
-    ]
-  ),
 ];

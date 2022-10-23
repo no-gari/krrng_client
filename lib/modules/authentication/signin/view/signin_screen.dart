@@ -21,7 +21,7 @@ class _SigninScreenState extends State<SigninScreen> {
           providers: [
             BlocProvider<SignInCubit>(
                 create: (_) => SignInCubit(
-                    RepositoryProvider.of<AuthenticationRepository>(context))),
+                    RepositoryProvider.of<AuthenticationRepository>(context)))
           ],
           child: SigninPage(),
         ));
