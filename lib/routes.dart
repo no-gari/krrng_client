@@ -1,3 +1,4 @@
+import 'package:krrng_client/modules/authentication/signin/view/signin_screen.dart';
 import 'package:krrng_client/modules/hospital/view/hospital_screen.dart';
 import 'package:krrng_client/modules/mypage/view/mypage_screen.dart';
 import 'package:krrng_client/modules/main/main_screen.dart';
@@ -6,6 +7,9 @@ import 'package:krrng_client/modules/search/view/search_screen.dart';
 import 'package:krrng_client/modules/settings/view/setting_screen.dart';
 import 'package:krrng_client/modules/store/view/store_screen.dart';
 import 'package:vrouter/vrouter.dart';
+
+import 'modules/authentication/finding/views/views.dart';
+
 
 final routes = [
   VWidget(path: MainScreen.routeName, widget: MainScreen(), stackedRoutes: [
@@ -17,4 +21,10 @@ final routes = [
     VWidget(path: SettingScreen.routeName, widget: SettingScreen()),
   ]),
   VWidget(path: '*', widget: MainScreen())
+  VWidget(path: SplashScreen.routeName, widget: SplashScreen()),
+  VWidget(path: SigninScreen.routeName, widget: SigninScreen(),
+    stackedRoutes: [
+      VWidget(path: FindingScreen.routeName, widget: FindingScreen()),
+    ]
+  ),
 ];
