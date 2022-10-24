@@ -72,7 +72,7 @@ class _MainPageState extends State<MainPage> {
           bottomNavigationBar: Container(
               decoration: const BoxDecoration(
                   border:
-                      Border(top: BorderSide(color: Colors.black, width: 1))),
+                      Border(top: BorderSide(color: Colors.grey, width: 1))),
               child: BottomNavigationBar(
                   showSelectedLabels: false,
                   showUnselectedLabels: false,

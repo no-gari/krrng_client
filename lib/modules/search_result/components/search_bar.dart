@@ -41,10 +41,21 @@ class SearchBar extends StatelessWidget {
                 borderRadius: BorderRadius.circular(15.0),
                 borderSide: BorderSide(color: Color(0xFFDFE2E9))),
             hintText: '검색어를 입력 하세요.',
-            suffixIcon: IconButton(
-                icon:
-                    SvgPicture.asset('assets/icons/search_icon.svg', width: 20),
-                color: Colors.black,
-                onPressed: () => textEditingController!.clear())));
+            suffixIcon: Container(
+                width: 66,
+                child: Row(children: [
+                  GestureDetector(
+                      onTap: () => textEditingController!.clear(),
+                      child: CircleAvatar(
+                          radius: 9,
+                          backgroundColor: Colors.black12,
+                          child: Icon(Icons.close,
+                              color: Colors.white, size: 12))),
+                  IconButton(
+                      icon: SvgPicture.asset('assets/icons/search_icon.svg',
+                          width: 20),
+                      color: Colors.black,
+                      onPressed: () => textEditingController!.clear())
+                ]))));
   }
 }

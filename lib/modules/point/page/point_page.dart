@@ -69,7 +69,7 @@ class _PointPageState extends State<PointPage> {
                     Image.asset('assets/images/point.png'),
                   ])),
           ExpansionPanelList(
-              dividerColor: Colors.white,
+              dividerColor: Colors.black12,
               elevation: 0,
               expansionCallback: (int index, bool isExpanded) =>
                   setState(() => _data[index].isExpanded = !isExpanded),
@@ -77,6 +77,9 @@ class _PointPageState extends State<PointPage> {
                 return ExpansionPanel(
                     headerBuilder: (BuildContext context, bool isExpanded) {
                       return Container(
+                          // decoration: BoxDecoration(
+                          //     border: Border(
+                          //         bottom: BorderSide(color: Colors.black12))),
                           margin: EdgeInsets.symmetric(horizontal: 4),
                           padding: EdgeInsets.symmetric(
                               horizontal: 16, vertical: 20),

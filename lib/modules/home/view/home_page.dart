@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:krrng_client/modules/mypage/view/mypage_screen.dart';
 import 'package:krrng_client/modules/notification/view/notification_screen.dart';
 import 'package:krrng_client/modules/search/view/search_screen.dart';
+import 'package:krrng_client/modules/search_result/view/search_result_screen.dart';
 import 'package:vrouter/vrouter.dart';
 import '../components/menus.dart';
 
@@ -66,69 +67,73 @@ class _HomePageState extends State<HomePage> {
                       SizedBox(height: 15),
                       Row(children: [
                         Expanded(
-                          child: Container(
-                            height: 44,
-                            child: TextField(
-                                textAlignVertical: TextAlignVertical.center,
-                                textInputAction: TextInputAction.go,
-                                onSubmitted: (value) {
-                                  if (value.trim() != '') {
-                                    // context.vRouter.toNamed('/search_result',
-                                    //     pathParameters: {
-                                    //       'keyword': _textEditingController.text
-                                    //     });
-                                    _textEditingController.clear();
-                                  }
-                                },
-                                autofocus: true,
-                                controller: _textEditingController,
-                                decoration: InputDecoration(
-                                    isCollapsed: true,
-                                    contentPadding:
-                                        EdgeInsets.symmetric(horizontal: 15),
-                                    enabledBorder: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(15.0),
-                                        borderSide: BorderSide(
-                                            color: Color(0xFFDFE2E9))),
-                                    focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(15),
-                                        borderSide: BorderSide(
-                                            color: Color(0xFFDFE2E9))),
-                                    border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(15.0),
-                                        borderSide: BorderSide(
-                                            color: Color(0xFFDFE2E9))),
-                                    hintText: '중성화 수술',
-                                    hintStyle: TextStyle(
-                                        color: Colors.grey, fontSize: 16),
-                                    suffixIcon: IconButton(
-                                      icon: SvgPicture.asset(
-                                        'assets/icons/search_icon.svg',
-                                        color: Colors.grey,
-                                      ),
-                                      color: Colors.black,
-                                      onPressed: () =>
-                                          _textEditingController.clear(),
-                                    ))),
-                          ),
-                        ),
+                            child: Container(
+                                height: 44,
+                                child: TextField(
+                                    textAlignVertical: TextAlignVertical.center,
+                                    textInputAction: TextInputAction.go,
+                                    onSubmitted: (value) {
+                                      if (value.trim() != '') {
+                                        // context.vRouter.toNamed('/search_result',
+                                        //     pathParameters: {
+                                        //       'keyword': _textEditingController.text
+                                        //     });
+                                        _textEditingController.clear();
+                                      }
+                                    },
+                                    autofocus: true,
+                                    controller: _textEditingController,
+                                    decoration: InputDecoration(
+                                        isCollapsed: true,
+                                        contentPadding: EdgeInsets.symmetric(
+                                            horizontal: 15),
+                                        enabledBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(15.0),
+                                            borderSide: BorderSide(
+                                                color: Color(0xFFDFE2E9))),
+                                        focusedBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(15),
+                                            borderSide: BorderSide(
+                                                color: Color(0xFFDFE2E9))),
+                                        border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(15.0),
+                                            borderSide: BorderSide(
+                                                color: Color(0xFFDFE2E9))),
+                                        hintText: '중성화 수술',
+                                        hintStyle: TextStyle(
+                                            color: Colors.grey, fontSize: 16),
+                                        suffixIcon: IconButton(
+                                            icon: SvgPicture.asset(
+                                              'assets/icons/search_icon.svg',
+                                              color: Colors.grey,
+                                            ),
+                                            color: Colors.black,
+                                            onPressed: () =>
+                                                _textEditingController
+                                                    .clear()))))),
                         SizedBox(width: 10),
                         SizedBox(width: 10),
-                        Container(
-                          alignment: Alignment.center,
-                          width: 93,
-                          height: 44,
-                          child: Text('검색하기',
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold)),
-                          decoration: BoxDecoration(
-                              color: Theme.of(context).accentColor,
-                              borderRadius: BorderRadius.circular(15)),
-                        ),
+                        GestureDetector(
+                            onTap: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        SearchResultScreen())),
+                            child: Container(
+                                alignment: Alignment.center,
+                                width: 93,
+                                height: 44,
+                                child: Text('검색하기',
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold)),
+                                decoration: BoxDecoration(
+                                    color: Theme.of(context).accentColor,
+                                    borderRadius: BorderRadius.circular(15))))
                       ]),
                       SizedBox(height: 40),
                       Padding(

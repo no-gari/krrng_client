@@ -67,6 +67,7 @@ dependencies:
   kpostal: ^0.4.2
   flutter_swipe_action_cell: ^3.0.4
   double_back_to_close: ^2.0.0
+  cached_network_image: ^3.2.2
 
   # payment
   iamport_flutter: ^0.10.1+3

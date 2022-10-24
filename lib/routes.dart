@@ -5,6 +5,7 @@ import 'package:krrng_client/modules/delete_account/delete_account_result_screen
 import 'package:krrng_client/modules/delete_account/delete_account_screen.dart';
 import 'package:krrng_client/modules/faq/page/faq_screen.dart';
 import 'package:krrng_client/modules/hospital/view/hospital_screen.dart';
+import 'package:krrng_client/modules/hospital_detail/view/hospital_detail_screen.dart';
 import 'package:krrng_client/modules/invite/page/invite_screen.dart';
 import 'package:krrng_client/modules/mypage/view/mypage_screen.dart';
 import 'package:krrng_client/modules/main/main_screen.dart';
@@ -68,5 +69,6 @@ final routes = [
         ]),
   ]),
   VWidget(path: SplashScreen.routeName, widget: SplashScreen()),
+  VWidget(path: HospitalDetailScreen.routeName, widget: HospitalDetailScreen()),
   VWidget(path: '*', widget: MainScreen()),
 ];
