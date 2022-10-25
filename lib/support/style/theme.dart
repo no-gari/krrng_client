@@ -6,10 +6,12 @@ export 'custom_property.dart';
 final Color primaryColor = const Color(0xFF6656B7);
 final Color dividerColor = const Color(0xFFDFE2E9);
 final Color listViewDividerColor = const Color(0xFFf3f3f3);
+final Color subtitleColor = const Color(0xFF999999);
 
 final TextStyle font_24_w900 = const TextStyle(fontFamily: 'NanumSquareRound', fontSize: 24, fontWeight: FontWeight.w900, color: Colors.black);
 final TextStyle font_22_w900 = const TextStyle(fontFamily: 'NanumSquareRound', fontSize: 22, fontWeight: FontWeight.w900, color: Colors.black);
 final TextStyle font_20_w900 = const TextStyle(fontFamily: 'NanumSquareRound', fontSize: 20, fontWeight: FontWeight.w900, color: Colors.black);
+final TextStyle font_17_w900 = const TextStyle(fontFamily: 'NanumSquareRound', fontSize: 17, fontWeight: FontWeight.w900, color: Colors.black);
 final TextStyle font_18_w900 = const TextStyle(fontFamily: 'NanumSquareRound', fontSize: 18, fontWeight: FontWeight.w900, color: Colors.black);
 final TextStyle font_16_w700 = const TextStyle(fontFamily: 'NanumSquareRound', fontSize: 16, fontWeight: FontWeight.w700, color: Colors.black);
 final TextStyle font_14_w700 = const TextStyle(fontFamily: 'NanumSquareRound', fontSize: 14, fontWeight: FontWeight.w700, color: Colors.black);
@@ -25,7 +27,7 @@ final theme = ThemeData(
         elevation: 0,
         iconTheme: IconThemeData(color: Colors.black)),
     dividerColor: Colors.black,
-    fontFamily: '',
+    fontFamily: 'NanumSquareRound',
     backgroundColor: const Color(0xFFF2EFF6),
     focusColor: Colors.blue,
     scaffoldBackgroundColor: const Color(0xFFFFFFFF),

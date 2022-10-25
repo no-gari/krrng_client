@@ -24,7 +24,26 @@ class _WritingReviewPageState extends State<WritingReviewPage> {
         _Divier,
         _ReceivedMedical(),
         _Receipt(),
-        _PostReview()
+        _PostReview(),
+        GestureDetector(
+          onTap: () => {},
+          child: Container (
+              height: 105, width: MediaQuery.of(context).size.width,
+              margin: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+              decoration: BoxDecoration(
+                  image: DecorationImage(image: AssetImage("assets/images/mainbanner.png"), fit: BoxFit.cover),
+                  borderRadius: BorderRadius.circular(25)))
+        ),
+        _Information(),
+        const SizedBox(height: 30),
+        Container(
+          height: 60,
+          decoration: BoxDecoration(border: Border.all(color: dividerColor), color: Color(0xfffbfbfb)),
+          alignment: Alignment.center,
+          child: Text("병원 리뷰 등록하기", style: font_17_w900.copyWith(color: primaryColor),
+          ),
+        ),
+
       ],
     );
   }
@@ -178,6 +197,58 @@ class _WritingReviewPageState extends State<WritingReviewPage> {
               ],
             ),
           )
+        ],
+      ),
+    );
+  }
+
+  Widget _Information() {
+    return Padding(padding: EdgeInsets.symmetric(horizontal: 20),
+      child: Column(
+        children: [
+          Text("검수가 완료되면, 작성일 기준 차주 화요일에 포인트가 일괄 적립됩니다. (공휴일인 경우, 익일 적립)", style: font_14_w500.copyWith(height: 1.5)),
+          const SizedBox(height: 10),
+          Text("정보가 일치하지 않거나, 부적할 리뷰인 경우 포인트가 지급되지 않으며, 리뷰가 블라인드 처리될 수 있습니다.", style: font_14_w500.copyWith(height: 1.5, color: primaryColor)),
+          const SizedBox(height: 30),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  IconButton(
+                      onPressed: () => { },
+                      icon: true
+                          ? SvgPicture.asset(
+                          'assets/images/checkBox_on.svg')
+                          : SvgPicture.asset(
+                          'assets/images/checkBox_off.svg'),
+                      padding: EdgeInsets.zero, constraints: BoxConstraints(minWidth: 30), iconSize: 22),
+                  Text('개인정보 수집 이용 동의(필수)', style: font_14_w500)
+                ],
+              ),
+              GestureDetector(onTap: () => {}, child: Text("내용", style: font_14_w500.copyWith(color: subtitleColor, decoration: TextDecoration.underline)))
+            ],
+          ),
+          const SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  IconButton(
+                      onPressed: () => { },
+                      icon: false
+                          ? SvgPicture.asset(
+                          'assets/images/checkBox_on.svg')
+                          : SvgPicture.asset(
+                          'assets/images/checkBox_off.svg'),
+                      padding: EdgeInsets.zero, constraints: BoxConstraints(minWidth: 30), iconSize: 22),
+                  Text('민감정보 수집 이용 동의(필수)', style: font_14_w500),
+                ],
+              ),
+              GestureDetector(onTap: () => {}, child: Text("내용", style: font_14_w500.copyWith(color: subtitleColor, decoration: TextDecoration.underline)))
+            ],
+          ),
         ],
       ),
     );
