@@ -2,8 +2,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:krrng_client/modules/writing_review/views/review_notice_page.dart';
 import 'package:krrng_client/support/style/theme.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
+import 'package:vrouter/vrouter.dart';
 
 class WritingReviewPage extends StatefulWidget {
   const WritingReviewPage({Key? key}) : super(key: key);
@@ -137,7 +139,8 @@ class _WritingReviewPageState extends State<WritingReviewPage> {
             children: [
               Text("영수증 첨부", style: font_18_w900.copyWith(height: 1.5)),
               const SizedBox(width: 6),
-              GestureDetector(onTap: () => {}, child: SvgPicture.asset("assets/icons/report.svg", width: 20))
+              GestureDetector(onTap: () => context.vRouter.to(ReviewNoticePage.routeName, isReplacement: false, queryParameters: {"code": ReviewNotice.receipt.code}),
+                  child: SvgPicture.asset("assets/icons/report.svg", width: 20))
             ],
           ),
           Text("해당 병원에서 진료 받으신 영수증을 첨부해 주세요.", style: font_14_w500.copyWith(height: 1.5)),
@@ -189,7 +192,7 @@ class _WritingReviewPageState extends State<WritingReviewPage> {
                 children: [
                   Text("리뷰 등록", style: font_18_w900.copyWith(height: 1.5)),
                   const SizedBox(width: 6),
-                  GestureDetector(onTap: () => {}, child: SvgPicture.asset("assets/icons/report.svg", width: 20))
+                  GestureDetector(onTap: () => context.vRouter.to(ReviewNoticePage.routeName, isReplacement: true, queryParameters: {"code": ReviewNotice.hospital.code}), child: SvgPicture.asset("assets/icons/report.svg", width: 20))
                 ],
               ),
               Wrap(
