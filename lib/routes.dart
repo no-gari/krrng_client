@@ -11,6 +11,7 @@ import 'package:krrng_client/modules/mypage/view/mypage_screen.dart';
 import 'package:krrng_client/modules/main/main_screen.dart';
 import 'package:krrng_client/modules/notice/view/notice_screen.dart';
 import 'package:krrng_client/modules/notification/view/notification_screen.dart';
+import 'package:krrng_client/modules/pet_register/view/pet_register_screen.dart';
 import 'package:krrng_client/modules/point/page/point_screen.dart';
 import 'package:krrng_client/modules/profile_change/view/profile_change_screen.dart';
 import 'package:krrng_client/modules/search/view/search_screen.dart';
@@ -29,6 +30,7 @@ final routes = [
   VWidget(path: MainScreen.routeName, widget: MainScreen(), stackedRoutes: [
     VWidget(path: MyPageScreen.routeName, widget: MyPageScreen()),
     VWidget(path: HospitalScreen.routeName, widget: HospitalScreen()),
+    VWidget(path: PetRegisterScreen.routeName, widget: PetRegisterScreen()),
     VWidget(path: StoreScreen.routeName, widget: StoreScreen()),
     VWidget(
         path: SearchScreen.routeName,

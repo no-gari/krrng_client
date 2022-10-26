@@ -53,38 +53,35 @@ class _SignupPageState extends State<SignupPage> {
               child: SingleChildScrollView(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Column(children: [
-                    Container(
-                        alignment: Alignment.centerRight,
-                        height: size.height * 0.05,
-                        child: Stack(children: [
-                          Align(
-                              alignment: Alignment.center,
-                              child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    IconButton(
-                                        onPressed: () =>
-                                            _signupCubit.selectedTap(0),
-                                        icon: state.selectedTap == 0
-                                            ? SvgPicture.asset(
-                                                'assets/icons/property1On.svg')
-                                            : SvgPicture.asset(
-                                                'assets/icons/property1Off.svg')),
-                                    IconButton(
-                                        onPressed: () =>
-                                            _signupCubit.selectedTap(1),
-                                        icon: state.selectedTap == 1
-                                            ? SvgPicture.asset(
-                                                'assets/icons/property2On.svg')
-                                            : SvgPicture.asset(
-                                                'assets/icons/property2Off.svg'))
-                                  ])),
-                          Align(
-                              alignment: Alignment.centerRight,
-                              child: IconButton(
-                                  onPressed: () => {context.vRouter.pop()},
-                                  icon: Icon(Icons.close)))
-                        ])),
+                    Stack(children: [
+                      Align(
+                          alignment: Alignment.center,
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                IconButton(
+                                    onPressed: () =>
+                                        _signupCubit.selectedTap(0),
+                                    icon: state.selectedTap == 0
+                                        ? SvgPicture.asset(
+                                            'assets/icons/property1On.svg')
+                                        : SvgPicture.asset(
+                                            'assets/icons/property1Off.svg')),
+                                IconButton(
+                                    onPressed: () =>
+                                        _signupCubit.selectedTap(1),
+                                    icon: state.selectedTap == 1
+                                        ? SvgPicture.asset(
+                                            'assets/icons/property2On.svg')
+                                        : SvgPicture.asset(
+                                            'assets/icons/property2Off.svg'))
+                              ])),
+                      Align(
+                          alignment: Alignment.centerRight,
+                          child: IconButton(
+                              onPressed: () => {context.vRouter.pop()},
+                              icon: Icon(Icons.close)))
+                    ]),
                     const SizedBox(height: 20),
                     BlocProvider.value(
                         value: _signupCubit, child: _taps[state.selectedTap!])
