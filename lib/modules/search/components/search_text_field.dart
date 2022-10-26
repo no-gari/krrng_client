@@ -43,7 +43,7 @@ class SearchTextField extends StatelessWidget {
             border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(15.0),
                 borderSide: BorderSide(color: Color(0xFFDFE2E9))),
-            hintText: '검색어를 입력 하세요.',
+            hintText: '검색어를 입력하세요.',
             suffixIcon: IconButton(
                 icon:
                     SvgPicture.asset('assets/icons/search_icon.svg', width: 20),

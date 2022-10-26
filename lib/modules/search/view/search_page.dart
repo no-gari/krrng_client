@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:krrng_client/modules/home/components/drop_down.dart';
 import 'package:krrng_client/modules/search/components/search_text_field.dart';
 import '../components/hot_search_tile.dart';
 import '../components/recent_search_tile.dart';
@@ -36,9 +37,21 @@ class _SearchPageState extends State<SearchPage> {
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SearchTextField(
-                          focusNode: _focusNode,
-                          textEditingController: _textEditingController),
+                      Row(children: [
+                        Expanded(
+                            child: SearchTextField(
+                                focusNode: _focusNode,
+                                textEditingController: _textEditingController)),
+                        SizedBox(width: 10),
+                        Container(
+                            alignment: Alignment.center,
+                            width: 80,
+                            height: 44,
+                            child: SearchDropdownButton(),
+                            decoration: BoxDecoration(
+                                border: Border.all(color: Colors.black26),
+                                borderRadius: BorderRadius.circular(15)))
+                      ]),
                       SizedBox(height: 30),
                       Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -71,7 +84,7 @@ class _SearchPageState extends State<SearchPage> {
                       SizedBox(height: 20),
                       HotSearchTile(leading: '1', title: '어쩌구'),
                       HotSearchTile(leading: '2', title: '저쩌구'),
-                      HotSearchTile(leading: '3', title: '어쩌구'),
+                      HotSearchTile(leading: '3', title: '어쩌구')
                     ]))));
   }
 }

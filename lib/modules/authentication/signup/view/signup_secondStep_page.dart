@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:krrng_client/modules/authentication/signup/cubit/signup_cubit.dart';
 import 'package:krrng_client/support/style/theme.dart';
 
@@ -101,9 +100,9 @@ class _SignupSecondStepState extends State<SignupSecondStepPage> {
                         color: primaryColor,
                         decoration: TextDecoration.underline,
                         fontSize: 16,
-                        fontWeight: FontWeight.bold))))
+                        fontWeight: FontWeight.w900))))
       ]),
-      SizedBox(height: 260),
+      SizedBox(height: (size.height - 350) * 0.6),
       Container(
           width: size.width,
           padding: EdgeInsets.symmetric(horizontal: 22, vertical: 20),
@@ -142,19 +141,17 @@ class _SignupSecondStepState extends State<SignupSecondStepPage> {
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
               Row(children: [
                 Transform.scale(
-                  scale: 1.2,
-                  child: SizedBox(
-                    width: 16,
-                    height: 16,
-                    child: Checkbox(
-                        shape: CircleBorder(),
-                        checkColor: Colors.white,
-                        activeColor: Theme.of(context).accentColor,
-                        value: termsCheck,
-                        onChanged: (bool? value) =>
-                            setState(() => termsCheck = value!)),
-                  ),
-                ),
+                    scale: 1.2,
+                    child: SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: Checkbox(
+                            shape: CircleBorder(),
+                            checkColor: Colors.white,
+                            activeColor: Theme.of(context).accentColor,
+                            value: termsCheck,
+                            onChanged: (bool? value) =>
+                                setState(() => termsCheck = value!)))),
                 Text('    이용 약관(필수)', style: TextStyle(fontSize: 16))
               ]),
               GestureDetector(
@@ -192,7 +189,8 @@ class _SignupSecondStepState extends State<SignupSecondStepPage> {
                           color: Colors.grey,
                           decoration: TextDecoration.underline)))
             ])
-          ]))
+          ])),
+      SizedBox(height: 90)
     ]);
   }
 }
