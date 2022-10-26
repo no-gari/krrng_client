@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:krrng_client/support/style/theme.dart';
+import 'package:multi_image_picker/multi_image_picker.dart';
 
 class WritingReviewPage extends StatefulWidget {
   const WritingReviewPage({Key? key}) : super(key: key);
@@ -13,6 +14,25 @@ class WritingReviewPage extends StatefulWidget {
 
 class _WritingReviewPageState extends State<WritingReviewPage> {
 
+  List<Asset> _images = <Asset>[];
+  List<Asset> _reviewImages = <Asset>[];
+
+  // TODO: cubit
+  Future getImages() async {
+    List<Asset> resultList = <Asset>[];
+    resultList = await MultiImagePicker.pickImages(maxImages: 10, enableCamera: true, selectedAssets: _images);
+    setState(() {
+      _images = resultList;
+    });
+  }
+
+  Future getReviewImages() async {
+    List<Asset> resultList = <Asset>[];
+    resultList = await MultiImagePicker.pickImages(maxImages: 10, enableCamera: true, selectedAssets: _reviewImages);
+    setState(() {
+      _reviewImages = resultList;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -125,22 +145,33 @@ class _WritingReviewPageState extends State<WritingReviewPage> {
           Container(
             margin: EdgeInsets.only(top: 14, bottom: 30),
             height: 85,
-            child: ListView(
+            child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              children: [
-                GestureDetector(
-                  onTap: () => {},
+              itemCount: _images.length == 0 ? 1 : _images.length+1,
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                  onTap: () {
+                    if (index == 0) {
+                      getImages();
+                    }
+                  },
                   child: Container(
                     width: 85,
-                    decoration: thumbnailDecoration,
-                    child: Icon(Icons.add, color: dividerColor),
-                  ),
-                ),
-              ],
-            ),
-          )
-        ],
-      ),
+                    margin: EdgeInsets.only(right: 8),
+                    decoration: index == 0 ? thumbnailDecoration : thumbnailDecoration.copyWith(
+                      image: DecorationImage(image: AssetThumbImageProvider(_images[index-1], height: 85, width: 85), fit: BoxFit.cover)
+                    ),
+                    child: index == 0 ? Icon(Icons.add, color: dividerColor)
+                        : IconButton(onPressed: () {
+                          setState(() {
+                            _images.removeAt(index-1);
+                          })
+                          ;}, icon: Icon(Icons.close), alignment: Alignment.topRight,)
+                  )
+                  );
+                })
+                )
+        ]),
     );
   }
 
@@ -180,17 +211,41 @@ class _WritingReviewPageState extends State<WritingReviewPage> {
                   keyboardType: TextInputType.multiline,
                   maxLines: null,
                   decoration: baseInputDecoration("병원리뷰를 10자이상 입력해 주세요.\n(최대 500자)").copyWith(
-                    contentPadding: EdgeInsets.fromLTRB(15, 14, 15, 44),
-                    // constraints: BoxConstraints(minHeight: 150), isCollapsed: false,
+                    contentPadding: _reviewImages.length == 0 ? EdgeInsets.fromLTRB(15, 14, 15, 44) : EdgeInsets.fromLTRB(15, 14, 15, 160),
                   ),
                 ),
+                _reviewImages.length > 0 ? Positioned(bottom: 20, left: 0,
+                    child: Container(
+                        margin: EdgeInsets.only(top: 14, bottom: 30),
+                        height: 85,
+                        width: MediaQuery.of(context).size.width-40,
+                        child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: _reviewImages.length,
+                            itemBuilder: (context, index) {
+                              return GestureDetector(
+                                  onTap: () {
+                                    if (index == 0) {
+                                      getReviewImages();
+                                    }
+                                  },
+                                  child: Container(
+                                      width: 85,
+                                      margin: index == 0? EdgeInsets.only(left: 15, right: 8) : EdgeInsets.only(right: 8),
+                                      decoration: thumbnailDecoration.copyWith(image: DecorationImage(image: AssetThumbImageProvider(_reviewImages[index], height: 85, width: 85), fit: BoxFit.cover)),
+                                      child: IconButton(onPressed: () { setState(() { _reviewImages.removeAt(index); }); }, icon: Icon(Icons.close), alignment: Alignment.topRight)
+                                  )
+                              );
+                            })
+                    )
+                ) : SizedBox(height: 0),
                 Positioned(bottom: 0, left: 0,
                     child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           mainAxisSize: MainAxisSize.min,
                       children: [
                         IconButton(
-                            onPressed: () {},
+                            onPressed: () => getReviewImages(),
                             icon: SvgPicture.asset("assets/icons/photo.svg")),
                       ],
                     )
