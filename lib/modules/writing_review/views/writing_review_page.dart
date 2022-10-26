@@ -97,7 +97,8 @@ class _WritingReviewPageState extends State<WritingReviewPage> {
           const SizedBox(height: 14),
           TextFormField(
               // controller: passwordController,
-              obscureText: true,
+              obscureText: false,
+              keyboardType: TextInputType.text,
               textAlignVertical: TextAlignVertical.center,
               decoration: baseInputDecoration('Ex : 내시경, 반려견 건강검진'))
         ],
@@ -180,7 +181,7 @@ class _WritingReviewPageState extends State<WritingReviewPage> {
                   maxLines: null,
                   decoration: baseInputDecoration("병원리뷰를 10자이상 입력해 주세요.\n(최대 500자)").copyWith(
                     contentPadding: EdgeInsets.fromLTRB(15, 14, 15, 44),
-                    constraints: BoxConstraints(minHeight: 127), isCollapsed: false,
+                    // constraints: BoxConstraints(minHeight: 150), isCollapsed: false,
                   ),
                 ),
                 Positioned(bottom: 0, left: 0,
