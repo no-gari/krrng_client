@@ -37,9 +37,9 @@ class _ReviewNoticePageState extends State<ReviewNoticePage> {
   @override
   Widget build(BuildContext context) {
     setState(() {
-      code = context.vRouter.pathParameters["code"];
+      code = context.vRouter.queryParameters["code"];
     });
-
+    
     return Scaffold(
         appBar: AppBar(
           title: Text(code == null ? "안내" : ReviewNotice.getByCode(code!).title, style: Theme.of(context).textTheme.headline2),

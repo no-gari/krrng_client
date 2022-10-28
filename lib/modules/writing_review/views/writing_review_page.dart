@@ -139,7 +139,7 @@ class _WritingReviewPageState extends State<WritingReviewPage> {
             children: [
               Text("영수증 첨부", style: font_18_w900.copyWith(height: 1.5)),
               const SizedBox(width: 6),
-              GestureDetector(onTap: () => context.vRouter.to(ReviewNoticePage.routeName, isReplacement: false, queryParameters: {"code": ReviewNotice.receipt.code}),
+              GestureDetector(onTap: () => context.vRouter.to(ReviewNoticePage.routeName, queryParameters: {"code": ReviewNotice.receipt.code}),
                   child: SvgPicture.asset("assets/icons/report.svg", width: 20))
             ],
           ),
@@ -192,7 +192,7 @@ class _WritingReviewPageState extends State<WritingReviewPage> {
                 children: [
                   Text("리뷰 등록", style: font_18_w900.copyWith(height: 1.5)),
                   const SizedBox(width: 6),
-                  GestureDetector(onTap: () => context.vRouter.to(ReviewNoticePage.routeName, isReplacement: true, queryParameters: {"code": ReviewNotice.hospital.code}), child: SvgPicture.asset("assets/icons/report.svg", width: 20))
+                  GestureDetector(onTap: () => context.vRouter.to(ReviewNoticePage.routeName, queryParameters: {"code": ReviewNotice.hospital.code}), child: SvgPicture.asset("assets/icons/report.svg", width: 20))
                 ],
               ),
               Wrap(
