@@ -2,6 +2,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:krrng_client/modules/hospital_detail/components/hospital_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:krrng_client/modules/hospital_detail/components/review_tile.dart';
+import 'package:krrng_client/modules/writing_review/views/views.dart';
+import 'package:vrouter/vrouter.dart';
 
 import '../../../support/style/format_unit.dart';
 import '../components/hospital_detail_button.dart';
@@ -112,6 +114,7 @@ class _HospitalDetailPageState extends State<HospitalDetailPage> {
                         ]),
                         SizedBox(height: 20),
                         GestureDetector(
+                            onTap: () => context.vRouter.to(WritingReviewScreen.routeName),
                             child: Container(
                                 alignment: Alignment.center,
                                 width: double.maxFinite,

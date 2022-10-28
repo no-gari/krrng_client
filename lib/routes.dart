@@ -22,6 +22,7 @@ import 'package:krrng_client/modules/store/view/store_screen.dart';
 import 'package:krrng_client/modules/terms_of_use/personal_info_screen.dart';
 import 'package:krrng_client/modules/terms_of_use/terms_of_use_screen.dart';
 import 'package:krrng_client/modules/version_info/page/version_info_screen.dart';
+import 'package:krrng_client/modules/writing_review/views/views.dart';
 import 'package:vrouter/vrouter.dart';
 
 import 'modules/authentication/finding/views/views.dart';
@@ -71,6 +72,13 @@ final routes = [
         ]),
   ]),
   VWidget(path: SplashScreen.routeName, widget: SplashScreen()),
-  VWidget(path: HospitalDetailScreen.routeName, widget: HospitalDetailScreen()),
+  VWidget(
+      path: HospitalDetailScreen.routeName,
+      widget: HospitalDetailScreen(),
+      stackedRoutes: [
+        VWidget(path: WritingReviewScreen.routeName, widget: WritingReviewScreen(),
+          stackedRoutes: [ VWidget(path: ReviewNoticePage.routeName, widget: ReviewNoticePage()) ]
+        ),
+      ]),
   VWidget(path: '*', widget: MainScreen()),
 ];
