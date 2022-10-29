@@ -17,7 +17,11 @@ class MyPagePage extends StatefulWidget {
   State<MyPagePage> createState() => _MyPagePageState();
 }
 
-class _MyPagePageState extends State<MyPagePage> {
+class _MyPagePageState extends State<MyPagePage>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
