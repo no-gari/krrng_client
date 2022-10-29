@@ -89,7 +89,7 @@ class _LoginWidgetState extends State<LoginWidget> {
 
   Future<void> _loginWithKakaoWeb() async {
     try {
-      var authCode = await AuthCodeClient.instance.request();
+      var authCode = await AuthCodeClient.instance.authorize();
       print("_loginWithKakaoWeb()" + authCode);
       await _issueAccessToken(authCode);
     } catch (error) {
@@ -99,7 +99,7 @@ class _LoginWidgetState extends State<LoginWidget> {
 
   Future<void> _loginWithKakaoApp() async {
     try {
-      var authCode = await AuthCodeClient.instance.requestWithTalk();
+      var authCode = await AuthCodeClient.instance.authorizeWithTalk();
       print("_loginWithKakaoApp() " + authCode);
       await _issueAccessToken(authCode);
     } catch (error) {
