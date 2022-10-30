@@ -24,3 +24,4 @@ InputDecoration baseInputDecoration(String placeHolder) {
 }
 
 BoxDecoration thumbnailDecoration = BoxDecoration(borderRadius: BorderRadius.circular(25), border: Border.all(color: dividerColor), color: Color(0xfffbfbfb));
+BoxDecoration roundDecoration = BoxDecoration(borderRadius: BorderRadius.circular(10));
