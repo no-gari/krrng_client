@@ -464,11 +464,9 @@ packages:
   flutter_naver_map:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "65f8404503aee8dd2f1c4e92afe45808cccb8ea5"
-      url: "https://github.com/wnsgh78b/flutter_naver_map.git"
-    source: git
+      name: flutter_naver_map
+      url: "https://pub.dartlang.org"
+    source: hosted
     version: "0.10.5"
   flutter_sizer:
     dependency: "direct main"
