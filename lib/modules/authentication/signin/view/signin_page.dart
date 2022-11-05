@@ -1,4 +1,7 @@
+import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'package:krrng_client/modules/authentication/bloc/authentication_bloc.dart';
 import 'package:krrng_client/modules/authentication/finding/views/views.dart';
 import 'package:krrng_client/modules/authentication/signin/cubit/signin_cubit.dart';
@@ -9,6 +12,7 @@ import 'package:krrng_client/support/style/format_unit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:krrng_client/support/style/theme.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:vrouter/vrouter.dart';
 
 class SigninPage extends StatefulWidget {
@@ -20,11 +24,19 @@ class _SigninPageState extends State<SigninPage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   late SignInCubit _signInCubit;
+
   bool selectedAutoLogin = true;
+  bool _isKakaoTalkInstalled = true;
+  bool _isIOS = false;
 
   @override
   void initState() {
     super.initState();
+    super.initState();
+    if (!kIsWeb) {
+      _initKaKaoTalkInstalled();
+      Platform.isIOS == true ? _isIOS = true : false;
+    }
     _signInCubit = BlocProvider.of<SignInCubit>(context);
   }
 
@@ -33,6 +45,74 @@ class _SigninPageState extends State<SigninPage> {
     passwordController.dispose();
     emailController.dispose();
     super.dispose();
+  }
+
+  _initKaKaoTalkInstalled() async {
+    final installed = await isKakaoTalkInstalled();
+    setState(() {
+      _isKakaoTalkInstalled = installed;
+    });
+  }
+
+  void _loginButtonPressed() {
+    _isKakaoTalkInstalled == true ? _loginWithKakaoApp() : _loginWithKakaoWeb();
+  }
+
+  void _logoutButtonPressed() async {
+    try {
+      if (_isKakaoTalkInstalled) {}
+    } catch (error) {
+      print(error.toString());
+    }
+  }
+
+  Future<void> _loginWithKakaoWeb() async {
+    try {
+      var authCode = await AuthCodeClient.instance.authorize();
+      print("_loginWithKakaoWeb()" + authCode);
+      await _issueAccessToken(authCode);
+    } catch (error) {
+      print(error.toString());
+    }
+  }
+
+  Future<void> _loginWithKakaoApp() async {
+    try {
+      var authCode = await AuthCodeClient.instance.authorizeWithTalk();
+      print("_loginWithKakaoApp() " + authCode);
+      await _issueAccessToken(authCode);
+    } catch (error) {
+      print(error.toString());
+    }
+  }
+
+  Future<void> _issueAccessToken(String authCode) async {
+    try {
+      var token = await AuthApi.instance.issueAccessToken(authCode: authCode);
+      DefaultTokenManager().setToken(token);
+      User user = await UserApi.instance.me();
+
+      _signInCubit.signInWithSns(
+          code: user.id.toString(),
+          email: user.kakaoAccount!.email!,
+          nickname: user.kakaoAccount!.profile!.nickname ?? '용감한 거북이',
+          socialType: 'kakao');
+    } catch (error) {
+      print(error.toString());
+    }
+  }
+
+  Future<void> _appleLoginButtonPressed() async {
+    final credential = await SignInWithApple.getAppleIDCredential(scopes: [
+      AppleIDAuthorizationScopes.email,
+      AppleIDAuthorizationScopes.fullName
+    ]);
+
+    _signInCubit.signInWithSns(
+        code: credential.userIdentifier!,
+        email: credential.userIdentifier.toString() + '@icloud.com',
+        nickname: credential.givenName ?? '용감한 거북이',
+        socialType: 'apple');
   }
 
   @override
@@ -207,12 +287,18 @@ class _SigninPageState extends State<SigninPage> {
                         Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              SvgPicture.asset('assets/icons/kakao.svg'),
+                              GestureDetector(
+                                  onTap: () => _loginButtonPressed(),
+                                  child: SvgPicture.asset(
+                                      'assets/icons/kakao.svg')),
                               const SizedBox(width: 20),
-                              CircleAvatar(
-                                  backgroundColor: Colors.black,
-                                  child: Icon(Icons.apple,
-                                      color: Colors.white, size: 25))
+                              GestureDetector(
+                                onTap: () => _appleLoginButtonPressed(),
+                                child: CircleAvatar(
+                                    backgroundColor: Colors.black,
+                                    child: Icon(Icons.apple,
+                                        color: Colors.white, size: 25)),
+                              )
                             ])
                       ])
                     ])))));
