@@ -20,7 +20,7 @@ PODS:
   - FMDB/standard (2.7.5)
   - geocoding (1.0.5):
     - Flutter
-  - kakao_flutter_sdk_common (1.3.0-beta.4):
+  - kakao_flutter_sdk_common (1.2.2):
     - Flutter
   - move_to_background (0.0.1):
     - Flutter
@@ -147,7 +147,7 @@ SPEC CHECKSUMS:
   flutter_naver_map: 6c7f2f09a8f05722ac344149bbf9cf52a3d9eeaf
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   geocoding: 32cfcdb16d38d907caaba65e2e42ad10d38bee58
-  kakao_flutter_sdk_common: 99744198582dc78bd1153713bdf444eaaf5fc107
+  kakao_flutter_sdk_common: 2fcd2c17ef69300497b9369f390766dd9af0514c
   move_to_background: 39a5b79b26d577b0372cbe8a8c55e7aa9fcd3a2d
   multi_image_picker: 443e776a762d7901641854043b60abf88a85d5ef
   NMapsMap: a2593320fca2bb09e521c05b4dffee4da42e96ed
