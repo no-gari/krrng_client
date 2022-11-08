@@ -21,6 +21,8 @@ class SignInCubit extends Cubit<SignInState> {
     ApiResult<Map> apiResult = await _authenticationRepository.signInWithSns(
         code: code, email: email, nickname: nickname, socialType: socialType);
 
+    print('================cubit====================');
+
     apiResult.when(success: (Map? response) {
       prefs.setString('access', response!['access']);
       prefs.setString('refresh', response['refresh']);

@@ -62,6 +62,8 @@ class AuthenticationRepository {
       required String nickname,
       String? socialType,
       String? profileImageUrl}) async {
+    print('================repository====================');
+
     try {
       String body = json.encode({
         "code": code,
@@ -75,6 +77,7 @@ class AuthenticationRepository {
           await _dioClient.signinPost('/api/v1/user/social_login/', data: body);
       return ApiResult.success(data: response);
     } catch (e) {
+      print('================repository fail====================');
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
   }

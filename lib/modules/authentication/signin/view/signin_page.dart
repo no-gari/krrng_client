@@ -1,19 +1,19 @@
-import 'dart:io';
-import 'package:flutter/foundation.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
-import 'package:krrng_client/modules/authentication/bloc/authentication_bloc.dart';
-import 'package:krrng_client/modules/authentication/finding/views/views.dart';
+import 'package:krrng_client/repositories/authentication_repository/authentication_repository.dart';
 import 'package:krrng_client/modules/authentication/signin/cubit/signin_cubit.dart';
 import 'package:krrng_client/modules/authentication/signup/view/signup_screen.dart';
+import 'package:krrng_client/modules/authentication/bloc/authentication_bloc.dart';
+import 'package:krrng_client/modules/authentication/finding/views/views.dart';
 import 'package:krrng_client/modules/main/main_screen.dart';
-import 'package:krrng_client/repositories/authentication_repository/authentication_repository.dart';
 import 'package:krrng_client/support/style/format_unit.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter/material.dart';
-import 'package:krrng_client/support/style/theme.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
+import 'package:krrng_client/support/style/theme.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:vrouter/vrouter.dart';
+import 'dart:io';
 
 class SigninPage extends StatefulWidget {
   @override
@@ -94,8 +94,8 @@ class _SigninPageState extends State<SigninPage> {
 
       _signInCubit.signInWithSns(
           code: user.id.toString(),
-          email: user.kakaoAccount!.email!,
-          nickname: user.kakaoAccount!.profile!.nickname ?? '용감한 거북이',
+          email: user.id.toString() + 'kakao.com',
+          nickname: user.properties!['nickname'] ?? '크르릉',
           socialType: 'kakao');
     } catch (error) {
       print(error.toString());

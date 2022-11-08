@@ -1,4 +1,4 @@
-package com.krrng.krrng_client
+package co.krrng.krrngClient
 
 import io.flutter.embedding.android.FlutterActivity
 

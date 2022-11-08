@@ -14,7 +14,9 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   KakaoSdk.init(nativeAppKey: '8c5f6654bb59d371a5102877d47b96c3');
   OneSignal.shared.setLogLevel(OSLogLevel.verbose, OSLogLevel.none);
-  OneSignal.shared.setAppId("a6edfa7f-bfa7-4613-b692-0fa3cf72f368");
+  OneSignal.shared.setAppId("c028e613-8406-43a8-ba01-fbff5754aa95");
+  await OneSignal.shared
+      .promptUserForPushNotificationPermission(fallbackToSettings: true);
   OneSignal.shared
       .promptUserForPushNotificationPermission()
       .then((accepted) => print("Accepted permission: $accepted"));
