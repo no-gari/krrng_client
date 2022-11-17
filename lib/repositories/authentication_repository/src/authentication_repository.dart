@@ -83,29 +83,14 @@ class AuthenticationRepository {
   }
 
   Future<ApiResult<Map>> signInWithEmail(
-      {required String email, required String password}) async {
+      {required String userId, required String password}) async {
     try {
       String body = json.encode({
-        "email": email,
+        "userId": userId,
         "password": password,
       });
       var response =
-          await _dioClient.signinPost('/api/v1/user/email_login/', data: body);
-      return ApiResult.success(data: response);
-    } catch (e) {
-      return ApiResult.failure(error: NetworkExceptions.getDioException(e));
-    }
-  }
-
-  Future<ApiResult<Map>> signUpWithEmail(
-      {required String email, required String password}) async {
-    try {
-      String body = json.encode({
-        "email": email,
-        "password": password,
-      });
-      var response =
-          await _dioClient.signinPost('/api/v1/user/email_signup/', data: body);
+          await _dioClient.signinPost('/dev/api/v1/user/login/', data: body);
       return ApiResult.success(data: response);
     } catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
@@ -138,5 +123,55 @@ class AuthenticationRepository {
     }
   }
 
+  Future<ApiResult<void>> duplicateId(String id) async {
+    try {
+      var body = { 'userId': id };
+      var response = await _dioClient.post('/dev/api/v1/user/user-id-check/', data: body);
+
+      return ApiResult.success(data: response);
+    } catch (e) {
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e));
+    }
+  }
+
+  Future<ApiResult<void>> requestSignupCode(String phoneNumber) async {
+    try {
+      var body = { 'phone': phoneNumber };
+      var response = await _dioClient.post('/dev/api/v1/user/register-phone-create/', data: body);
+
+      return ApiResult.success(data: response);
+    } catch (e) {
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e));
+    }
+  }
+
+  Future<ApiResult<void>> confirmCode(String phoneNumber, String code) async {
+    try {
+      var body = {
+        'phone': phoneNumber,
+        'code': code
+      };
+      var response = await _dioClient.post('/dev/api/v1/user/register-phone-confirm/', data: body);
+
+      return ApiResult.success(data: response);
+    } catch (e) {
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e));
+    }
+  }
+
+  Future<ApiResult<Map>> signup(String userId, String password, String phoneNumber) async {
+    try {
+      var body = {
+        'userId': userId,
+        'password': password,
+        'phone': phoneNumber
+      };
+      var response = await _dioClient.post('/dev/api/v1/user/email-signup/', data: body);
+
+      return ApiResult.success(data: response);
+    } catch (e) {
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e));
+    }
+  }
   void dispose() => _controller.close();
 }
