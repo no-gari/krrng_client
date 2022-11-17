@@ -61,14 +61,15 @@ class AuthenticationBloc
 
   Future<AuthenticationState?> _tryGetUser() async {
     try {
-      AuthenticationState authenticationState =
-          const AuthenticationState.unknown(User.empty);
-      ApiResult<User> apiResult = await _userRepository.getUser();
-      apiResult.when(success: (User? user) {
-        authenticationState = AuthenticationState.authenticated(user!);
-      }, failure: (NetworkExceptions? error) {
-        authenticationState = AuthenticationState.unauthenticated();
-      });
+      // TODO: 임시 코드
+      AuthenticationState authenticationState = AuthenticationState.authenticated(User.empty);
+      //     const AuthenticationState.unknown(User.empty);
+      // ApiResult<User> apiResult = await _userRepository.getUser();
+      // apiResult.when(success: (User? user) {
+      //   authenticationState = AuthenticationState.authenticated(user!);
+      // }, failure: (NetworkExceptions? error) {
+      //   authenticationState = AuthenticationState.unauthenticated();
+      // });
       return authenticationState;
     } on Exception {
       _authenticationRepository.logOut();

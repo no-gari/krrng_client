@@ -4,6 +4,7 @@ import 'package:krrng_client/support/networks/api_result.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+
 part 'signin_state.dart';
 
 class SignInCubit extends Cubit<SignInState> {
@@ -35,35 +36,15 @@ class SignInCubit extends Cubit<SignInState> {
     });
   }
 
-  Future<void> signInWithEmail(
-      {required String email, required String password}) async {
+  Future<void> signInWithEmail({required String userId, required String password}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    ApiResult<Map> apiResult = await _authenticationRepository.signInWithEmail(
-        email: email, password: password);
+    ApiResult<Map> apiResult = await _authenticationRepository.signInWithEmail(userId: userId, password: password);
 
     apiResult.when(success: (Map? response) {
       prefs.setString('access', response!['access']);
       prefs.setString('refresh', response['refresh']);
       _authenticationRepository.logIn();
-      emit(state.copyWith(auth: true, errorMessage: ''));
-    }, failure: (NetworkExceptions? error) {
-      emit(state.copyWith(
-          error: error,
-          errorMessage: NetworkExceptions.getErrorMessage(error!)));
-    });
-  }
-
-  Future<void> signUpWithEmail(
-      {required String email, required String password}) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    ApiResult<Map> apiResult = await _authenticationRepository.signUpWithEmail(
-        email: email, password: password);
-
-    apiResult.when(success: (Map? response) {
-      prefs.setString('access', response!['access']);
-      prefs.setString('refresh', response['refresh']);
       emit(state.copyWith(auth: true, errorMessage: ''));
     }, failure: (NetworkExceptions? error) {
       emit(state.copyWith(

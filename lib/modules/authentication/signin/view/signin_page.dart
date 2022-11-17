@@ -220,7 +220,7 @@ class _SigninPageState extends State<SigninPage> {
                               if (emailController.text.trim() != '' &&
                                   passwordController.text.trim() != '') {
                                 _signInCubit.signInWithEmail(
-                                    email: emailController.text,
+                                    userId: emailController.text,
                                     password: passwordController.text);
                               }
                             },
