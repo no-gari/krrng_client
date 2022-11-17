@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:krrng_client/modules/authentication/signup/cubit/signup_cubit.dart';
 import 'package:krrng_client/support/style/theme.dart';
 
@@ -11,11 +14,17 @@ class SignupSecondStepPage extends StatefulWidget {
 
 class _SignupSecondStepState extends State<SignupSecondStepPage> {
   late SignupCubit _signupCubit;
-  var allCheck = false;
-  var termsCheck = false;
-  var personalCheck = false;
+
+  List<bool> terms = [false, false];
 
   final phoneController = TextEditingController();
+  final codeController = TextEditingController();
+
+  late Timer _timer;
+  int _timeCount = 180;
+  String? _timerText;
+
+  FocusNode codeFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -27,6 +36,30 @@ class _SignupSecondStepState extends State<SignupSecondStepPage> {
   void dispose() {
     super.dispose();
     phoneController.dispose();
+    codeController.dispose();
+    _timer.cancel();
+    codeFocusNode.dispose();
+  }
+
+  void _startTimer() {
+    _timer = Timer.periodic(Duration(seconds: 1), (Timer timer) => {
+      setState(() {
+        if(_timeCount <= 0){
+          _timer.cancel();
+          _timeCount = 180;
+          _timerText = null;
+        }else {
+          if (_timer.isActive) {
+            int minute = (_timeCount/60.floor()).toInt();
+            String minuteString = minute > 0 ? "${minute}분" : "";
+            String secondString = "${_timeCount - (minute *60)}초";
+            _timerText = minuteString + secondString;
+            _timeCount -= 1;
+          }
+
+        }
+      })
+    });
   }
 
   @override
@@ -62,9 +95,16 @@ class _SignupSecondStepState extends State<SignupSecondStepPage> {
               width: 93,
               height: 44,
               child: ElevatedButton(
-                  onPressed: () => {},
+                  onPressed: () {
+                    if (_timerText == null) {
+                      var phoneNumber = phoneController.text.trim();
+                      _signupCubit.requestCode(phoneNumber);
+                      _startTimer();
+                      codeFocusNode.requestFocus();
+                    }
+                  },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: primaryColor,
+                    backgroundColor: _timerText == null ? primaryColor : dividerColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12), // <-- Radius
                     ),
@@ -74,7 +114,12 @@ class _SignupSecondStepState extends State<SignupSecondStepPage> {
         ]),
         const SizedBox(height: 10),
         TextFormField(
+            controller: codeController,
+            focusNode: codeFocusNode,
             keyboardType: TextInputType.number,
+            onChanged: (value) {
+              _signupCubit.setInputCode(value);
+            },
             decoration: InputDecoration(
                 isCollapsed: true,
                 contentPadding:
@@ -88,10 +133,24 @@ class _SignupSecondStepState extends State<SignupSecondStepPage> {
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12.0),
                     borderSide: BorderSide(color: dividerColor)),
+                suffix: Text(_timerText ?? "", style: font_16_w700.copyWith(color: primaryColor)),
                 hintText: '인증 번호를 입력하세요.')),
         SizedBox(height: 30),
         GestureDetector(
-            onTap: () => {},
+            onTap: () {
+              if (_signupCubit.state.phoneNumber != null) {
+                var phoneNumber = _signupCubit.state.phoneNumber ?? "";
+                _signupCubit.requestCode(phoneNumber);
+                setState(() {
+                  _timer.cancel();
+                  _timeCount = 180;
+                  _timerText = null;
+                });
+                _startTimer();
+                codeFocusNode.requestFocus();
+              }
+
+            },
             child: Container(
                 width: size.width,
                 alignment: Alignment.center,
@@ -121,18 +180,18 @@ class _SignupSecondStepState extends State<SignupSecondStepPage> {
                       shape: CircleBorder(),
                       checkColor: Colors.white,
                       activeColor: Theme.of(context).accentColor,
-                      value: allCheck,
-                      onChanged: (bool? value) => setState(() {
-                            if (value == true) {
-                              allCheck = true;
-                              termsCheck = true;
-                              personalCheck = true;
-                            } else {
-                              allCheck = false;
-                              termsCheck = false;
-                              personalCheck = false;
-                            }
-                          })),
+                      value: terms[0] && terms[1],
+                      onChanged: (bool? value) {
+                        setState(() {
+                          if (value == true) {
+                            terms = [true, true];
+                          } else {
+                            terms = [false, false];
+                          }
+                        });
+                        _signupCubit.setTerms(terms[0] && terms[1]);
+                      }
+                  ),
                 ),
               ),
               Text('    전체 동의', style: TextStyle(fontSize: 16)),
@@ -149,9 +208,15 @@ class _SignupSecondStepState extends State<SignupSecondStepPage> {
                             shape: CircleBorder(),
                             checkColor: Colors.white,
                             activeColor: Theme.of(context).accentColor,
-                            value: termsCheck,
-                            onChanged: (bool? value) =>
-                                setState(() => termsCheck = value!)))),
+                            value: terms[0],
+                            onChanged: (bool? value) {
+                              setState(() {
+                                terms[0] = value ?? false;
+                              });
+                              _signupCubit.setTerms(terms[0] && terms[1]);
+                            }
+                        ),
+                    )),
                 Text('    이용 약관(필수)', style: TextStyle(fontSize: 16))
               ]),
               GestureDetector(
@@ -174,9 +239,14 @@ class _SignupSecondStepState extends State<SignupSecondStepPage> {
                         shape: CircleBorder(),
                         checkColor: Colors.white,
                         activeColor: Theme.of(context).accentColor,
-                        value: personalCheck,
-                        onChanged: (bool? value) =>
-                            setState(() => personalCheck = value!)),
+                        value: terms[1],
+                        onChanged: (bool? value) {
+                          setState(() {
+                            terms[1] = value ?? false;
+                          });
+                          _signupCubit.setTerms(terms[0] && terms[1]);
+                        }
+                    )
                   ),
                 ),
                 Text('    개인 정보 취급 방침 (필수)', style: TextStyle(fontSize: 16))
