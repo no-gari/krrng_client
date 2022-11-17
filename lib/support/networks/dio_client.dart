@@ -130,7 +130,7 @@ class DioClient {
     }
   }
 
-  Future<dynamic> post(
+  Future<dynamic> postWithToken(
     String uri, {
     data,
     Map<String, dynamic>? queryParameters,
@@ -150,6 +150,38 @@ class DioClient {
         options: Options(headers: {
           Headers.contentTypeHeader: Headers.jsonContentType,
           HttpHeaders.authorizationHeader: "Bearer $accessToken",
+        }),
+        cancelToken: cancelToken,
+        onSendProgress: onSendProgress,
+        onReceiveProgress: onReceiveProgress,
+      );
+      return response.data;
+    } on DioError catch (dioError) {
+      _handleDioError(dioError);
+    } catch (e) {
+      _handleError(e);
+    }
+  }
+
+  Future<dynamic> post(
+      String uri, {
+        data,
+        Map<String, dynamic>? queryParameters,
+        Options? options,
+        CancelToken? cancelToken,
+        ProgressCallback? onSendProgress,
+        ProgressCallback? onReceiveProgress,
+      }) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      var accessToken = prefs.getString('access');
+
+      var response = await _dio.post(
+        uri,
+        data: data,
+        queryParameters: queryParameters,
+        options: Options(headers: {
+          Headers.contentTypeHeader: Headers.jsonContentType,
         }),
         cancelToken: cancelToken,
         onSendProgress: onSendProgress,
