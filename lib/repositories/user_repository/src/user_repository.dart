@@ -12,17 +12,31 @@ class UserRepository {
 
   Future<ApiResult<User>> getUser() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-
-      var response = await _dioClient.put('/api/v1/user/profile_change/',
-          data: {'firebaseToken': prefs.get('firebaseToken')});
+      var response = await _dioClient.getWithAuth('/dev/api/v1/user/profile/');
 
       return ApiResult.success(
           data: User(
-        nickname: response['nickname'],
-        profileImage: response['profileImage'],
-        points: response['points'],
+            nickname: response['nickname'],
+            profileImage: response['profileImage'],
+            birthday: response['birthday'],
+            sexChoices: response['sexChoices']
       ));
+    } on Exception {
+      throw UserGetFailure();
+    }
+  }
+
+  Future<ApiResult<User>> getAnonymousUser() async {
+    try {
+      Map<String, dynamic> response = await _dioClient.get('/dev/api/v1/user/profile/anonymous');
+
+      return ApiResult.success(
+          data: User(
+              nickname: response['nickname'],
+              profileImage: response['profileImage'],
+              birthday: response['birthday'],
+              sexChoices: response['sexChoices']
+          ));
     } on Exception {
       throw UserGetFailure();
     }
@@ -30,14 +44,12 @@ class UserRepository {
 
   Future<ApiResult<User>> updateUser() async {
     try {
-      var response =
-          await _dioClient.put('/api/v1/user/profile_change/', data: {});
+      var response = await _dioClient.put('/api/v1/user/profile_change/', data: {});
 
       return ApiResult.success(
           data: User(
         nickname: response['nickname'],
         profileImage: response['profileImage'],
-        points: response['points'],
       ));
     } on Exception {
       throw UserGetFailure();

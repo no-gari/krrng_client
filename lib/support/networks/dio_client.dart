@@ -49,8 +49,6 @@ class DioClient {
     ProgressCallback? onReceiveProgress,
   }) async {
     try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-
       var response = await _dio.get(
         uri,
         queryParameters: queryParameters,
@@ -173,9 +171,6 @@ class DioClient {
         ProgressCallback? onReceiveProgress,
       }) async {
     try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      var accessToken = prefs.getString('access');
-
       var response = await _dio.post(
         uri,
         data: data,

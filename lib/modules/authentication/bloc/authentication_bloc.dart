@@ -7,17 +7,18 @@ import 'package:equatable/equatable.dart';
 import 'package:bloc/bloc.dart';
 import 'dart:async';
 
+import 'package:shared_preferences/shared_preferences.dart';
+
 part 'authentication_event.dart';
 part 'authentication_state.dart';
 
-class AuthenticationBloc
-    extends Bloc<AuthenticationEvent, AuthenticationState> {
+class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
   AuthenticationBloc({
     required AuthenticationRepository authenticationRepository,
     required UserRepository userRepository,
   })  : _authenticationRepository = authenticationRepository,
         _userRepository = userRepository,
-        super(const AuthenticationState.unknown(User.empty)) {
+        super(const AuthenticationState.unauthenticated()) {
     _authenticationStatusSubscription = _authenticationRepository.status.listen(
       (status) => add(AuthenticationStatusChanged(status)),
     );
@@ -29,9 +30,7 @@ class AuthenticationBloc
       _authenticationStatusSubscription;
 
   @override
-  Stream<AuthenticationState> mapEventToState(
-    AuthenticationEvent event,
-  ) async* {
+  Stream<AuthenticationState> mapEventToState(AuthenticationEvent event) async* {
     if (event is AuthenticationStatusChanged) {
       yield await _mapAuthenticationStatusChangedToState(event);
     } else if (event is AuthenticationUserChanged) {
@@ -47,32 +46,37 @@ class AuthenticationBloc
     return AuthenticationState.authenticated(user);
   }
 
-  Future<AuthenticationState> _mapAuthenticationStatusChangedToState(
-    AuthenticationStatusChanged event,
-  ) async {
-    switch (event.status) {
-      case AuthenticationStatus.authenticated:
-        AuthenticationState? status = await _tryGetUser();
-        return status!;
-      default:
-        return const AuthenticationState.unauthenticated();
+  Future<AuthenticationState> _mapAuthenticationStatusChangedToState(AuthenticationStatusChanged event) async {
+    if (event.status == AuthenticationStatus.unauthenticated) {
+      AuthenticationState? status = await _tryGetUser();
+      if (status == null) {
+        return AuthenticationState.unauthenticated();
+      } else {
+        return status;
+      }
+    } else {
+      return AuthenticationState.unknown(User.empty);
     }
   }
 
   Future<AuthenticationState?> _tryGetUser() async {
-    try {
-      // TODO: 임시 코드
-      AuthenticationState authenticationState = AuthenticationState.authenticated(User.empty);
-      //     const AuthenticationState.unknown(User.empty);
-      // ApiResult<User> apiResult = await _userRepository.getUser();
-      // apiResult.when(success: (User? user) {
-      //   authenticationState = AuthenticationState.authenticated(user!);
-      // }, failure: (NetworkExceptions? error) {
-      //   authenticationState = AuthenticationState.unauthenticated();
-      // });
-      return authenticationState;
-    } on Exception {
-      _authenticationRepository.logOut();
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    final access = pref.get('access');
+
+    if (access == null) {
+      ApiResult<User> apiResult = await _userRepository.getAnonymousUser();
+      apiResult.when(success: (User? user) {
+        return AuthenticationState.unknown(user!);
+      }, failure: (NetworkExceptions? error) {
+        return null;
+      });
+    } else {
+      ApiResult<User> apiResult = await _userRepository.getUser();
+      apiResult.when(success: (User? user) {
+        return AuthenticationState.authenticated(user!);
+      }, failure: (NetworkExceptions? error) {
+        return null;
+      });
     }
   }
 }
