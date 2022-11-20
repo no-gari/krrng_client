@@ -1,3 +1,5 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:krrng_client/modules/authentication/bloc/authentication_bloc.dart';
 import 'package:krrng_client/modules/authentication/signin/view/signin_screen.dart';
 import 'package:krrng_client/modules/faq/page/faq_screen.dart';
 import 'package:krrng_client/modules/invite/page/invite_screen.dart';
@@ -17,8 +19,16 @@ class MyPagePage extends StatefulWidget {
   State<MyPagePage> createState() => _MyPagePageState();
 }
 
-class _MyPagePageState extends State<MyPagePage>
-    with AutomaticKeepAliveClientMixin {
+class _MyPagePageState extends State<MyPagePage> with AutomaticKeepAliveClientMixin {
+
+  late AuthenticationBloc _authenticationBloc;
+
+  @override
+  void initState() {
+    super.initState();
+    _authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
+  }
+
   @override
   bool get wantKeepAlive => true;
 
@@ -30,7 +40,11 @@ class _MyPagePageState extends State<MyPagePage>
             title: Text('마이페이지', style: Theme.of(context).textTheme.headline2),
             actions: [
               GestureDetector(
-                  onTap: () => context.vRouter.to(SettingScreen.routeName),
+                  onTap: () => Navigator.push(context,
+                    MaterialPageRoute(
+                        builder: (_) => BlocProvider.value(value: _authenticationBloc, child: SettingScreen())
+                    ),
+                  ),
                   child: Padding(
                       padding: EdgeInsets.only(right: 16),
                       child: SvgPicture.asset('assets/icons/settings.svg')))

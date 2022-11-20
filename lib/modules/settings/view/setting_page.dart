@@ -1,4 +1,6 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:krrng_client/modules/ads_request/view/ads_request_screen.dart';
+import 'package:krrng_client/modules/authentication/bloc/authentication_bloc.dart';
 import 'package:krrng_client/modules/delete_account/delete_account_screen.dart';
 import 'package:krrng_client/modules/mypage/components/sub_menu.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +17,16 @@ class SettingPage extends StatefulWidget {
 }
 
 class _SettingPageState extends State<SettingPage> {
+
+  late AuthenticationBloc _authenticationBloc;
+
   final textEditingController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
+  }
 
   @override
   void dispose() {
@@ -97,6 +108,10 @@ class _SettingPageState extends State<SettingPage> {
                     height: 12,
                     margin: EdgeInsets.symmetric(horizontal: 20)),
                 GestureDetector(
+                    onTap: () {
+                      _authenticationBloc.add(AuthenticationLogoutRequested());
+                      context.vRouter.to('/');
+                    },
                     child: Text('로그아웃',
                         style: TextStyle(
                             fontSize: 16,

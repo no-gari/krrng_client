@@ -30,6 +30,9 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+
+  late AuthenticationBloc _authenticationBloc;
+
   PageController _pageController = PageController();
   int _pageIndex = 0;
 
@@ -38,6 +41,8 @@ class _MainPageState extends State<MainPage> {
     super.initState();
     _pageController = PageController(initialPage: 0);
     _pageIndex = 0;
+
+    _authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
   }
 
   void _onPageChanged(int index) => setState(() => _pageIndex = index);
@@ -64,11 +69,13 @@ class _MainPageState extends State<MainPage> {
       return Scaffold(
           body: DoubleBack(
               message: '앱을 닫으시려면 한 번 더 눌러주세요.',
-              child: PageView(
-                  children: pageList,
-                  controller: _pageController,
-                  onPageChanged: _onPageChanged,
-                  physics: const NeverScrollableScrollPhysics())),
+              child: BlocProvider.value(value: _authenticationBloc,
+                child: PageView(
+                    children: pageList,
+                    controller: _pageController,
+                    onPageChanged: _onPageChanged,
+                    physics: const NeverScrollableScrollPhysics()),
+              )),
           bottomNavigationBar: Container(
               decoration: const BoxDecoration(
                   border:
