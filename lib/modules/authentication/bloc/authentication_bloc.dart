@@ -1,3 +1,4 @@
+import 'package:krrng_client/repositories/animal_repository/animal_repository.dart';
 import 'package:krrng_client/repositories/authentication_repository/src/authentication_repository.dart';
 import 'package:krrng_client/repositories/user_repository/src/user_repository.dart';
 import 'package:krrng_client/repositories/user_repository/models/user.dart';
@@ -16,18 +17,23 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   AuthenticationBloc({
     required AuthenticationRepository authenticationRepository,
     required UserRepository userRepository,
+    required AnimalRepository animalRepository
   })  : _authenticationRepository = authenticationRepository,
         _userRepository = userRepository,
+        _animalRepository = animalRepository,
         super(const AuthenticationState.unauthenticated()) {
     _authenticationStatusSubscription = _authenticationRepository.status.listen(
       (status) => add(AuthenticationStatusChanged(status)),
     );
+    // _userStateSubscription = _userStateSubscription.
   }
 
   final AuthenticationRepository _authenticationRepository;
   final UserRepository _userRepository;
-  late StreamSubscription<AuthenticationStatus>
-      _authenticationStatusSubscription;
+  final AnimalRepository _animalRepository;
+
+  late StreamSubscription<AuthenticationStatus> _authenticationStatusSubscription;
+  // late StreamSubscription<AuthenticationStatus> _userStateSubscription;
 
   @override
   Stream<AuthenticationState> mapEventToState(AuthenticationEvent event) async* {
