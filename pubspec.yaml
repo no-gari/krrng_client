@@ -75,9 +75,10 @@ dependencies:
   # image
   multi_image_picker: ^4.8.1
 
-  # naver map
+  # map
   flutter_naver_map:
     git: https://github.com/wnsgh78b/flutter_naver_map.git
+  geolocator: ^8.2.0
 
 dev_dependencies:
   flutter_test:

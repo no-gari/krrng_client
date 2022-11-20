@@ -1,5 +1,6 @@
 import 'package:krrng_client/repositories/authentication_repository/src/authentication_repository.dart';
 import 'package:krrng_client/support/networks/dio_client.dart';
+import 'package:krrng_client/support/networks/map_client.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'package:url_strategy/url_strategy.dart';
@@ -32,7 +33,11 @@ void main() async {
   setPathUrlStrategy();
   Bloc.observer = MyBlocObserver();
   DioClient dioClient = DioClient(Dio());
+  MapClient mapClient = MapClient(Dio());
+
   runApp(MyApp(
       authenticationRepository: AuthenticationRepository(dioClient),
-      dioClient: dioClient));
+      dioClient: dioClient,
+      mapClient: mapClient,
+  ));
 }
