@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:krrng_client/support/style/theme.dart';
 
+EdgeInsets InsetSymmetric15 = EdgeInsets.symmetric(vertical: 15, horizontal: 15);
+
 OutlineInputBorder outline = OutlineInputBorder(
     borderRadius:BorderRadius.circular(12.0),
     borderSide: BorderSide(color: dividerColor)

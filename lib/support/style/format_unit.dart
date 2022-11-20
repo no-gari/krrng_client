@@ -17,3 +17,7 @@ double maxWidth(context) {
 double maxHeight(context) {
   return MediaQuery.of(context).size.height;
 }
+
+bool isValidPhoneNumberFormat(String phone) {
+  return RegExp(r'^010?([0-9]{4})?([0-9]{4})$').hasMatch(phone);
+}
