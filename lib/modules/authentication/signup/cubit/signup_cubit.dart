@@ -89,9 +89,11 @@ class SignupCubit extends Cubit<SignupState> {
 
     response.when(success: (Map? result) async {
       final accessToken = result?["access"] as String;
+      final refreshToken = result?["refresh"] as String;
 
       final SharedPreferences pref = await SharedPreferences.getInstance();
       pref.setString('access', accessToken);
+      pref.setString('refresh', refreshToken);
 
     }, failure: (NetworkExceptions? error) {
       emit(state.copyWith(
