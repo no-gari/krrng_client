@@ -68,7 +68,8 @@ final routes = [
         widget: SigninScreen(),
         stackedRoutes: [
           VWidget(path: SignupScreen.routeName, widget: SignupScreen()),
-          VWidget(path: FindingScreen.routeName, widget: FindingScreen())
+          VWidget(path: FindingScreen.routeName, widget: FindingScreen()),
+          VWidget(path: FindingResultPage.routeName, widget: FindingResultPage())
         ]),
   ]),
   VWidget(path: SplashScreen.routeName, widget: SplashScreen()),

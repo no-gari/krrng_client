@@ -117,13 +117,11 @@ class _SigninPageState extends State<SigninPage> {
 
   @override
   Widget build(BuildContext context) {
-    final Size size = MediaQuery.of(context).size;
-
     return Scaffold(
         appBar: AppBar(automaticallyImplyLeading: true),
-        body: BlocListener<AuthenticationBloc, AuthenticationState>(
+        body: BlocListener<SignInCubit, SignInState>(
             listener: (context, state) async {
-              if (state.status == AuthenticationStatus.authenticated) {
+              if (state?.auth ?? false) {
                 context.vRouter.to(MainScreen.routeName, isReplacement: true);
               }
             },
@@ -230,13 +228,13 @@ class _SigninPageState extends State<SigninPage> {
                               GestureDetector(
                                   onTap: () => context.vRouter.to(
                                       FindingScreen.routeName,
-                                      isReplacement: true),
+                                      isReplacement: true, queryParameters: {"key":"id"}),
                                   child: Text('아이디 찾기',
                                       style: TextStyle(fontSize: 14))),
                               _TextRowSpacing(),
                               GestureDetector(
                                   onTap: () => context.vRouter
-                                      .to(FindingScreen.routeName),
+                                      .to(FindingScreen.routeName, isReplacement: true, queryParameters: {"key":"password"}),
                                   child: Text('비밀번호 찾기',
                                       style: TextStyle(fontSize: 14))),
                               _TextRowSpacing(),
