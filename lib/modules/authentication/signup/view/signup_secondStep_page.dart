@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:krrng_client/modules/authentication/signup/cubit/signup_cubit.dart';
+import 'package:krrng_client/support/style/format_unit.dart';
 import 'package:krrng_client/support/style/theme.dart';
 
 class SignupSecondStepPage extends StatefulWidget {
@@ -77,17 +78,10 @@ class _SignupSecondStepState extends State<SignupSecondStepPage> {
             keyboardType: TextInputType.phone,
             decoration: InputDecoration(
                 isCollapsed: true,
-                contentPadding:
-                    EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.0),
-                    borderSide: BorderSide(color: dividerColor)),
-                focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.0),
-                    borderSide: BorderSide(color: primaryColor)),
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.0),
-                    borderSide: BorderSide(color: dividerColor)),
+                contentPadding: InsetSymmetric15,
+                enabledBorder: outline,
+                focusedBorder: outline_focus,
+                border: outline,
                 hintText: '휴대폰 번호 입력하세요.'),
           )),
           SizedBox(width: 10),
@@ -96,12 +90,34 @@ class _SignupSecondStepState extends State<SignupSecondStepPage> {
               height: 44,
               child: ElevatedButton(
                   onPressed: () {
-                    if (_timerText == null) {
-                      var phoneNumber = phoneController.text.trim();
-                      _signupCubit.requestCode(phoneNumber);
-                      _startTimer();
-                      codeFocusNode.requestFocus();
+                    final phoneNumber = phoneController.text.trim();
+
+                    if (isValidPhoneNumberFormat(phoneNumber)) {
+                      if (_timerText == null) {
+                        _signupCubit.requestCode(phoneNumber);
+                        _startTimer();
+                        codeFocusNode.requestFocus();
+                      }
+                    } else {
+                      showDialog(
+                          context: context,
+                          barrierDismissible: true, // 바깥 영역 터치시 닫을지 여부
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              content: Text("핸드폰 번호를 확인해주세요."),
+                              insetPadding: const EdgeInsets.fromLTRB(0, 80, 0, 80),
+                              actions: [
+                                TextButton(
+                                  child: const Text('확인'),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            );
+                          });
                     }
+
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: _timerText == null ? primaryColor : dividerColor,
@@ -122,17 +138,10 @@ class _SignupSecondStepState extends State<SignupSecondStepPage> {
             },
             decoration: InputDecoration(
                 isCollapsed: true,
-                contentPadding:
-                    EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.0),
-                    borderSide: BorderSide(color: dividerColor)),
-                focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.0),
-                    borderSide: BorderSide(color: primaryColor)),
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.0),
-                    borderSide: BorderSide(color: dividerColor)),
+                contentPadding: InsetSymmetric15,
+                enabledBorder: outline,
+                focusedBorder: outline_focus,
+                border: outline,
                 suffix: Text(_timerText ?? "", style: font_16_w700.copyWith(color: primaryColor)),
                 hintText: '인증 번호를 입력하세요.')),
         SizedBox(height: 30),

@@ -181,23 +181,10 @@ class _SigninPageState extends State<SigninPage> {
                                 textAlignVertical: TextAlignVertical.center,
                                 decoration: InputDecoration(
                                     isCollapsed: true,
-                                    contentPadding: EdgeInsets.symmetric(
-                                        vertical: 15, horizontal: 15),
-                                    enabledBorder: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(12.0),
-                                        borderSide:
-                                            BorderSide(color: dividerColor)),
-                                    focusedBorder: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(12.0),
-                                        borderSide:
-                                            BorderSide(color: primaryColor)),
-                                    border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(12.0),
-                                        borderSide:
-                                            BorderSide(color: dividerColor)),
+                                    contentPadding: InsetSymmetric15,
+                                    enabledBorder: outline,
+                                    focusedBorder: outline_focus,
+                                    border: outline,
                                     hintText: '비밀번호를 입력하세요.'))),
                         const SizedBox(height: 13),
                         Row(children: [
