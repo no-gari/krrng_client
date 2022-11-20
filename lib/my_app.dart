@@ -12,7 +12,6 @@ import 'package:krrng_client/repositories/brand_repository/src/brand_repository.
 import 'package:krrng_client/repositories/user_repository/src/user_repository.dart';
 import 'package:krrng_client/repositories/cart_repository/src/cart_repository.dart';
 import 'package:krrng_client/support/networks/map_client.dart';
-import 'repositories/mypage_repository/src/mypage_repository.dart';
 import 'modules/authentication/bloc/authentication_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'support/networks/dio_client.dart';
