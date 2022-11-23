@@ -29,7 +29,7 @@ PODS:
   - multi_image_picker (4.8.00):
     - BSImagePicker (~> 2.10.3)
     - Flutter
-  - NMapsMap (3.16.0)
+  - NMapsMap (3.14.1)
   - onesignal_flutter (3.4.2):
     - Flutter
     - OneSignalXCFramework (= 3.11.4)
@@ -156,7 +156,7 @@ SPEC CHECKSUMS:
   kakao_flutter_sdk_common: 99744198582dc78bd1153713bdf444eaaf5fc107
   move_to_background: 39a5b79b26d577b0372cbe8a8c55e7aa9fcd3a2d
   multi_image_picker: 443e776a762d7901641854043b60abf88a85d5ef
-  NMapsMap: a2593320fca2bb09e521c05b4dffee4da42e96ed
+  NMapsMap: 79bae4e0d7cc5214dd6dabdb95687a1356616556
   onesignal_flutter: bd3bc654bc632e7d6cc8d219a7caebf0592c63e5
   OneSignalXCFramework: 45932e3c1e659e1485bfd765e0543d7f30cc737b
   OrderedSet: aaeb196f7fef5a9edf55d89760da9176ad40b93c

@@ -5,6 +5,7 @@ import 'package:krrng_client/repositories/notification_repository/src/notificati
 import 'package:krrng_client/repositories/address_repository/src/address_repository.dart';
 import 'package:krrng_client/repositories/product_repository/src/product_repository.dart';
 import 'package:krrng_client/repositories/coupon_repository/src/coupon_repository.dart';
+import 'package:krrng_client/repositories/search_repository/src/recent_search_repository.dart';
 import 'package:krrng_client/repositories/search_repository/src/search_repository.dart';
 import 'package:krrng_client/repositories/order_repository/src/order_repository.dart';
 import 'package:krrng_client/repositories/store_repository/src/store_repository.dart';
@@ -20,7 +21,9 @@ import 'package:krrng_client/app_view.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp(
-      {required this.authenticationRepository, required this.dioClient, required this.mapClient});
+      {required this.authenticationRepository,
+      required this.dioClient,
+      required this.mapClient});
 
   final AuthenticationRepository authenticationRepository;
   final DioClient dioClient;
@@ -28,7 +31,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AuthenticationRepository authenticationRepository = AuthenticationRepository(dioClient);
+    final AuthenticationRepository authenticationRepository =
+        AuthenticationRepository(dioClient);
     final UserRepository userRepository = UserRepository(dioClient);
     final AnimalRepository animalRepository = AnimalRepository(dioClient);
 
@@ -37,7 +41,8 @@ class MyApp extends StatelessWidget {
           RepositoryProvider.value(value: authenticationRepository),
           RepositoryProvider.value(value: userRepository),
           RepositoryProvider.value(value: animalRepository),
-          RepositoryProvider(create: (context) => NotificationRepository(dioClient)),
+          RepositoryProvider(
+              create: (context) => NotificationRepository(dioClient)),
           RepositoryProvider(create: (context) => ProductRepository(dioClient)),
           RepositoryProvider(create: (context) => AddressRepository(dioClient)),
           RepositoryProvider(create: (context) => SearchRepository(dioClient)),
@@ -47,15 +52,15 @@ class MyApp extends StatelessWidget {
           RepositoryProvider(create: (context) => OrderRepository(dioClient)),
           RepositoryProvider(create: (context) => BrandRepository(dioClient)),
           RepositoryProvider(create: (context) => CartRepository(dioClient)),
-          RepositoryProvider(create: (context) => MapRepository(mapClient))
+          RepositoryProvider(create: (context) => MapRepository(mapClient)),
+          RepositoryProvider(create: (context) => RecentSearchRepository()),
         ],
         child: MultiBlocProvider(providers: [
           BlocProvider<AuthenticationBloc>(
               create: (context) => AuthenticationBloc(
                   authenticationRepository: authenticationRepository,
                   userRepository: userRepository,
-                  animalRepository: animalRepository
-              ))
+                  animalRepository: animalRepository))
         ], child: AppView()));
   }
 }

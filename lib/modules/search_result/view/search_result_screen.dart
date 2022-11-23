@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vrouter/vrouter.dart';
 import 'search_result_page.dart';
 
 class SearchResultScreen extends StatelessWidget {
@@ -6,6 +7,8 @@ class SearchResultScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SearchResultPage();
+    final keyword = context.vRouter.pathParameters['keyword'];
+
+    return SearchResultPage(keyword: keyword);
   }
 }

@@ -1,20 +1,18 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'search_result.dart';
+part of 'recent_search.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-SearchResult _$SearchResultFromJson(Map<String, dynamic> json) => SearchResult(
+RecentSearch _$RecentSearchFromJson(Map<String, dynamic> json) => RecentSearch(
+      json['id'] as String?,
       json['keyword'] as String?,
-      json['brands'] as List<dynamic>?,
-      json['products'] as List<dynamic>?,
     );
 
-Map<String, dynamic> _$SearchResultToJson(SearchResult instance) =>
+Map<String, dynamic> _$RecentSearchToJson(RecentSearch instance) =>
     <String, dynamic>{
+      'id': instance.id,
       'keyword': instance.keyword,
-      'products': instance.products,
-      'brands': instance.brands,
     };

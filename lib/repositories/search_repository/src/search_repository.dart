@@ -1,5 +1,4 @@
 import 'package:krrng_client/support/networks/network_exceptions.dart';
-import 'package:krrng_client/support/networks/page_response.dart';
 import 'package:krrng_client/support/networks/api_result.dart';
 import 'package:krrng_client/support/networks/dio_client.dart';
 
@@ -8,47 +7,9 @@ class SearchRepository {
 
   final DioClient _dioClient;
 
-  Future<ApiResult<PageResponse>> getKeywordList(int page) async {
+  Future<ApiResult<List>> getKeywords() async {
     try {
-      var response =
-          await _dioClient.get('/api/v1/commerce/search/?page=${page}');
-      return ApiResult.success(data: PageResponse.fromJson(response));
-    } catch (e) {
-      return ApiResult.failure(error: NetworkExceptions.getDioException(e));
-    }
-  }
-
-  Future<ApiResult<PageResponse>> productSearch(
-      String keyword, int page) async {
-    try {
-      var response = await _dioClient
-          .get('/api/v1/commerce/search/product/${keyword}/?page=${page}');
-      return ApiResult.success(data: PageResponse.fromJson(response));
-    } catch (e) {
-      return ApiResult.failure(error: NetworkExceptions.getDioException(e));
-    }
-  }
-
-  Future<ApiResult<Map>> brandSearch(String keyword, int page) async {
-    try {
-      var response = await _dioClient
-          .get('/api/v1/commerce/search/brand/${keyword}/?page=${page}');
-      print('======================');
-      print(response);
-      print('======================');
-      return ApiResult.success(data: response);
-    } catch (e) {
-      print('======================');
-      print('fail');
-      print('======================');
-      return ApiResult.failure(error: NetworkExceptions.getDioException(e));
-    }
-  }
-
-  Future<ApiResult<Map>> search(String keyword, int page) async {
-    try {
-      var response = await _dioClient
-          .get('/api/v1/commerce/search/${keyword}/?page=${page}');
+      var response = await _dioClient.get('/dev/api/v1/search/trending/');
       return ApiResult.success(data: response);
     } catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
