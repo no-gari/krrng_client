@@ -1,7 +1,8 @@
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:krrng_client/repositories/animal_repository/animal_repository.dart';
 import 'package:krrng_client/repositories/user_repository/models/user.dart';
 import 'package:krrng_client/support/networks/api_result.dart';
 import 'package:krrng_client/support/networks/dio_client.dart';
+import 'dart:convert';
 
 class UserGetFailure implements Exception {}
 
@@ -14,29 +15,7 @@ class UserRepository {
     try {
       var response = await _dioClient.getWithAuth('/dev/api/v1/user/profile/');
 
-      return ApiResult.success(
-          data: User(
-            nickname: response['nickname'],
-            profileImage: response['profileImage'],
-            birthday: response['birthday'],
-            sexChoices: response['sexChoices']
-      ));
-    } on Exception {
-      throw UserGetFailure();
-    }
-  }
-
-  Future<ApiResult<User>> getAnonymousUser() async {
-    try {
-      Map<String, dynamic> response = await _dioClient.get('/dev/api/v1/user/profile/anonymous');
-
-      return ApiResult.success(
-          data: User(
-              nickname: response['nickname'],
-              profileImage: response['profileImage'],
-              birthday: response['birthday'],
-              sexChoices: response['sexChoices']
-          ));
+      return ApiResult.success(data: User.fromJson(response));
     } on Exception {
       throw UserGetFailure();
     }
@@ -44,7 +23,8 @@ class UserRepository {
 
   Future<ApiResult<User>> updateUser() async {
     try {
-      var response = await _dioClient.put('/api/v1/user/profile_change/', data: {});
+      var response =
+          await _dioClient.put('/api/v1/user/profile_change/', data: {});
 
       return ApiResult.success(
           data: User(

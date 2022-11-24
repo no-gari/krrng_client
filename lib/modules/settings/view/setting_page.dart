@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:krrng_client/modules/terms_of_use/personal_info_screen.dart';
 import 'package:krrng_client/modules/terms_of_use/terms_of_use_screen.dart';
 import 'package:krrng_client/modules/version_info/page/version_info_screen.dart';
+import 'package:krrng_client/repositories/authentication_repository/src/authentication_repository.dart';
 import 'package:vrouter/vrouter.dart';
 
 class SettingPage extends StatefulWidget {
@@ -17,7 +18,6 @@ class SettingPage extends StatefulWidget {
 }
 
 class _SettingPageState extends State<SettingPage> {
-
   late AuthenticationBloc _authenticationBloc;
 
   final textEditingController = TextEditingController();
@@ -43,7 +43,14 @@ class _SettingPageState extends State<SettingPage> {
         body: SafeArea(
             child: SingleChildScrollView(
                 child: Column(children: [
-          buildProfileSetting(textEditingController: textEditingController),
+          BlocBuilder<AuthenticationBloc, AuthenticationState>(
+              builder: (context, authState) {
+            if (authState.status == AuthenticationStatus.authenticated)
+              return buildProfileSetting(
+                  textEditingController: textEditingController,
+                  authState: authState);
+            return Container();
+          }),
           Container(
               height: 0.5, width: double.maxFinite, color: Colors.black12),
           SubMenu(
@@ -90,44 +97,66 @@ class _SettingPageState extends State<SettingPage> {
           //     height: 0.5,
           //     width: double.maxFinite,
           //     color: Colors.black12),
-          // SubMenu(title: '마케팅 수신 동의'),
-          Padding(
-              padding: EdgeInsets.symmetric(vertical: 30),
-              child:
-                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                GestureDetector(
-                    onTap: () =>
-                        context.vRouter.to(DeleteAccountScreen.routeName),
-                    child: Text('회원탈퇴',
-                        style: TextStyle(
-                            fontSize: 16,
-                            decoration: TextDecoration.underline))),
-                Container(
-                    width: 1,
-                    color: Colors.black12,
-                    height: 12,
-                    margin: EdgeInsets.symmetric(horizontal: 20)),
-                GestureDetector(
-                    onTap: () {
-                      _authenticationBloc.add(AuthenticationLogoutRequested());
-                      context.vRouter.to('/');
-                    },
-                    child: Text('로그아웃',
-                        style: TextStyle(
-                            fontSize: 16,
-                            decoration: TextDecoration.underline))),
-              ]))
+          // SubMenu(title: '마케팅 수신 동의'),웃
+          BlocBuilder<AuthenticationBloc, AuthenticationState>(
+              builder: (context, authState) {
+            if (authState.status == AuthenticationStatus.authenticated)
+              return Padding(
+                  padding: EdgeInsets.symmetric(vertical: 30),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                            onTap: () => context.vRouter
+                                .to(DeleteAccountScreen.routeName),
+                            child: Text('회원탈퇴',
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    decoration: TextDecoration.underline))),
+                        Container(
+                            width: 1,
+                            color: Colors.black12,
+                            height: 12,
+                            margin: EdgeInsets.symmetric(horizontal: 20)),
+                        GestureDetector(
+                            onTap: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                        title: const Text("로그아웃 하시겠습니까?"),
+                                        actions: [
+                                          MaterialButton(
+                                              onPressed: () {
+                                                RepositoryProvider.of<
+                                                            AuthenticationRepository>(
+                                                        context)
+                                                    .logOut();
+                                                Navigator.pop(context);
+                                                Navigator.pop(context);
+                                              },
+                                              child: const Text("확인"))
+                                        ]);
+                                  });
+                            },
+                            child: Text('로그아웃',
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    decoration: TextDecoration.underline))),
+                      ]));
+            return Container();
+          })
         ]))));
   }
 }
 
 class buildProfileSetting extends StatelessWidget {
-  const buildProfileSetting({
-    Key? key,
-    required this.textEditingController,
-  }) : super(key: key);
+  const buildProfileSetting(
+      {Key? key, required this.textEditingController, required this.authState})
+      : super(key: key);
 
   final TextEditingController textEditingController;
+  final AuthenticationState authState;
 
   @override
   Widget build(BuildContext context) {
@@ -136,7 +165,7 @@ class buildProfileSetting extends StatelessWidget {
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text('아이디', style: Theme.of(context).textTheme.headline4),
           SizedBox(height: 10),
-          Text('nogariii',
+          Text(authState.user.nickname.toString(),
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
           SizedBox(height: 30),
           Text('비밀번호', style: Theme.of(context).textTheme.headline4),
