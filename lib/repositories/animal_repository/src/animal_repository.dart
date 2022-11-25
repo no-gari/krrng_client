@@ -13,11 +13,10 @@ class AnimalRepository {
 
   final _controller = StreamController<AuthenticationStatus>();
 
-  Future<ApiResult<List<Animal>>> getAnimals() async {
+  Future<ApiResult<List<dynamic>>> getAnimals() async {
     try {
-      var response = await _dioClient.getWithAuth('/dev/api/v1/animal/list/') as List<Map<String, dynamic>>;
-      final result = response.map((e) => Animal.fromJson(e)).toList() ;
-      return ApiResult.success(data: result);
+      var response = await _dioClient.getWithAuth('/dev/api/v1/animal/list/');
+      return ApiResult.success(data: response);
     } catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
@@ -26,6 +25,38 @@ class AnimalRepository {
   Future<ApiResult<Animal>> getAnimalById(String id) async {
     try {
       var response = await _dioClient.getWithAuth('/dev/api/v1/animal/${id}/');
+
+      return ApiResult.success(data: response);
+    } catch (e) {
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e));
+    }
+  }
+
+  Future<ApiResult<Animal>> updateAnimalById(String Id, Map body) async {
+    try {
+      var response =
+          await _dioClient.patch('/dev/api/v1/animal/${Id}/', data: body);
+
+      return ApiResult.success(data: response);
+    } catch (e) {
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e));
+    }
+  }
+
+  Future<ApiResult<Animal>> createAnimal(Map body) async {
+    try {
+      var response = await _dioClient.postWithAuth('/dev/api/v1/animal/create/',
+          data: body);
+
+      return ApiResult.success(data: response);
+    } catch (e) {
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e));
+    }
+  }
+
+  Future<ApiResult> deleteAnimalWithId(String Id) async {
+    try {
+      var response = await _dioClient.postWithAuth('/dev/api/v1/animal/${Id}/');
 
       return ApiResult.success(data: response);
     } catch (e) {

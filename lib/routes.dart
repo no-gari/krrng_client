@@ -38,7 +38,9 @@ final routes = [
         widget: SearchScreen(),
         stackedRoutes: [
           VWidget(
-              path: SearchResultScreen.routeName, widget: SearchResultScreen())
+              path: SearchResultScreen.routeName + '/:keyword',
+              widget: SearchResultScreen(),
+              name: SearchResultScreen.routeName)
         ]),
     VWidget(path: NotificationScreen.routeName, widget: NotificationScreen()),
     VWidget(
@@ -69,7 +71,8 @@ final routes = [
         stackedRoutes: [
           VWidget(path: SignupScreen.routeName, widget: SignupScreen()),
           VWidget(path: FindingScreen.routeName, widget: FindingScreen()),
-          VWidget(path: FindingResultPage.routeName, widget: FindingResultPage())
+          VWidget(
+              path: FindingResultPage.routeName, widget: FindingResultPage())
         ]),
   ]),
   VWidget(path: SplashScreen.routeName, widget: SplashScreen()),
@@ -77,9 +80,13 @@ final routes = [
       path: HospitalDetailScreen.routeName,
       widget: HospitalDetailScreen(),
       stackedRoutes: [
-        VWidget(path: WritingReviewScreen.routeName, widget: WritingReviewScreen(),
-          stackedRoutes: [ VWidget(path: ReviewNoticePage.routeName, widget: ReviewNoticePage()) ]
-        ),
+        VWidget(
+            path: WritingReviewScreen.routeName,
+            widget: WritingReviewScreen(),
+            stackedRoutes: [
+              VWidget(
+                  path: ReviewNoticePage.routeName, widget: ReviewNoticePage())
+            ]),
       ]),
   VWidget(path: '*', widget: MainScreen()),
 ];

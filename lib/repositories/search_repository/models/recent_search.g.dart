@@ -1,18 +1,17 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'recommended_keyword.dart';
+part of 'recent_search.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-RecommendedKeyword _$RecommendedKeywordFromJson(Map<String, dynamic> json) =>
-    RecommendedKeyword(
+RecentSearch _$RecentSearchFromJson(Map<String, dynamic> json) => RecentSearch(
+      json['id'] as String?,
       json['keyword'] as String?,
-      json['id'] as int?,
     );
 
-Map<String, dynamic> _$RecommendedKeywordToJson(RecommendedKeyword instance) =>
+Map<String, dynamic> _$RecentSearchToJson(RecentSearch instance) =>
     <String, dynamic>{
       'id': instance.id,
       'keyword': instance.keyword,

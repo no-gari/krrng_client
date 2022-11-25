@@ -1,15 +1,19 @@
+import 'package:krrng_client/repositories/search_repository/models/recent_search.dart';
+import 'package:krrng_client/modules/search_result/view/search_result_screen.dart';
+import 'package:krrng_client/modules/search/cubit/recent_search_cubit.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter/material.dart';
+import 'package:vrouter/vrouter.dart';
 import 'dart:convert';
 import 'dart:math';
-import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:krrng_client/modules/search_result/view/search_result_screen.dart';
-import 'package:vrouter/vrouter.dart';
 
 class SearchTextField extends StatelessWidget {
-  SearchTextField({this.focusNode, this.textEditingController});
+  SearchTextField(
+      {this.focusNode, this.textEditingController, this.recentSearchCubit});
 
-  final FocusNode? focusNode;
   final TextEditingController? textEditingController;
+  final RecentSearchCubit? recentSearchCubit;
+  final FocusNode? focusNode;
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +26,9 @@ class SearchTextField extends StatelessWidget {
             var values = List<int>.generate(8, (i) => random.nextInt(255));
             var randomId = base64UrlEncode(values);
 
+            recentSearchCubit!.addRecentSearch(RecentSearch(randomId, value));
+            context.vRouter.toNamed(SearchResultScreen.routeName,
+                pathParameters: {'keyword': value});
             textEditingController!.clear();
           }
         },

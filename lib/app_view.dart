@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:vrouter/vrouter.dart';
+import 'repositories/authentication_repository/src/authentication_repository.dart';
 import 'routes.dart';
 
 final GlobalKey<VRouterState> vRouterKey = GlobalKey<VRouterState>();
@@ -51,7 +52,11 @@ class _AppViewState extends State<AppView> with WidgetsBindingObserver {
   MultiBlocListener buildMultiBlocListener(Widget child) {
     return MultiBlocListener(listeners: [
       BlocListener<AuthenticationBloc, AuthenticationState>(
-          listener: (context, state) {})
+          listener: (context, state) {
+        if (state.status == AuthenticationStatus.authenticated) {
+          context.vRouter.to(MainScreen.routeName);
+        }
+      })
     ], child: child);
   }
 }

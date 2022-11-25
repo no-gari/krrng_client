@@ -8,16 +8,16 @@ class SubMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
         onTap: onTap,
         child: Container(
+            width: double.maxFinite,
             padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
             alignment: Alignment.center,
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(title!, style: Theme.of(context).textTheme.headline4),
-                  Icon(Icons.arrow_forward_ios, size: 15)
-                ])));
+            child: Row(children: [
+              Text(title!, style: Theme.of(context).textTheme.headline4),
+              Spacer(),
+              Icon(Icons.arrow_forward_ios, size: 15)
+            ])));
   }
 }

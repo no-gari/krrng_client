@@ -8,6 +8,8 @@ class MyPageScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider.value(value: BlocProvider.of<AuthenticationBloc>(context), child: MyPagePage());
+    return BlocProvider.value(
+        value: BlocProvider.of<AuthenticationBloc>(context),
+        child: MyPagePage());
   }
 }

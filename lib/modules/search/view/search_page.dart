@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:krrng_client/modules/home/components/drop_down.dart';
-import 'package:krrng_client/modules/search/components/search_text_field.dart';
 import '../components/hot_search_tile.dart';
 import '../components/recent_search_tile.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:krrng_client/modules/search/cubit/search_cubit.dart';
+import 'package:krrng_client/modules/search/cubit/recent_search_cubit.dart';
+import 'package:krrng_client/modules/search/components/search_text_field.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({Key? key}) : super(key: key);
@@ -12,12 +14,18 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
+  late RecentSearchCubit _recentSearchCubit;
+  late SearchCubit _searchCubit;
   late FocusNode _focusNode;
   final _textEditingController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
+    _recentSearchCubit = BlocProvider.of<RecentSearchCubit>(context);
+    _searchCubit = BlocProvider.of<SearchCubit>(context);
+    _recentSearchCubit.getRecentSearchList();
+    _searchCubit.getKeywords();
     _focusNode = FocusNode();
   }
 
@@ -41,16 +49,8 @@ class _SearchPageState extends State<SearchPage> {
                         Expanded(
                             child: SearchTextField(
                                 focusNode: _focusNode,
-                                textEditingController: _textEditingController)),
-                        SizedBox(width: 10),
-                        Container(
-                            alignment: Alignment.center,
-                            width: 80,
-                            height: 44,
-                            child: SearchDropdownButton(),
-                            decoration: BoxDecoration(
-                                border: Border.all(color: Colors.black26),
-                                borderRadius: BorderRadius.circular(15)))
+                                recentSearchCubit: _recentSearchCubit,
+                                textEditingController: _textEditingController))
                       ]),
                       SizedBox(height: 30),
                       Row(
@@ -61,30 +61,44 @@ class _SearchPageState extends State<SearchPage> {
                                 style: TextStyle(
                                     fontSize: 18, fontWeight: FontWeight.bold)),
                             GestureDetector(
+                                onTap: () =>
+                                    _recentSearchCubit.deleteAllRecentSearch(),
                                 child: Text('전체삭제',
                                     style: TextStyle(fontSize: 13)))
                           ]),
                       SizedBox(height: 16),
-                      Wrap(
-                          spacing: 8,
-                          runSpacing: 8,
-                          direction: Axis.horizontal,
-                          children: [
-                            RecentSearchTile(title: '하늘 동물'),
-                            RecentSearchTile(title: '강남'),
-                            RecentSearchTile(title: '청담'),
-                            RecentSearchTile(title: '청담'),
-                            RecentSearchTile(title: '청담'),
-                            RecentSearchTile(title: '청담')
-                          ]),
+                      BlocBuilder<RecentSearchCubit, RecentSearchState>(
+                          builder: (context, searchState) {
+                        if (searchState.isLoaded! &&
+                            searchState.results!.isNotEmpty) {
+                          return Wrap(children: [
+                            for (var result in searchState.results!)
+                              RecentSearchTile(
+                                  recentSearchCubit: _recentSearchCubit,
+                                  recentSearchState: searchState,
+                                  index: searchState.results!.indexOf(result))
+                          ]);
+                        }
+                        return Container();
+                      }),
                       SizedBox(height: 50),
                       Text('인기 검색어',
                           style: TextStyle(
                               fontSize: 18, fontWeight: FontWeight.bold)),
                       SizedBox(height: 20),
-                      HotSearchTile(leading: '1', title: '어쩌구'),
-                      HotSearchTile(leading: '2', title: '저쩌구'),
-                      HotSearchTile(leading: '3', title: '어쩌구')
+                      BlocBuilder<SearchCubit, SearchState>(
+                          builder: (context, state) {
+                        if (state.isLoaded && state.keywords!.isNotEmpty) {
+                          return Wrap(children: [
+                            for (var result in state.keywords!)
+                              HotSearchTile(
+                                  leading: (state.keywords!.indexOf(result) + 1)
+                                      .toString(),
+                                  title: result.keyword.toString()),
+                          ]);
+                        }
+                        return Container();
+                      })
                     ]))));
   }
 }
