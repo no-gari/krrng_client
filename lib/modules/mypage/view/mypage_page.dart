@@ -8,7 +8,7 @@ import 'package:krrng_client/modules/mypage/components/sub_menu.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:krrng_client/modules/notice/view/notice_screen.dart';
-import 'package:krrng_client/modules/pet_register/view/pet_register_screen.dart';
+import 'package:krrng_client/modules/pet/view/pet_screen.dart';
 import 'package:krrng_client/modules/point/page/point_screen.dart';
 import 'package:krrng_client/modules/profile_change/view/profile_change_screen.dart';
 import 'package:krrng_client/modules/settings/view/setting_screen.dart';
@@ -108,7 +108,7 @@ class _MyPagePageState extends State<MyPagePage> {
                           vertical: 0, horizontal: 16),
                       child: GestureDetector(
                           onTap: () =>
-                              context.vRouter.to(PetRegisterScreen.routeName),
+                              context.vRouter.to(PetScreen.routeName),
                           child: Image.asset("assets/images/mainbanner.png")))
               ]);
             }
