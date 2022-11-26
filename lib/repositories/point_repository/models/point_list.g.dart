@@ -15,5 +15,5 @@ PointList _$PointListFromJson(Map<String, dynamic> json) => PointList(
 
 Map<String, dynamic> _$PointListToJson(PointList instance) => <String, dynamic>{
       'points': instance.points,
-      'totalPoints': instance.totalPoint,
+      'totalPoint': instance.totalPoint,
     };

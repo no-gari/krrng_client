@@ -35,7 +35,7 @@ class _ProfileChangePageState extends State<ProfileChangePage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(height: 30),
-                      Text('이름', style: Theme.of(context).textTheme.headline3),
+                      Text('닉네임', style: Theme.of(context).textTheme.headline3),
                       SizedBox(height: 10),
                       TextField(
                           autofocus: true,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kpostal/kpostal.dart';
 
 class AdsRequestPage extends StatefulWidget {
   const AdsRequestPage({Key? key}) : super(key: key);
@@ -9,6 +10,7 @@ class AdsRequestPage extends StatefulWidget {
 
 class _AdsRequestPageState extends State<AdsRequestPage> {
   final _hospitalInfoController = TextEditingController();
+  final _hospitalAddressController = TextEditingController();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _hospitalController = TextEditingController();
@@ -25,6 +27,7 @@ class _AdsRequestPageState extends State<AdsRequestPage> {
   @override
   void dispose() {
     _hospitalInfoController.dispose();
+    _hospitalAddressController.dispose();
     _nameController.dispose();
     _emailController.dispose();
     _hospitalController.dispose();
@@ -74,6 +77,20 @@ class _AdsRequestPageState extends State<AdsRequestPage> {
                           style: Theme.of(context).textTheme.headline3),
                       SizedBox(height: 10),
                       TextField(
+                          controller: _hospitalAddressController,
+                          onTap: () async {
+                            await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) => KpostalView(
+                                        useLocalServer: false,
+                                        callback: (Kpostal result) {
+                                          setState(() {
+                                            _hospitalAddressController.text =
+                                                result.address;
+                                          });
+                                        })));
+                          },
                           readOnly: true,
                           textAlignVertical: TextAlignVertical.center,
                           decoration: InputDecoration(
