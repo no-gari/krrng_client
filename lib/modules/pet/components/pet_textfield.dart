@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class PetTextField extends StatelessWidget {
   PetTextField(
@@ -6,20 +7,26 @@ class PetTextField extends StatelessWidget {
       this.hintText,
       this.readOnly = false,
       this.onTap,
-      this.suffixIcon});
+      this.suffixIcon,
+      this.validator,
+      this.keyboardType
+      });
 
   final TextEditingController? controller;
   final String? hintText;
   final bool? readOnly;
   final VoidCallback? onTap;
   final Widget? suffixIcon;
+  final FormFieldValidator<String>? validator;
+  final TextInputType? keyboardType;
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return TextFormField(
         controller: controller,
         textAlignVertical: TextAlignVertical.center,
-        readOnly: readOnly!,
+        readOnly: readOnly ?? false,
+        keyboardType: keyboardType ?? TextInputType.text,
         onTap: onTap,
         decoration: InputDecoration(
             suffixIcon: suffixIcon,
@@ -33,6 +40,8 @@ class PetTextField extends StatelessWidget {
             border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(15.0),
                 borderSide: BorderSide(color: Color(0xFFDFE2E9))),
-            hintText: hintText));
+            hintText: hintText),
+        validator: validator
+    );
   }
 }

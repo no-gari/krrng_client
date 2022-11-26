@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:krrng_client/modules/mypage/view/mypage_screen.dart';
 import 'package:krrng_client/modules/notification/view/notification_screen.dart';
-import 'package:krrng_client/modules/pet_register/view/pet_register_screen.dart';
+import 'package:krrng_client/modules/pet/view/pet_screen.dart';
 import 'package:krrng_client/modules/search/view/search_screen.dart';
 import 'package:krrng_client/modules/search_result/view/search_result_screen.dart';
 import 'package:vrouter/vrouter.dart';
@@ -60,7 +60,7 @@ class _HomePageState extends State<HomePage>
                     children: [
                       GestureDetector(
                           onTap: () =>
-                              context.vRouter.to(PetRegisterScreen.routeName),
+                              context.vRouter.to(PetScreen.routeName),
                           child: Image.asset("assets/images/mainbanner.png")),
                       SizedBox(height: 50),
                       Text.rich(TextSpan(
