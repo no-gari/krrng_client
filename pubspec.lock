@@ -8,13 +8,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "31.0.0"
-  age_calculator:
-    dependency: "direct main"
-    description:
-      name: age_calculator
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.0"
   analyzer:
     dependency: transitive
     description:
@@ -578,6 +571,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.3"
+  is_first_run:
+    dependency: "direct main"
+    description:
+      name: is_first_run
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0"
   js:
     dependency: transitive
     description:
@@ -746,6 +746,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.2"
+  onboarding:
+    dependency: "direct main"
+    description:
+      name: onboarding
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.1.0"
   onesignal_flutter:
     dependency: "direct main"
     description:
@@ -1416,13 +1423,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.1.1"
-  wrapped_korean_text:
-    dependency: "direct main"
-    description:
-      name: wrapped_korean_text
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.0.2"
   xdg_directories:
     dependency: transitive
     description:
