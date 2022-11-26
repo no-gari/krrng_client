@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:kpostal/kpostal.dart';
 import 'package:krrng_client/modules/pet/cubit/pet_cubit.dart';
@@ -22,11 +25,16 @@ class _PetRegisterPageState extends State<PetRegisterPage> {
   final _nameController = TextEditingController();
   final _birthdayController = TextEditingController();
   final _weightController = TextEditingController();
+  final _kindController = TextEditingController();
   final _addressController = TextEditingController();
   final _kopoController = TextEditingController();
   final _interestController = TextEditingController();
-
+  
+  final ImagePicker _picker = ImagePicker();
+  
   int petIsSelectedIndex = 0;
+  XFile? _image;
+  DateTime? _pickedPetDate;
 
   SexChoice? _choice = SexChoice.male;
   NeutralizeChoice? _neutralizeChoice = NeutralizeChoice.yes;
@@ -36,6 +44,7 @@ class _PetRegisterPageState extends State<PetRegisterPage> {
   void initState() {
     super.initState();
     _petCubit = BlocProvider.of<PetCubit>(context);
+    print(_petCubit.isEdit);
   }
 
   @override
@@ -43,7 +52,9 @@ class _PetRegisterPageState extends State<PetRegisterPage> {
     _nameController.dispose();
     _birthdayController.dispose();
     _weightController.dispose();
+    _kindController.dispose();
     _addressController.dispose();
+    _kopoController.dispose();
     _interestController.dispose();
     super.dispose();
   }
@@ -62,8 +73,13 @@ class _PetRegisterPageState extends State<PetRegisterPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   GestureDetector(
-                    onTap: () {
-                      print("tap picture");
+                    onTap: () async {
+                      var image = await _picker.pickImage(source: ImageSource.gallery);
+                      setState(() {
+                        if (image != null) {
+                          _image = image;
+                        }
+                      });
                     },
                     child: Container(
                         padding: EdgeInsets.symmetric(vertical: 30),
@@ -71,7 +87,10 @@ class _PetRegisterPageState extends State<PetRegisterPage> {
                         child: CircleAvatar(
                             radius: 40,
                             backgroundColor: Colors.black12,
-                            child: Icon(Icons.add, size: 32, color: Colors.grey))),
+                            child: _image == null ? Icon(Icons.add, size: 32, color: Colors.grey)
+                                : ClipOval(child: Image.file(File(_image!.path), width: 80, height: 80, fit: BoxFit.cover)),
+                        ),
+                    ),
                   ),
                   PetFormHeader('종류'),
                   SizedBox(height: 10),
@@ -120,6 +139,7 @@ class _PetRegisterPageState extends State<PetRegisterPage> {
                           return;
                         }
                         setState(() {
+                          _pickedPetDate = pickedDate;
                           _birthdayController.text = DateFormat('yyyy년 MM월 dd일').format(pickedDate);
                         });
                       });
@@ -167,7 +187,15 @@ class _PetRegisterPageState extends State<PetRegisterPage> {
                           Text('여자', style: font_16_w900)
                         ]))
                   ]),
-                  SizedBox(height: 50),
+                  SizedBox(height: 30),
+                  PetFormHeader('품종'),
+                  SizedBox(height: 10),
+                  PetTextField(
+                    controller: _kindController,
+                    hintText: '품종을 입력하세요.',
+                    validator: (text) => (text ?? "").length == 0 ? '품종을 입력해주세요.' : null,
+                  ),
+                  SizedBox(height: 30),
                   Text('내원병원', style: font_17_w900),
                   SizedBox(height: 10),
                   PetTextField(
@@ -188,7 +216,6 @@ class _PetRegisterPageState extends State<PetRegisterPage> {
                           ),
                         );
                       },
-                      validator: (text) => (text ?? "").length == 0 ? '주소를 입력해주세요.' : null,
                       suffixIcon: Icon(Icons.search),
                       hintText: '주소를 입력하세요'
                   ),
@@ -196,7 +223,6 @@ class _PetRegisterPageState extends State<PetRegisterPage> {
                   PetTextField(
                     controller: _addressController,
                     hintText: '상세 주소를 입력하세요.',
-                    validator: (text) => (text ?? "").length == 0 ? '상세 주소를 입력해주세요.' : null,
                   ),
                   Container(
                       height: 0.5,
@@ -334,22 +360,16 @@ class _PetRegisterPageState extends State<PetRegisterPage> {
                                   fontWeight: FontWeight.bold))
                         ]))
                   ]),
-                  (state.isEdit ?? false) ? const SizedBox(height: 0) :
+                  (_petCubit.isEdit) ?
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(height: 50),
                       Text("종류는 변경이 불가능합니다. 반려동물 종류 변경을 원하시는 경우 삭제 후 재 등록해 주세요.", style: font_14_w500),
                       const SizedBox(height: 20),
-                      Text('반려동물 정보 삭제하기',
-                          style: Theme.of(context)
-                              .textTheme
-                              .headline3!
-                              .copyWith(
-                              color: Colors.red,
-                              decoration: TextDecoration.underline)),
+                      Text('반려동물 정보 삭제하기', style: font_16_w700.copyWith(color: Colors.red, decoration: TextDecoration.underline))
                     ],
-                  ),
+                  ) : const SizedBox(height: 0),
                   SizedBox(height: 80),
                 ])
                 );
@@ -362,21 +382,28 @@ class _PetRegisterPageState extends State<PetRegisterPage> {
               if (validate ?? false) {
                 // 완료
                 _petCubit.setPet(
-                  // image
-                  name: _nameController.text,
-                  birthday: _birthdayController.text,
-                  weight: int.parse(_weightController.text),
+                  image: _image?.path,
+                  sort: petIsSelectedIndex,
+                  kind: _kindController.text.trim(),
+                  name: _nameController.text.trim(),
+                  birthday: DateFormat('yyyy-MM-dd').format(_pickedPetDate!).trim(),
+                  weight: _weightController.text,
+                  hospital1: _addressController.text.trim(),
+                  hospital2: _kopoController.text.trim(),
+                  interestedDisease: _interestController.text.trim(),
                   sexChoice: _choice,
                   allergicChoice: _allergicChoice,
                   neutralizeChoice: _neutralizeChoice,
                 );
 
-                if (_petCubit.state.isEdit ?? false) {
-                  // 등록하기
-                  _petCubit.registerPet();
-                } else {
+                if (_petCubit.isEdit) {
                   // 수정하기
                   _petCubit.updatePet();
+                  print("updatePet");
+                } else {
+                  // 등록하기
+                  _petCubit.registerPet();
+                  print("registerPet");
                 }
               }
             },
