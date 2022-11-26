@@ -12,20 +12,30 @@ String PetSexRawValue(SexChoice sex){
 
 String PetNeutralizeRawValue(NeutralizeChoice neutralize){
   if (neutralize.name == 'yes') {
-    return '';
+    return 'IS';
   } else if (neutralize.name == 'no') {
-    return '';
+    return 'NT';
   } else {
-    return '';
+    return 'DO';
   }
 }
 
 String PetAllergicRawValue(AllergicChoice allergicChoice){
   if (allergicChoice.name == 'yes') {
-    return '';
+    return 'IS';
   } else if (allergicChoice.name == 'no') {
-    return '';
+    return 'NT';
   } else {
-    return '';
+    return 'DO';
+  }
+}
+
+String PetSortRawValue(int kind) {
+  if (kind == 0) {
+    return '강아지';
+  } else if (kind == 1) {
+    return '고양이';
+  } else {
+    return '기타';
   }
 }
