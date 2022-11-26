@@ -1,4 +1,3 @@
-import 'package:krrng_client/modules/authentication/bloc/authentication_bloc.dart';
 import 'package:krrng_client/support/networks/network_exceptions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:krrng_client/support/networks/api_result.dart';
@@ -35,9 +34,8 @@ class AuthenticationRepository {
   void logOut() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (prefs.containsKey('access')) {
-      await prefs.remove("access").whenComplete(() {
-        _controller.add(AuthenticationStatus.unauthenticated);
-      });
+      prefs.remove("access");
+      _controller.add(AuthenticationStatus.unauthenticated);
     } else {
       _controller.add(AuthenticationStatus.unauthenticated);
     }

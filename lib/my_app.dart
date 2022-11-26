@@ -1,17 +1,19 @@
-import 'package:krrng_client/repositories/animal_repository/animal_repository.dart';
 import 'package:krrng_client/repositories/authentication_repository/src/authentication_repository.dart';
-import 'package:krrng_client/repositories/map_repository/map_repository.dart';
 import 'package:krrng_client/repositories/notification_repository/src/notification_repository.dart';
-import 'package:krrng_client/repositories/point_repository/src/point_repository.dart';
 import 'package:krrng_client/repositories/search_repository/src/recent_search_repository.dart';
+import 'package:krrng_client/repositories/notice_repository/src/notice_repository.dart';
 import 'package:krrng_client/repositories/search_repository/src/search_repository.dart';
+import 'package:krrng_client/repositories/point_repository/src/point_repository.dart';
 import 'package:krrng_client/repositories/user_repository/src/user_repository.dart';
+import 'package:krrng_client/repositories/animal_repository/animal_repository.dart';
+import 'package:krrng_client/repositories/faq_repository/src/faq_repository.dart';
+import 'package:krrng_client/repositories/map_repository/map_repository.dart';
 import 'package:krrng_client/support/networks/map_client.dart';
 import 'modules/authentication/bloc/authentication_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:krrng_client/app_view.dart';
 import 'support/networks/dio_client.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:krrng_client/app_view.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp(
@@ -41,8 +43,10 @@ class MyApp extends StatelessWidget {
               create: (context) => NotificationRepository(dioClient)),
           RepositoryProvider(create: (context) => SearchRepository(dioClient)),
           RepositoryProvider(create: (context) => SearchRepository(dioClient)),
+          RepositoryProvider(create: (context) => NoticeRepository(dioClient)),
           RepositoryProvider(create: (context) => PointRepository(dioClient)),
           RepositoryProvider(create: (context) => MapRepository(mapClient)),
+          RepositoryProvider(create: (context) => FAQRepository(dioClient)),
           RepositoryProvider(create: (context) => RecentSearchRepository()),
         ],
         child: MultiBlocProvider(providers: [

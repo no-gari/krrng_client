@@ -163,7 +163,7 @@ class buildProfileSetting extends StatelessWidget {
     return Container(
         padding: EdgeInsets.only(left: 16, right: 16, top: 30, bottom: 40),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text('아이디', style: Theme.of(context).textTheme.headline4),
+          Text('닉네임', style: Theme.of(context).textTheme.headline4),
           SizedBox(height: 10),
           Text(authState.user.nickname.toString(),
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),

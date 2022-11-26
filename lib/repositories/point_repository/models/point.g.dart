@@ -18,7 +18,7 @@ Point _$PointFromJson(Map<String, dynamic> json) => Point(
 Map<String, dynamic> _$PointToJson(Point instance) => <String, dynamic>{
       'id': instance.id,
       'amount': instance.amount,
-      'isExpanded': false,
+      'isExpanded': instance.isExpanded,
       'title': instance.title,
       'reason': instance.reason,
       'createdAt': instance.createdAt,
