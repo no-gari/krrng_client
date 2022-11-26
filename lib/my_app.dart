@@ -2,6 +2,7 @@ import 'package:krrng_client/repositories/animal_repository/animal_repository.da
 import 'package:krrng_client/repositories/authentication_repository/src/authentication_repository.dart';
 import 'package:krrng_client/repositories/map_repository/map_repository.dart';
 import 'package:krrng_client/repositories/notification_repository/src/notification_repository.dart';
+import 'package:krrng_client/repositories/point_repository/src/point_repository.dart';
 import 'package:krrng_client/repositories/search_repository/src/recent_search_repository.dart';
 import 'package:krrng_client/repositories/search_repository/src/search_repository.dart';
 import 'package:krrng_client/repositories/user_repository/src/user_repository.dart';
@@ -16,11 +17,13 @@ class MyApp extends StatelessWidget {
   const MyApp(
       {required this.authenticationRepository,
       required this.dioClient,
-      required this.mapClient});
+      required this.mapClient,
+      required this.isFirstRun});
 
   final AuthenticationRepository authenticationRepository;
   final DioClient dioClient;
   final MapClient mapClient;
+  final bool isFirstRun;
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +41,7 @@ class MyApp extends StatelessWidget {
               create: (context) => NotificationRepository(dioClient)),
           RepositoryProvider(create: (context) => SearchRepository(dioClient)),
           RepositoryProvider(create: (context) => SearchRepository(dioClient)),
+          RepositoryProvider(create: (context) => PointRepository(dioClient)),
           RepositoryProvider(create: (context) => MapRepository(mapClient)),
           RepositoryProvider(create: (context) => RecentSearchRepository()),
         ],
@@ -48,6 +52,6 @@ class MyApp extends StatelessWidget {
                     userRepository: userRepository,
                     // animalRepository: animalRepository
                   ))
-        ], child: AppView()));
+        ], child: AppView(isFirstRun: this.isFirstRun)));
   }
 }

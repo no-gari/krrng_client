@@ -1,5 +1,7 @@
 // import 'package:krrng_client/modules/splash/splash_screen.dart';
 
+import 'package:krrng_client/modules/splash/splash_screen.dart';
+
 import 'modules/authentication/bloc/authentication_bloc.dart';
 import 'package:krrng_client/support/networks/dio_client.dart';
 import 'package:krrng_client/modules/main/main_screen.dart';
@@ -14,6 +16,10 @@ import 'routes.dart';
 final GlobalKey<VRouterState> vRouterKey = GlobalKey<VRouterState>();
 
 class AppView extends StatefulWidget {
+  AppView({this.isFirstRun});
+
+  bool? isFirstRun;
+
   @override
   State<StatefulWidget> createState() => _AppViewState();
 }
@@ -45,7 +51,9 @@ class _AppViewState extends State<AppView> with WidgetsBindingObserver {
               data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
               child: buildMultiBlocListener(child));
         },
-        initialUrl: MainScreen.routeName,
+        initialUrl: widget.isFirstRun! == true
+            ? SplashScreen.routeName
+            : MainScreen.routeName,
         routes: routes);
   }
 
