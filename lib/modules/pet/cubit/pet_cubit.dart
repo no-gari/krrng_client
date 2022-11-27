@@ -44,8 +44,9 @@ class PetCubit extends Cubit<PetState> {
   }
 
   Future<void> registerPet() async {
+    MultipartFile? image = state.image == null ? null : await MultipartFile.fromFile(state.image!);
     Map<String, dynamic> body = {
-      "image": state.image == null ? null : await MultipartFile.fromFile(state.image!),
+      "image": image,
       "sort": state.sort,
       "name": state.name,
       "birthday": state.birthday,
@@ -151,6 +152,19 @@ class PetCubit extends Cubit<PetState> {
             sex: animal.sexChoices
         ));
       }
+    }, failure: (NetworkExceptions? error) {
+      emit(state.copyWith(
+          error: error,
+          errorMessage: NetworkExceptions.getErrorMessage(error!)));
+    });
+  }
+  
+  Future<void> deletePet(String id) async {
+    var response = await _animalRepository.deleteAnimalWithId(id);
+    response.when(success: (dynamic response) {
+      emit(state.copyWith(
+        isComplete: true
+      ));
     }, failure: (NetworkExceptions? error) {
       emit(state.copyWith(
           error: error,

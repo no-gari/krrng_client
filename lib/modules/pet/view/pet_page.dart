@@ -81,7 +81,7 @@ class _PetPageState extends State<PetPage> {
                     barrierDismissible: true, // 바깥 영역 터치시 닫을지 여부
                     builder: (BuildContext context) {
                       return AlertDialog(
-                        content: Text("${_petCubit.isEdit ? "수정" : "등록"}이 완료되었습니다."),
+                        content: Text("${_petCubit.isEdit ? "완료되었습니다." : "등록이 완료되었습니다."}"),
                         insetPadding: const EdgeInsets.fromLTRB(0, 80, 0, 80),
                         actions: [
                           TextButton(
@@ -410,7 +410,10 @@ class _PetPageState extends State<PetPage> {
                       const SizedBox(height: 50),
                       Text("종류는 변경이 불가능합니다. 반려동물 종류 변경을 원하시는 경우 삭제 후 재 등록해 주세요.", style: font_14_w500),
                       const SizedBox(height: 20),
-                      Text('반려동물 정보 삭제하기', style: font_16_w700.copyWith(color: Colors.red, decoration: TextDecoration.underline))
+                      GestureDetector(
+                        onTap: () => _petCubit.deletePet(state.id!.toString()),
+                        child: Text('반려동물 정보 삭제하기', style: font_16_w700.copyWith(color: Colors.red, decoration: TextDecoration.underline))
+                      )
                     ],
                   ) : const SizedBox(height: 0),
                   SizedBox(height: 80),
