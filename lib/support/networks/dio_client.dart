@@ -223,6 +223,39 @@ class DioClient {
     }
   }
 
+  Future<dynamic> patchForMultiPart(
+      String uri, {
+        data,
+        Map<String, dynamic>? queryParameters,
+        Options? options,
+        CancelToken? cancelToken,
+        ProgressCallback? onSendProgress,
+        ProgressCallback? onReceiveProgress,
+      }) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      var accessToken = prefs.getString('access');
+
+      var response = await _dio.patch(
+        uri,
+        data: data,
+        queryParameters: queryParameters,
+        options: Options(headers: {
+          Headers.contentTypeHeader: Headers.jsonContentType,
+          HttpHeaders.authorizationHeader: "Bearer $accessToken",
+        }, contentType: 'multipart/form-data'),
+        cancelToken: cancelToken,
+        onSendProgress: onSendProgress,
+        onReceiveProgress: onReceiveProgress,
+      );
+      return response.data;
+    } on DioError catch (dioError) {
+      _handleDioError(dioError);
+    } catch (e) {
+      _handleError(e);
+    }
+  }
+
   Future<dynamic> delete(
     String uri, {
     data,
