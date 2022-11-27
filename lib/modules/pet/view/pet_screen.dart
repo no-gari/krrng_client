@@ -11,7 +11,7 @@ class PetScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final editValue = context.vRouter.queryParameters["edit"];
-    final id = context.vRouter.queryParameters["id"] as String;
+    final id = context.vRouter.queryParameters["id"] as String?;
 
     return BlocProvider(
         create: (context) => PetCubit(
