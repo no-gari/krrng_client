@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:krrng_client/modules/pet/enums.dart';
@@ -7,12 +8,13 @@ import 'package:krrng_client/support/networks/network_exceptions.dart';
 part 'pet_state.dart';
 
 class PetCubit extends Cubit<PetState> {
-  PetCubit(this._animalRepository, this.isEdit) : super(const PetState());
+  PetCubit(this._animalRepository, this.isEdit, this.id) : super(const PetState());
 
   final AnimalRepository _animalRepository;
   final bool isEdit;
+  final String? id;
 
-  void setPet({String? image, int? sort, String? kind, String? name, String? birthday, String? weight,
+  void setPet({String? image, PetSort? sort, String? kind, String? name, String? birthday, String? weight,
     String? hospital1, String? hospital2, String? interestedDisease,
     SexChoice? sexChoice, AllergicChoice? allergicChoice, NeutralizeChoice? neutralizeChoice}) {
     emit(state.copyWith(
@@ -25,26 +27,27 @@ class PetCubit extends Cubit<PetState> {
     ));
 
     if (sort != null) {
-      emit(state.copyWith(sort: PetSortRawValue(sort)));
+      emit(state.copyWith(sort: sort.name));
     }
 
     if (sexChoice != null) {
-      emit(state.copyWith(sex: PetSexRawValue(sexChoice)));
+      emit(state.copyWith(sex: sexChoice.value));
     }
 
     if (neutralizeChoice != null) {
-      emit(state.copyWith(neutralizeChoice: PetNeutralizeRawValue(neutralizeChoice)));
+      emit(state.copyWith(neutralizeChoice: neutralizeChoice.value));
     }
 
     if (allergicChoice != null) {
-      emit(state.copyWith(allergicChoice: PetAllergicRawValue(allergicChoice)));
+      emit(state.copyWith(allergicChoice: allergicChoice.value));
     }
   }
 
   Future<void> registerPet() async {
     Map<String, dynamic> body = {
-      // "image": state.
+      "image": state.image == null ? null : await MultipartFile.fromFile(state.image!),
       "sort": state.sort,
+      "name": state.name,
       "birthday": state.birthday,
       "weight": state.weight,
       "kind": state.kind,
@@ -58,7 +61,23 @@ class PetCubit extends Cubit<PetState> {
 
     var response = await _animalRepository.createAnimal(body);
     response.when(success: (Animal? animal) {
-
+      if (animal != null) {
+        emit(state.copyWith(
+            id: animal.id,
+            sort: animal.sort,
+            birthday: animal.birthday,
+            name: animal.name,
+            weight: animal.weight,
+            image: animal.image,
+            kind: animal.kind,
+            hospitalAddress: animal.hospitalAddress,
+            hospitalAddressDetail: animal.hospitalAddressDetail,
+            interestedDisease: animal.interestedDisease,
+            neutralizeChoice: animal.neuterChoices,
+            allergicChoice: animal.hasAlergy,
+            sex: animal.sexChoices
+        ));
+      }
     }, failure: (NetworkExceptions? error) {
       emit(state.copyWith(
           error: error,
@@ -68,12 +87,43 @@ class PetCubit extends Cubit<PetState> {
 
   Future<void> updatePet() async {
     Map<String, dynamic> body = {
-
+      "image": state.image == null ? null : state.image!.startsWith(RegExp(r'https://'), 0)? null : await MultipartFile.fromFile(state.image!),
+      "sort": state.sort,
+      "name": state.name,
+      "birthday": state.birthday,
+      "weight": state.weight,
+      "kind": state.kind,
+      "hospitalAddress": state.hospitalAddress,
+      "hospitalAddressDetail": state.hospitalAddressDetail,
+      "interestedDisease": state.interestedDisease,
+      "neuterChoices": state.neutralizeChoice,
+      "hasAlergy": state.allergicChoice,
+      "sexChoices": state.sex
     };
 
-    var response = await _animalRepository.updateAnimalById(state.id!, body);
-    response.when(success: (Animal? animal) {
+    print(body);
 
+    var response = await _animalRepository.updateAnimalById(state.id!, body);
+    print(response);
+    response.when(success: (Animal? animal) {
+      if (animal != null) {
+        emit(state.copyWith(
+          id: animal.id,
+          sort: animal.sort,
+          birthday: animal.birthday,
+          name: animal.name,
+          weight: animal.weight,
+          image: animal.image,
+          kind: animal.kind,
+          hospitalAddress: animal.hospitalAddress,
+          hospitalAddressDetail: animal.hospitalAddressDetail,
+          interestedDisease: animal.interestedDisease,
+          neutralizeChoice: animal.neuterChoices,
+          allergicChoice: animal.hasAlergy,
+          sex: animal.sexChoices,
+          isComplete: true
+        ));
+      }
     }, failure: (NetworkExceptions? error) {
       emit(state.copyWith(
           error: error,
@@ -81,4 +131,30 @@ class PetCubit extends Cubit<PetState> {
     });
   }
 
+  Future<void> getPetById(String id) async {
+    var response = await _animalRepository.getAnimalById(id);
+    response.when(success: (Animal? animal) {
+      if (animal != null) {
+        emit(state.copyWith(
+            id: animal.id,
+            image: animal.image,
+            name: animal.name,
+            sort: animal.sort,
+            birthday: animal.birthday,
+            weight: animal.weight,
+            kind: animal.kind,
+            hospitalAddress: animal.hospitalAddress,
+            hospitalAddressDetail: animal.hospitalAddressDetail,
+            interestedDisease: animal.interestedDisease,
+            neutralizeChoice: animal.neuterChoices,
+            allergicChoice: animal.hasAlergy,
+            sex: animal.sexChoices
+        ));
+      }
+    }, failure: (NetworkExceptions? error) {
+      emit(state.copyWith(
+          error: error,
+          errorMessage: NetworkExceptions.getErrorMessage(error!)));
+    });
+  }
 }

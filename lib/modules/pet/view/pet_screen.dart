@@ -11,12 +11,15 @@ class PetScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final editValue = context.vRouter.queryParameters["edit"];
+    final id = context.vRouter.queryParameters["id"] as String;
+
     return BlocProvider(
         create: (context) => PetCubit(
             RepositoryProvider.of<AnimalRepository>(context),
-            (editValue ?? "false") == "true" ? true : false
+            (editValue ?? "false") == "true" ? true : false,
+            id
         ),
-        child: PetRegisterPage()
+        child: PetPage()
     );
   }
 }

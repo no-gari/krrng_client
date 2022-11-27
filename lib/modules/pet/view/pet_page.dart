@@ -7,17 +7,19 @@ import 'package:intl/intl.dart';
 import 'package:kpostal/kpostal.dart';
 import 'package:krrng_client/modules/pet/cubit/pet_cubit.dart';
 import 'package:krrng_client/support/style/theme.dart';
+import 'package:vrouter/vrouter.dart';
 import '../components/components.dart';
 import '../enums.dart';
 
-class PetRegisterPage extends StatefulWidget {
-  const PetRegisterPage({Key? key}) : super(key: key);
+class PetPage extends StatefulWidget {
+
+  const PetPage({Key? key}) : super(key: key);
 
   @override
-  State<PetRegisterPage> createState() => _PetRegisterPageState();
+  State<PetPage> createState() => _PetPageState();
 }
 
-class _PetRegisterPageState extends State<PetRegisterPage> {
+class _PetPageState extends State<PetPage> {
 
   late PetCubit _petCubit;
 
@@ -44,7 +46,11 @@ class _PetRegisterPageState extends State<PetRegisterPage> {
   void initState() {
     super.initState();
     _petCubit = BlocProvider.of<PetCubit>(context);
-    print(_petCubit.isEdit);
+
+    if (_petCubit.isEdit && _petCubit.id != null) {
+      _petCubit.getPetById(_petCubit.id!);
+    }
+
   }
 
   @override
@@ -67,8 +73,44 @@ class _PetRegisterPageState extends State<PetRegisterPage> {
             title: Text('반려동물 관리', style: Theme.of(context).textTheme.headline2)),
         body: SafeArea( child: SingleChildScrollView(
           padding: EdgeInsets.symmetric(horizontal: 16),
-          child: BlocBuilder<PetCubit, PetState>(
-              builder: (context, state) {
+          child: BlocConsumer<PetCubit, PetState>(
+            listener: (context, state) {
+              if (state.isComplete ?? false) {
+                showDialog(
+                    context: context,
+                    barrierDismissible: true, // 바깥 영역 터치시 닫을지 여부
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        content: Text("${_petCubit.isEdit ? "수정" : "등록"}이 완료되었습니다."),
+                        insetPadding: const EdgeInsets.fromLTRB(0, 80, 0, 80),
+                        actions: [
+                          TextButton(
+                            child: const Text('확인'),
+                            onPressed: () {
+                              context.vRouter.pop();
+                              context.vRouter.pop();
+                            },
+                          ),
+                        ],
+                      );
+                    });
+              }
+
+              if (state.id != null) {
+                _nameController.text = state.name!;
+                _addressController.text = state.hospitalAddress ?? "";
+                _kopoController.text = state.hospitalAddressDetail ?? "";
+                _neutralizeChoice = NeutralizeChoice.getValueByEnum(state.neutralizeChoice!);
+                _weightController.text = state.weight ?? "";
+                _kindController.text = state.kind ?? "";
+                _interestController.text = state.interestedDisease ?? "";
+                _pickedPetDate = DateFormat('yyyy-MM-dd').parse(state.birthday!);
+                _birthdayController.text = DateFormat('yyyy-MM-dd').format(_pickedPetDate!).trim();
+                _choice = SexChoice.getValueByEnum(state.sex!);
+                petIsSelectedIndex = PetSort.getValueByEnum(state.sort!).index;
+              }
+            },
+            builder: (context, state) {
                 return Form(key: _formKey, child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -87,9 +129,10 @@ class _PetRegisterPageState extends State<PetRegisterPage> {
                         child: CircleAvatar(
                             radius: 40,
                             backgroundColor: Colors.black12,
-                            child: _image == null ? Icon(Icons.add, size: 32, color: Colors.grey)
-                                : ClipOval(child: Image.file(File(_image!.path), width: 80, height: 80, fit: BoxFit.cover)),
-                        ),
+                            child: state.image == null ? (
+                                _image == null ? Icon(Icons.add, size: 32, color: Colors.grey) : ClipOval(child: Image.file(File(_image!.path), width: 80, height: 80, fit: BoxFit.cover))
+                            ) : ClipOval(child: Image.network(state.image!, width: 80, height: 80, fit: BoxFit.cover))
+                        )
                     ),
                   ),
                   PetFormHeader('종류'),
@@ -97,19 +140,19 @@ class _PetRegisterPageState extends State<PetRegisterPage> {
                   Row(children: [
                     PetContainer(
                         path: 'assets/images/pic1.png',
-                        title: '강아지',
+                        title: PetSort.DOG.value,
                         isSelected: petIsSelectedIndex == 0,
                         onTap: () => setState(() => petIsSelectedIndex = 0)),
                     SizedBox(width: 10),
                     PetContainer(
                         path: 'assets/images/pic2.png',
-                        title: '고양이',
+                        title: PetSort.CAT.value,
                         isSelected: petIsSelectedIndex == 1,
                         onTap: () => setState(() => petIsSelectedIndex = 1)),
                     SizedBox(width: 10),
                     PetContainer(
                         path: 'assets/images/pic3.png',
-                        title: '기타',
+                        title: PetSort.ETC.value,
                         isSelected: petIsSelectedIndex == 2,
                         onTap: () => setState(() => petIsSelectedIndex = 2))
                   ]),
@@ -383,7 +426,7 @@ class _PetRegisterPageState extends State<PetRegisterPage> {
                 // 완료
                 _petCubit.setPet(
                   image: _image?.path,
-                  sort: petIsSelectedIndex,
+                  sort: PetSort.values[petIsSelectedIndex],
                   kind: _kindController.text.trim(),
                   name: _nameController.text.trim(),
                   birthday: DateFormat('yyyy-MM-dd').format(_pickedPetDate!).trim(),
@@ -399,11 +442,9 @@ class _PetRegisterPageState extends State<PetRegisterPage> {
                 if (_petCubit.isEdit) {
                   // 수정하기
                   _petCubit.updatePet();
-                  print("updatePet");
                 } else {
                   // 등록하기
                   _petCubit.registerPet();
-                  print("registerPet");
                 }
               }
             },

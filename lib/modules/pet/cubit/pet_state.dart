@@ -15,6 +15,7 @@ class PetState extends Equatable {
     this.interestedDisease,
     this.allergicChoice,
     this.neutralizeChoice,
+    this.isComplete,
     this.error,
     this.errorMessage,
 });
@@ -32,6 +33,7 @@ class PetState extends Equatable {
   final String? interestedDisease;
   final String? allergicChoice;
   final String? neutralizeChoice;
+  final bool? isComplete;
   final NetworkExceptions? error;
   final String? errorMessage;
 
@@ -49,6 +51,7 @@ class PetState extends Equatable {
     String? interestedDisease,
     String? allergicChoice,
     String? neutralizeChoice,
+    bool? isComplete,
     NetworkExceptions? error,
     String? errorMessage,
   }) {
@@ -66,6 +69,7 @@ class PetState extends Equatable {
       interestedDisease: interestedDisease ?? this.interestedDisease,
       allergicChoice: allergicChoice ?? this.allergicChoice,
       neutralizeChoice: neutralizeChoice ?? this.neutralizeChoice,
+      isComplete: isComplete ?? this.isComplete,
       error: error ?? this.error,
       errorMessage: errorMessage ?? this.errorMessage
     );
@@ -75,7 +79,7 @@ class PetState extends Equatable {
   List<Object?> get props => [
     id, image, sort, kind, name, birthday, weight, sex,
     hospitalAddress, hospitalAddressDetail,
-    interestedDisease, allergicChoice, neutralizeChoice,
+    interestedDisease, allergicChoice, neutralizeChoice, isComplete,
     error, errorMessage
   ];
 }
