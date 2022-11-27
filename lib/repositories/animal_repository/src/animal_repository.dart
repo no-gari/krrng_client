@@ -45,7 +45,7 @@ class AnimalRepository {
   Future<ApiResult<Animal>> createAnimal(Map<String, dynamic> body) async {
     try {
       var data = FormData.fromMap(body);
-
+      print("createAnimal request:: ${data.fields}");
       var response = await _dioClient.postWithAuthForMultiPart('/dev/api/v1/animal/create/',
           data: data);
 
@@ -55,9 +55,9 @@ class AnimalRepository {
     }
   }
 
-  Future<ApiResult> deleteAnimalWithId(String Id) async {
+  Future<ApiResult<dynamic>> deleteAnimalWithId(String Id) async {
     try {
-      var response = await _dioClient.postWithAuth('/dev/api/v1/animal/${Id}/');
+      var response = await _dioClient.delete('/dev/api/v1/animal/${Id}/');
 
       return ApiResult.success(data: response);
     } catch (e) {
