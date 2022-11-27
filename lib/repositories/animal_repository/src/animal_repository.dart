@@ -24,18 +24,19 @@ class AnimalRepository {
     try {
       var response = await _dioClient.getWithAuth('/dev/api/v1/animal/${id}/');
 
-      return ApiResult.success(data: response);
+      return ApiResult.success(data: Animal.fromJson(response));
     } catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
   }
 
-  Future<ApiResult<Animal>> updateAnimalById(int Id, Map body) async {
+  Future<ApiResult<Animal>> updateAnimalById(int Id, Map<String, dynamic> body) async {
     try {
+      var data = FormData.fromMap(body);
       var response =
-          await _dioClient.patch('/dev/api/v1/animal/${Id}/', data: body);
+          await _dioClient.patchForMultiPart('/dev/api/v1/animal/${Id}/', data: data);
 
-      return ApiResult.success(data: response);
+      return ApiResult.success(data: Animal.fromJson(response));
     } catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
@@ -44,10 +45,11 @@ class AnimalRepository {
   Future<ApiResult<Animal>> createAnimal(Map<String, dynamic> body) async {
     try {
       var data = FormData.fromMap(body);
+
       var response = await _dioClient.postWithAuthForMultiPart('/dev/api/v1/animal/create/',
           data: data);
 
-      return ApiResult.success(data: response);
+      return ApiResult.success(data: Animal.fromJson(response));
     } catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
