@@ -1,31 +1,58 @@
-enum SexChoice { male, female }
-enum NeutralizeChoice { yes, no, dontknow }
-enum AllergicChoice { yes, no, dontknow }
+enum SexChoice {
+  male('MA'), female('FE');
 
-String PetSexRawValue(SexChoice sex){
-  if (sex.name == 'male') {
-    return 'MA';
-  } else {
-    return 'FE';
+  const SexChoice(this.value);
+  final String value;
+
+  static SexChoice getValue(int i){
+    return SexChoice.values.firstWhere((x) => x.value == i);
+  }
+
+  static SexChoice getValueByEnum(String value){
+    return SexChoice.values.firstWhere((x) => x.value == value);
   }
 }
 
-String PetNeutralizeRawValue(NeutralizeChoice neutralize){
-  if (neutralize.name == 'yes') {
-    return '';
-  } else if (neutralize.name == 'no') {
-    return '';
-  } else {
-    return '';
+enum NeutralizeChoice {
+  yes('IS'), no('NT'), dontknow('DO');
+
+  const NeutralizeChoice(this.value);
+  final String value;
+
+  static NeutralizeChoice getValue(int i){
+    return NeutralizeChoice.values.firstWhere((x) => x.value == i);
+  }
+
+  static NeutralizeChoice getValueByEnum(String value){
+    return NeutralizeChoice.values.firstWhere((x) => x.value == value);
+  }
+}
+enum AllergicChoice {
+  yes('IS'), no('NT'), dontknow('DO');
+
+  const AllergicChoice(this.value);
+  final String value;
+
+  static AllergicChoice getValue(int i){
+    return AllergicChoice.values.firstWhere((x) => x.value == i);
+  }
+
+  static AllergicChoice getValueByEnum(String value){
+    return AllergicChoice.values.firstWhere((x) => x.value == value);
   }
 }
 
-String PetAllergicRawValue(AllergicChoice allergicChoice){
-  if (allergicChoice.name == 'yes') {
-    return '';
-  } else if (allergicChoice.name == 'no') {
-    return '';
-  } else {
-    return '';
+enum PetSort {
+  DOG("강아지"), CAT("고양이"), ETC("기타");
+
+  const PetSort(this.value);
+  final String value;
+
+  static PetSort getValue(int i){
+    return PetSort.values.firstWhere((x) => x.value == i);
+  }
+
+  static PetSort getValueByEnum(String value){
+    return PetSort.values.firstWhere((x) => x.name == value);
   }
 }

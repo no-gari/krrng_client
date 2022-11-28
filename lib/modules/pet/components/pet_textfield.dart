@@ -5,6 +5,7 @@ class PetTextField extends StatelessWidget {
   PetTextField(
       {this.controller,
       this.hintText,
+      this.initialValue,
       this.readOnly = false,
       this.onTap,
       this.suffixIcon,
@@ -14,6 +15,7 @@ class PetTextField extends StatelessWidget {
 
   final TextEditingController? controller;
   final String? hintText;
+  final String? initialValue;
   final bool? readOnly;
   final VoidCallback? onTap;
   final Widget? suffixIcon;
@@ -24,6 +26,7 @@ class PetTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
         controller: controller,
+        initialValue: initialValue,
         textAlignVertical: TextAlignVertical.center,
         readOnly: readOnly ?? false,
         keyboardType: keyboardType ?? TextInputType.text,
