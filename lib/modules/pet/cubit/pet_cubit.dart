@@ -47,7 +47,7 @@ class PetCubit extends Cubit<PetState> {
     MultipartFile? image = state.image == null ? null : await MultipartFile.fromFile(state.image!);
     Map<String, dynamic> body = {
       "image": image,
-      "sort": state.sort,
+      "sort": PetSort.getValueByEnum(state.sort!).value,
       "name": state.name,
       "birthday": state.birthday,
       "weight": state.weight,
@@ -60,25 +60,12 @@ class PetCubit extends Cubit<PetState> {
       "sexChoices": state.sex
     };
 
+    print(body);
     var response = await _animalRepository.createAnimal(body);
-    response.when(success: (Animal? animal) {
-      if (animal != null) {
-        emit(state.copyWith(
-            id: animal.id,
-            sort: animal.sort,
-            birthday: animal.birthday,
-            name: animal.name,
-            weight: animal.weight,
-            image: animal.image,
-            kind: animal.kind,
-            hospitalAddress: animal.hospitalAddress,
-            hospitalAddressDetail: animal.hospitalAddressDetail,
-            interestedDisease: animal.interestedDisease,
-            neutralizeChoice: animal.neuterChoices,
-            allergicChoice: animal.hasAlergy,
-            sex: animal.sexChoices
-        ));
-      }
+    response.when(success: (void response) {
+      emit(state.copyWith(
+        isComplete: true
+      ));
     }, failure: (NetworkExceptions? error) {
       emit(state.copyWith(
           error: error,

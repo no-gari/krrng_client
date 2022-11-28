@@ -42,14 +42,14 @@ class AnimalRepository {
     }
   }
 
-  Future<ApiResult<Animal>> createAnimal(Map<String, dynamic> body) async {
+  Future<ApiResult<void>> createAnimal(Map<String, dynamic> body) async {
     try {
       var data = FormData.fromMap(body);
       print("createAnimal request:: ${data.fields}");
       var response = await _dioClient.postWithAuthForMultiPart('/dev/api/v1/animal/create/',
           data: data);
 
-      return ApiResult.success(data: Animal.fromJson(response));
+      return ApiResult.success(data: response);
     } catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
