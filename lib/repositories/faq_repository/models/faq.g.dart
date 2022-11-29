@@ -7,10 +7,11 @@ part of 'faq.dart';
 // **************************************************************************
 
 FAQ _$FAQFromJson(Map<String, dynamic> json) => FAQ(
-    json['name'] as String?,
-    json['content'] as String?,
-    json['id'] as int?,
-    json['isExpanded'] as bool?);
+      json['name'] as String?,
+      json['content'] as String?,
+      json['id'] as int?,
+      json['isExpanded'] as bool?,
+    );
 
 Map<String, dynamic> _$FAQToJson(FAQ instance) => <String, dynamic>{
       'id': instance.id,

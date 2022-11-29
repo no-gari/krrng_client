@@ -1,18 +1,22 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:krrng_client/modules/authentication/bloc/authentication_bloc.dart';
+import 'package:krrng_client/repositories/authentication_repository/authentication_repository.dart';
+import 'package:krrng_client/modules/profile_change/view/profile_change_screen.dart';
 import 'package:krrng_client/modules/authentication/signin/view/signin_screen.dart';
-import 'package:krrng_client/modules/faq/page/faq_screen.dart';
-import 'package:krrng_client/modules/invite/page/invite_screen.dart';
+import 'package:krrng_client/repositories/user_repository/src/user_repository.dart';
+import 'package:krrng_client/modules/authentication/bloc/authentication_bloc.dart';
+import 'package:krrng_client/repositories/user_repository/models/user.dart';
+import 'package:krrng_client/modules/settings/view/setting_screen.dart';
 import 'package:krrng_client/modules/mypage/components/sub_menu.dart';
+import 'package:krrng_client/support/networks/network_exceptions.dart';
+import 'package:krrng_client/modules/invite/page/invite_screen.dart';
+import 'package:krrng_client/modules/notice/view/notice_screen.dart';
+import 'package:krrng_client/modules/point/page/point_screen.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:krrng_client/modules/pet/view/pet_screen.dart';
+import 'package:krrng_client/support/networks/api_result.dart';
+import 'package:krrng_client/modules/faq/page/faq_screen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
-import 'package:krrng_client/modules/notice/view/notice_screen.dart';
-import 'package:krrng_client/modules/pet/view/pet_screen.dart';
-import 'package:krrng_client/modules/point/page/point_screen.dart';
-import 'package:krrng_client/modules/profile_change/view/profile_change_screen.dart';
-import 'package:krrng_client/modules/settings/view/setting_screen.dart';
-import 'package:krrng_client/repositories/authentication_repository/authentication_repository.dart';
 import 'package:vrouter/vrouter.dart';
 import '../components/main_menu.dart';
 import '../components/level_info.dart';
@@ -29,6 +33,18 @@ class _MyPagePageState extends State<MyPagePage> {
   void initState() {
     super.initState();
     _authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
+    if (_authenticationBloc.state.status == AuthenticationStatus.authenticated)
+      () => getUser();
+  }
+
+  void getUser() async {
+    ApiResult<User> apiResult =
+        await RepositoryProvider.of<UserRepository>(context).getUser();
+    apiResult.when(success: (User? user) {
+      _authenticationBloc.emit(AuthenticationState.authenticated(user!));
+    }, failure: (NetworkExceptions? error) {
+      _authenticationBloc.emit(AuthenticationState.unauthenticated());
+    });
   }
 
   @override
@@ -73,10 +89,8 @@ class _MyPagePageState extends State<MyPagePage> {
                                     });
                               },
                               child: Row(children: [
-                                Image.asset(
-                                  'assets/images/level1.png',
-                                  width: 20,
-                                ),
+                                Image.asset('assets/images/level1.png',
+                                    width: 20),
                                 Text('씨앗단계', style: TextStyle(fontSize: 14)),
                                 SizedBox(width: 6),
                                 Icon(Icons.info_outline,
@@ -84,32 +98,87 @@ class _MyPagePageState extends State<MyPagePage> {
                               ]))
                         ])),
                 if (authState.user.animals!.isNotEmpty)
-                  Container(
-                      height: 112,
-                      width: double.maxFinite,
-                      child: ListView.builder(
-                          shrinkWrap: true,
-                          scrollDirection: Axis.horizontal,
-                          itemCount: authState.user.animals!.length,
-                          itemBuilder: (context, index) {
-                            var birthday = authState
-                                .user.animals![index].birthday
-                                .toString();
-                            var year = int.parse(birthday.split('-')[0]);
-                            var nowYear = DateTime.now().year;
-                            var age = (nowYear - year + 1).toString();
+                  SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(children: [
+                        Container(
+                            height: 112,
+                            child: ListView.builder(
+                                shrinkWrap: true,
+                                scrollDirection: Axis.horizontal,
+                                itemCount: authState.user.animals!.length,
+                                itemBuilder: (context, index) {
+                                  var birthday = authState
+                                      .user.animals![index].birthday
+                                      .toString();
+                                  var year = int.parse(birthday.split('-')[0]);
+                                  var nowYear = DateTime.now().year;
+                                  var age = (nowYear - year + 1).toString();
 
-                            return buildAnimalTile(
-                                authState, index, age, context);
-                          })),
+                                  return buildAnimalTile(
+                                      authState, index, age, context);
+                                })),
+                        InkWell(
+                          onTap: () => context.vRouter.to(PetScreen.routeName),
+                          child: Container(
+                              child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    CircleAvatar(
+                                        radius: 35,
+                                        backgroundColor:
+                                            Colors.black.withOpacity(0.04),
+                                        child: Icon(Icons.add,
+                                            size: 32, color: Colors.grey)),
+                                    SizedBox(width: 15),
+                                    Text('등록하기',
+                                        style: TextStyle(
+                                            fontSize: 17,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.grey))
+                                  ]),
+                              margin: EdgeInsets.symmetric(horizontal: 16),
+                              padding: EdgeInsets.symmetric(horizontal: 20),
+                              height: 112,
+                              width: MediaQuery.of(context).size.width * 0.85,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15),
+                                  border:
+                                      Border.all(color: Color(0xFFDFE2E9)))),
+                        )
+                      ])),
                 if (authState.user.animals!.isEmpty)
                   Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: 0, horizontal: 16),
-                      child: GestureDetector(
-                          onTap: () =>
-                              context.vRouter.to(PetScreen.routeName),
-                          child: Image.asset("assets/images/mainbanner.png")))
+                      child: InkWell(
+                          onTap: () => context.vRouter.to(PetScreen.routeName),
+                          child: Container(
+                              child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    CircleAvatar(
+                                        radius: 35,
+                                        backgroundColor:
+                                            Colors.black.withOpacity(0.04),
+                                        child: Icon(Icons.add,
+                                            size: 32, color: Colors.grey)),
+                                    SizedBox(width: 15),
+                                    Text('등록하기',
+                                        style: TextStyle(
+                                            fontSize: 17,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.grey))
+                                  ]),
+                              padding: EdgeInsets.symmetric(horizontal: 20),
+                              height: 112,
+                              width: double.maxFinite,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15),
+                                  border:
+                                      Border.all(color: Color(0xFFDFE2E9))))))
               ]);
             }
             return Column(
@@ -225,7 +294,10 @@ class _MyPagePageState extends State<MyPagePage> {
   GestureDetector buildAnimalTile(AuthenticationState authState, int index,
       String age, BuildContext context) {
     return GestureDetector(
-        onTap: () => context.vRouter.to(PetScreen.routeName, queryParameters: {"edit": "true", "id": "${authState.user.animals![index].id!}"}),
+        onTap: () => context.vRouter.to(PetScreen.routeName, queryParameters: {
+              "edit": "true",
+              "id": "${authState.user.animals![index].id!}"
+            }),
         child: Container(
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
