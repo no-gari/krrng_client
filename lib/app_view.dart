@@ -60,11 +60,7 @@ class _AppViewState extends State<AppView> with WidgetsBindingObserver {
   MultiBlocListener buildMultiBlocListener(Widget child) {
     return MultiBlocListener(listeners: [
       BlocListener<AuthenticationBloc, AuthenticationState>(
-          listener: (context, state) {
-        if (state.status == AuthenticationStatus.authenticated) {
-          context.vRouter.to(MainScreen.routeName);
-        }
-      })
+          listener: (context, state) {})
     ], child: child);
   }
 }

@@ -34,8 +34,8 @@ class AuthenticationRepository {
   void logOut() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (prefs.containsKey('access')) {
-      prefs.remove("access");
       _controller.add(AuthenticationStatus.unauthenticated);
+      prefs.remove("access");
     } else {
       _controller.add(AuthenticationStatus.unauthenticated);
     }
@@ -45,7 +45,6 @@ class AuthenticationRepository {
     try {
       _dioClient.delete('/api/v1/user/profile_change/').whenComplete(() async {
         SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.remove("refresh");
         await prefs.remove("access").whenComplete(
             () => _controller.add(AuthenticationStatus.unauthenticated));
       });
