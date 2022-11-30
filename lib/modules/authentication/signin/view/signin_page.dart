@@ -4,6 +4,7 @@ import 'package:krrng_client/modules/authentication/signup/view/signup_screen.da
 import 'package:krrng_client/modules/authentication/bloc/authentication_bloc.dart';
 import 'package:krrng_client/modules/authentication/finding/views/views.dart';
 import 'package:krrng_client/modules/main/main_screen.dart';
+import 'package:krrng_client/repositories/authentication_repository/authentication_repository.dart';
 import 'package:krrng_client/support/style/format_unit.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
@@ -121,10 +122,10 @@ class _SigninPageState extends State<SigninPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(automaticallyImplyLeading: true),
-        body: BlocListener<SignInCubit, SignInState>(
+        body: BlocListener<AuthenticationBloc, AuthenticationState>(
             listener: (context, state) async {
-              if (state.auth ?? false) {
-                _authenticationBloc.state.user.phone == null
+              if (state.status == AuthenticationStatus.authenticated) {
+                state.user.phone == null
                     ? context.vRouter
                         .to(SnsPhoneScreen.routeName, isReplacement: true)
                     : context.vRouter
