@@ -5,8 +5,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:kpostal/kpostal.dart';
+import 'package:krrng_client/modules/authentication/bloc/authentication_bloc.dart';
 import 'package:krrng_client/modules/pet/cubit/kind_cubit.dart';
 import 'package:krrng_client/modules/pet/cubit/pet_cubit.dart';
+import 'package:krrng_client/repositories/authentication_repository/authentication_repository.dart';
 import 'package:krrng_client/support/style/theme.dart';
 import 'package:vrouter/vrouter.dart';
 import '../components/components.dart';
@@ -21,6 +23,7 @@ class PetPage extends StatefulWidget {
 
 class _PetPageState extends State<PetPage> {
   late PetCubit _petCubit;
+  late AuthenticationBloc _authenticationBloc;
   late KindCubit _kindCubit;
 
   final _formKey = GlobalKey<FormState>();
@@ -47,6 +50,8 @@ class _PetPageState extends State<PetPage> {
     super.initState();
     _kindCubit = BlocProvider.of<KindCubit>(context);
     _petCubit = BlocProvider.of<PetCubit>(context);
+    _authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
+
     _kindCubit.getKindList();
     if (_petCubit.isEdit && _petCubit.id != null) {
       _petCubit.getPetById(_petCubit.id!);
@@ -289,21 +294,9 @@ class _PetPageState extends State<PetPage> {
                                             contentPadding:
                                                 EdgeInsets.symmetric(
                                                     horizontal: 15),
-                                            enabledBorder: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(15.0),
-                                                borderSide: BorderSide(
-                                                    color: Color(0xFFDFE2E9))),
-                                            focusedBorder: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(15),
-                                                borderSide: BorderSide(
-                                                    color: Color(0xFFDFE2E9))),
-                                            border: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(15.0),
-                                                borderSide: BorderSide(
-                                                    color: Color(0xFFDFE2E9)))),
+                                            enabledBorder: outline,
+                                            focusedBorder: outline_focus,
+                                            border: outline),
                                         style: Theme.of(context)
                                             .textTheme
                                             .bodyText1,
@@ -329,21 +322,9 @@ class _PetPageState extends State<PetPage> {
                                     decoration: InputDecoration(
                                         contentPadding: EdgeInsets.symmetric(
                                             horizontal: 15),
-                                        enabledBorder: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(15.0),
-                                            borderSide: BorderSide(
-                                                color: Color(0xFFDFE2E9))),
-                                        focusedBorder: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(15),
-                                            borderSide: BorderSide(
-                                                color: Color(0xFFDFE2E9))),
-                                        border: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(15.0),
-                                            borderSide: BorderSide(
-                                                color: Color(0xFFDFE2E9))),
+                                        enabledBorder: outline,
+                                        focusedBorder: outline_focus,
+                                        border: outline,
                                         hintText: '품종을 입력하세요.'),
                                     validator: (text) =>
                                         (text ?? "").length == 0
@@ -578,10 +559,28 @@ class _PetPageState extends State<PetPage> {
 
                 if (_petCubit.isEdit) {
                   // 수정하기
-                  _petCubit.updatePet();
+                  _petCubit.updatePet().then((animal) {
+                    if (animal != null) {
+                      var user = _authenticationBloc.state.user;
+
+                      var animals = _authenticationBloc.state.user.animals ?? [];
+                      animals.add(animal);
+                      user.copyWith(animals: animals);
+                      _authenticationBloc.add(AuthenticationUserChanged(user));
+                    }
+                  });
                 } else {
                   // 등록하기
-                  _petCubit.registerPet();
+                  _petCubit.registerPet().then((animal) {
+                    if (animal != null) {
+                      var user = _authenticationBloc.state.user;
+
+                      var animals = _authenticationBloc.state.user.animals ?? [];
+                      animals.add(animal);
+                      user.copyWith(animals: animals);
+                      _authenticationBloc.add(AuthenticationUserChanged(user));
+                    }
+                  });
                 }
               }
             },
