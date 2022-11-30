@@ -18,31 +18,22 @@ class SignupCubit extends Cubit<SignupState> {
 
   void completePassword(bool isCompletePassword, String? password) {
     emit(state.copyWith(
-        isCompletePassword: isCompletePassword,
-        inputPassword: password
-    ));
+        isCompletePassword: isCompletePassword, inputPassword: password));
   }
 
   void setTerms(bool isAllow) {
-    emit(state.copyWith(
-      term: isAllow
-    ));
+    emit(state.copyWith(term: isAllow));
   }
 
   void setInputCode(String code) {
-    emit(state.copyWith(
-      inputCode: code
-    ));
+    emit(state.copyWith(inputCode: code));
   }
 
   Future<void> duplicateId(String id) async {
     ApiResult<void> response = await _authenticationRepository.duplicateId(id);
 
     response.when(success: (void result) {
-      emit(state.copyWith(
-          isNotDuplicateId: true,
-          inputId: id
-      ));
+      emit(state.copyWith(isNotDuplicateId: true, inputId: id));
     }, failure: (NetworkExceptions? error) {
       emit(state.copyWith(
           isNotDuplicateId: false,
@@ -52,12 +43,11 @@ class SignupCubit extends Cubit<SignupState> {
   }
 
   Future<void> requestCode(String phoneNumber) async {
-    ApiResult<void> response = await _authenticationRepository.requestSignupCode(phoneNumber);
+    ApiResult<void> response =
+        await _authenticationRepository.requestSignupCode(phoneNumber);
 
     response.when(success: (void result) {
-      emit(state.copyWith(
-          phoneNumber: phoneNumber
-      ));
+      emit(state.copyWith(phoneNumber: phoneNumber));
     }, failure: (NetworkExceptions? error) {
       emit(state.copyWith(
           error: error,
@@ -66,12 +56,12 @@ class SignupCubit extends Cubit<SignupState> {
   }
 
   Future<void> confirmCode(String code) async {
-    ApiResult<void> response = await _authenticationRepository.confirmCode(state.phoneNumber ?? "", code);
+    ApiResult<void> response = await _authenticationRepository.confirmCode(
+        state.phoneNumber ?? "", code);
 
     response.when(success: (void result) {
       emit(state.copyWith(
-        isCompleteCode: true
-      ));
+          isCompleteCode: true, error: null, errorMessage: null));
     }, failure: (NetworkExceptions? error) {
       emit(state.copyWith(
           isCompleteCode: false,
@@ -81,20 +71,17 @@ class SignupCubit extends Cubit<SignupState> {
   }
 
   Future<void> signup() async {
-
     final userId = state.inputId ?? "";
     final password = state.inputPassword ?? "";
     final phoneNumber = state.phoneNumber ?? "";
-    ApiResult<Map> response = await _authenticationRepository.signup(userId, password, phoneNumber);
+    ApiResult<Map> response =
+        await _authenticationRepository.signup(userId, password, phoneNumber);
 
     response.when(success: (Map? result) async {
       final accessToken = result?["access"] as String;
-      final refreshToken = result?["refresh"] as String;
 
       final SharedPreferences pref = await SharedPreferences.getInstance();
       pref.setString('access', accessToken);
-      pref.setString('refresh', refreshToken);
-
     }, failure: (NetworkExceptions? error) {
       emit(state.copyWith(
           error: error,

@@ -11,34 +11,43 @@ class User extends Equatable {
       this.profileImage,
       this.birthday,
       this.sexChoices,
-      this.animals});
+      this.animals,
+      this.phone,
+      this.email});
 
   final String? nickname;
   final String? profileImage;
   final String? birthday;
   final String? sexChoices;
   final List<Animal>? animals;
+  final String? phone;
+  final String? email;
 
   @override
   List<Object?> get props =>
-      [nickname, profileImage, birthday, sexChoices, animals];
+      [nickname, profileImage, birthday, sexChoices, animals, phone, email];
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 
   Map<String, dynamic> toJson() => _$UserToJson(this);
 
-  User copyWith(
-      {String? nickname,
-      String? profileImage,
-      String? birthday,
-      String? sexChoices,
-      List<Animal>? animals}) {
+  User copyWith({
+    String? nickname,
+    String? profileImage,
+    String? birthday,
+    String? sexChoices,
+    List<Animal>? animals,
+    String? phone,
+    String? email,
+  }) {
     return User(
       nickname: nickname ?? this.nickname,
       profileImage: profileImage ?? this.profileImage,
       birthday: birthday ?? this.birthday,
       sexChoices: sexChoices ?? this.sexChoices,
       animals: animals ?? this.animals,
+      phone: phone ?? this.phone,
+      email: email ?? this.email,
     );
   }
 
