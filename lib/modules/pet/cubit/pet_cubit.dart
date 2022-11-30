@@ -132,11 +132,13 @@ class PetCubit extends Cubit<PetState> {
     var response = await _animalRepository.getAnimalById(id);
     response.when(success: (Animal? animal) {
       if (animal != null) {
+        print(animal);
+        print(PetSort.getEnumByName(animal.sort!));
         emit(state.copyWith(
             id: animal.id,
             image: animal.image,
             name: animal.name,
-            sort: PetSort.getValueByEnum(animal.sort!).value,
+            sort: PetSort.getEnumByName(animal.sort!),
             birthday: animal.birthday,
             weight: animal.weight,
             kind: animal.kind,

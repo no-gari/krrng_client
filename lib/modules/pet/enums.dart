@@ -55,4 +55,8 @@ enum PetSort {
   static PetSort getValueByEnum(String value){
     return PetSort.values.firstWhere((x) => x.name == value);
   }
+
+  static String getEnumByName(String value){
+  return PetSort.values.firstWhere((x) => x.value == value).name;
+  }
 }

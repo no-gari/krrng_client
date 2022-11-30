@@ -106,7 +106,7 @@ class _PetPageState extends State<PetPage> {
                   if (state.id != null) {
                     petIsSelectedIndex =
                         PetSort.getValueByEnum(state.sort!).index;
-                    _nameController.text = state.name!;
+                    _nameController.text = state.name ?? "";
                     _addressController.text = state.hospitalAddress ?? "";
                     _kopoController.text = state.hospitalAddressDetail ?? "";
                     _neutralizeChoice = NeutralizeChoice.getValueByEnum(
