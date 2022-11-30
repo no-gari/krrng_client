@@ -1,9 +1,10 @@
-import 'package:krrng_client/repositories/authentication_repository/authentication_repository.dart';
+import 'package:krrng_client/modules/authentication/signin/view/sns_phone_screen.dart';
 import 'package:krrng_client/modules/authentication/signin/cubit/signin_cubit.dart';
 import 'package:krrng_client/modules/authentication/signup/view/signup_screen.dart';
 import 'package:krrng_client/modules/authentication/bloc/authentication_bloc.dart';
 import 'package:krrng_client/modules/authentication/finding/views/views.dart';
 import 'package:krrng_client/modules/main/main_screen.dart';
+import 'package:krrng_client/repositories/authentication_repository/authentication_repository.dart';
 import 'package:krrng_client/support/style/format_unit.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
@@ -24,6 +25,7 @@ class _SigninPageState extends State<SigninPage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   late SignInCubit _signInCubit;
+  late AuthenticationBloc _authenticationBloc;
 
   bool selectedAutoLogin = true;
   bool _isKakaoTalkInstalled = true;
@@ -38,6 +40,7 @@ class _SigninPageState extends State<SigninPage> {
       Platform.isIOS == true ? _isIOS = true : false;
     }
     _signInCubit = BlocProvider.of<SignInCubit>(context);
+    _authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
   }
 
   @override
@@ -94,7 +97,7 @@ class _SigninPageState extends State<SigninPage> {
 
       _signInCubit.signInWithSns(
           code: user.id.toString(),
-          email: user.id.toString() + 'kakao.com',
+          email: user.id.toString() + '@kakao.com',
           nickname: user.properties!['nickname'] ?? '크르릉',
           socialType: 'kakao');
     } catch (error) {
@@ -111,7 +114,7 @@ class _SigninPageState extends State<SigninPage> {
     _signInCubit.signInWithSns(
         code: credential.userIdentifier!,
         email: credential.userIdentifier.toString() + '@icloud.com',
-        nickname: credential.givenName ?? '용감한 거북이',
+        nickname: credential.givenName ?? '크르릉',
         socialType: 'apple');
   }
 
@@ -119,10 +122,14 @@ class _SigninPageState extends State<SigninPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(automaticallyImplyLeading: true),
-        body: BlocListener<SignInCubit, SignInState>(
+        body: BlocListener<AuthenticationBloc, AuthenticationState>(
             listener: (context, state) async {
-              if (state?.auth ?? false) {
-                context.vRouter.to(MainScreen.routeName, isReplacement: true);
+              if (state.status == AuthenticationStatus.authenticated) {
+                state.user.phone == null
+                    ? context.vRouter
+                        .to(SnsPhoneScreen.routeName, isReplacement: true)
+                    : context.vRouter
+                        .to(MainScreen.routeName, isReplacement: true);
               }
             },
             child: BlocListener<SignInCubit, SignInState>(
@@ -228,13 +235,16 @@ class _SigninPageState extends State<SigninPage> {
                               GestureDetector(
                                   onTap: () => context.vRouter.to(
                                       FindingScreen.routeName,
-                                      isReplacement: true, queryParameters: {"key":"id"}),
+                                      isReplacement: true,
+                                      queryParameters: {"key": "id"}),
                                   child: Text('아이디 찾기',
                                       style: TextStyle(fontSize: 14))),
                               _TextRowSpacing(),
                               GestureDetector(
-                                  onTap: () => context.vRouter
-                                      .to(FindingScreen.routeName, isReplacement: true, queryParameters: {"key":"password"}),
+                                  onTap: () => context.vRouter.to(
+                                      FindingScreen.routeName,
+                                      isReplacement: true,
+                                      queryParameters: {"key": "password"}),
                                   child: Text('비밀번호 찾기',
                                       style: TextStyle(fontSize: 14))),
                               _TextRowSpacing(),
@@ -278,24 +288,17 @@ class _SigninPageState extends State<SigninPage> {
                                       'assets/icons/kakao.svg')),
                               const SizedBox(width: 20),
                               GestureDetector(
-                                onTap: () => _appleLoginButtonPressed(),
-                                child: CircleAvatar(
-                                    backgroundColor: Colors.black,
-                                    child: Icon(Icons.apple,
-                                        color: Colors.white, size: 25)),
-                              )
+                                  onTap: () => _appleLoginButtonPressed(),
+                                  child: CircleAvatar(
+                                      backgroundColor: Colors.black,
+                                      child: Icon(Icons.apple,
+                                          color: Colors.white, size: 25)))
                             ])
                       ])
                     ])))));
   }
 
   Widget _TextRowSpacing() {
-    return Row(
-      children: [
-        SizedBox(width: 13),
-        Text('|'),
-        SizedBox(width: 13),
-      ],
-    );
+    return Row(children: [SizedBox(width: 13), Text('|'), SizedBox(width: 13)]);
   }
 }

@@ -1,4 +1,5 @@
 import 'package:krrng_client/modules/authentication/signin/view/signin_screen.dart';
+import 'package:krrng_client/modules/authentication/signin/view/sns_phone_screen.dart';
 import 'package:krrng_client/modules/authentication/signup/view/signup_screen.dart';
 import 'package:krrng_client/modules/ads_request/view/ads_request_screen.dart';
 import 'package:krrng_client/modules/delete_account/delete_account_result_screen.dart';
@@ -70,6 +71,7 @@ final routes = [
         widget: SigninScreen(),
         stackedRoutes: [
           VWidget(path: SignupScreen.routeName, widget: SignupScreen()),
+          VWidget(path: SnsPhoneScreen.routeName, widget: SnsPhoneScreen()),
           VWidget(path: FindingScreen.routeName, widget: FindingScreen()),
           VWidget(
               path: FindingResultPage.routeName, widget: FindingResultPage())
