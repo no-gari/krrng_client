@@ -372,7 +372,7 @@ class _HomePageState extends State<HomePage> {
                           Text.rich(
                               TextSpan(children: [
                                 TextSpan(
-                                    text: authState.user.animals![index].name!),
+                                    text: authState.user.animals![index].name ?? ""),
                                 TextSpan(
                                     text: '(${age}세)',
                                     style: TextStyle(
