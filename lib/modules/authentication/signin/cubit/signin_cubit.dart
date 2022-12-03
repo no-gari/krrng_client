@@ -1,4 +1,8 @@
+import 'package:dio/dio.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:krrng_client/modules/authentication/bloc/authentication_bloc.dart';
 import 'package:krrng_client/repositories/authentication_repository/src/authentication_repository.dart';
+import 'package:krrng_client/repositories/map_repository/models/mapResponse.dart';
 import 'package:krrng_client/support/networks/network_exceptions.dart';
 import 'package:krrng_client/support/networks/api_result.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -36,10 +40,12 @@ class SignInCubit extends Cubit<SignInState> {
     });
   }
 
-  Future<void> signInWithEmail({required String userId, required String password}) async {
+  Future<void> signInWithEmail(
+      {required String userId, required String password}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    ApiResult<Map> apiResult = await _authenticationRepository.signInWithEmail(userId: userId, password: password);
+    ApiResult<Map> apiResult = await _authenticationRepository.signInWithEmail(
+        userId: userId, password: password);
 
     apiResult.when(success: (Map? response) {
       prefs.setString('access', response!['access']);
@@ -50,6 +56,31 @@ class SignInCubit extends Cubit<SignInState> {
       emit(state.copyWith(
           error: error,
           errorMessage: NetworkExceptions.getErrorMessage(error!)));
+    });
+  }
+
+  Future<bool?> updateProfile(
+      {required String? profileImage,
+      required String? birthday,
+      required String? nickname,
+      required String? sexChoices}) async {
+    MultipartFile? image = profileImage == null
+        ? null
+        : await MultipartFile.fromFile(profileImage);
+
+    Map<String, dynamic> body = {
+      "profileImage": image,
+      "birthday": birthday,
+      "nickname": nickname,
+      "sexChoices": sexChoices
+    };
+
+    var response = await _authenticationRepository.updateUser(body);
+
+    response.when(success: (Map? mapResponse) {
+      return true;
+    }, failure: (NetworkExceptions? error) {
+      return false;
     });
   }
 
