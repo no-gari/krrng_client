@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:krrng_client/support/networks/network_exceptions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:krrng_client/support/networks/api_result.dart';
@@ -209,6 +210,32 @@ class AuthenticationRepository {
       var body = {'phone': phoneNumber, 'password': password};
       var response =
           await _dioClient.post('/dev/api/v1/user/findpw-change/', data: body);
+      return ApiResult.success(data: response);
+    } catch (e) {
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e));
+    }
+  }
+
+  Future<ApiResult<Map<String, dynamic>>> updateUser(
+      Map<String, dynamic> body) async {
+    try {
+      var data = FormData.fromMap(body);
+
+      var response = await _dioClient.patchWithAuthForMultiPart(
+          '/dev/api/v1/user/profile/update/10/',
+          data: data);
+
+      return ApiResult.success(data: response);
+    } catch (e) {
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e));
+    }
+  }
+
+  Future<ApiResult<void>> changePassworInSetting(String password) async {
+    try {
+      var response = await _dioClient.postWithAuth('/dev/api/v1/user/update/',
+          data: {'password': password});
+
       return ApiResult.success(data: response);
     } catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));

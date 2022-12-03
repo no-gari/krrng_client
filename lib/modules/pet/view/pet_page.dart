@@ -10,6 +10,7 @@ import 'package:krrng_client/modules/pet/cubit/kind_cubit.dart';
 import 'package:krrng_client/modules/pet/cubit/pet_cubit.dart';
 import 'package:krrng_client/repositories/authentication_repository/authentication_repository.dart';
 import 'package:krrng_client/support/style/theme.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:vrouter/vrouter.dart';
 import '../components/components.dart';
 import '../enums.dart';
@@ -128,13 +129,31 @@ class _PetPageState extends State<PetPage> {
                           children: [
                             GestureDetector(
                               onTap: () async {
-                                var image = await _picker.pickImage(
-                                    source: ImageSource.gallery);
-                                setState(() {
-                                  if (image != null) {
-                                    _image = image;
-                                  }
-                                });
+                                PermissionStatus status =
+                                    await Permission.camera.request();
+
+                                if (!status.isGranted) {
+                                  showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                            content: Text("권한 설정을 확인해주세요."),
+                                            actions: [
+                                              TextButton(
+                                                  onPressed: () =>
+                                                      openAppSettings(),
+                                                  child: Text('설정하기')),
+                                            ]);
+                                      });
+                                } else {
+                                  var image = await _picker.pickImage(
+                                      source: ImageSource.gallery);
+                                  setState(() {
+                                    if (image != null) {
+                                      _image = image;
+                                    }
+                                  });
+                                }
                               },
                               child: Container(
                                   padding: EdgeInsets.symmetric(vertical: 30),
@@ -563,7 +582,8 @@ class _PetPageState extends State<PetPage> {
                     if (animal != null) {
                       var user = _authenticationBloc.state.user;
 
-                      var animals = _authenticationBloc.state.user.animals ?? [];
+                      var animals =
+                          _authenticationBloc.state.user.animals ?? [];
                       animals.add(animal);
                       user.copyWith(animals: animals);
                       _authenticationBloc.add(AuthenticationUserChanged(user));
@@ -575,7 +595,8 @@ class _PetPageState extends State<PetPage> {
                     if (animal != null) {
                       var user = _authenticationBloc.state.user;
 
-                      var animals = _authenticationBloc.state.user.animals ?? [];
+                      var animals =
+                          _authenticationBloc.state.user.animals ?? [];
                       animals.add(animal);
                       user.copyWith(animals: animals);
                       _authenticationBloc.add(AuthenticationUserChanged(user));

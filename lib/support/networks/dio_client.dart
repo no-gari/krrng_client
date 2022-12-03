@@ -162,14 +162,14 @@ class DioClient {
   }
 
   Future<dynamic> post(
-      String uri, {
-        data,
-        Map<String, dynamic>? queryParameters,
-        Options? options,
-        CancelToken? cancelToken,
-        ProgressCallback? onSendProgress,
-        ProgressCallback? onReceiveProgress,
-      }) async {
+    String uri, {
+    data,
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+    CancelToken? cancelToken,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
     try {
       var response = await _dio.post(
         uri,
@@ -224,14 +224,14 @@ class DioClient {
   }
 
   Future<dynamic> patchForMultiPart(
-      String uri, {
-        data,
-        Map<String, dynamic>? queryParameters,
-        Options? options,
-        CancelToken? cancelToken,
-        ProgressCallback? onSendProgress,
-        ProgressCallback? onReceiveProgress,
-      }) async {
+    String uri, {
+    data,
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+    CancelToken? cancelToken,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       var accessToken = prefs.getString('access');
@@ -359,14 +359,14 @@ class DioClient {
   }
 
   Future<dynamic> postWithAuthForMultiPart(
-      String uri, {
-        data,
-        Map<String, dynamic>? queryParameters,
-        Options? options,
-        CancelToken? cancelToken,
-        ProgressCallback? onSendProgress,
-        ProgressCallback? onReceiveProgress,
-      }) async {
+    String uri, {
+    data,
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+    CancelToken? cancelToken,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       var accessToken = prefs.getString('access');
@@ -378,8 +378,45 @@ class DioClient {
         options: Options(headers: {
           Headers.contentTypeHeader: Headers.jsonContentType,
           HttpHeaders.authorizationHeader: "Bearer $accessToken",
-        }, contentType: 'multipart/form-data'
-        ),
+        }, contentType: 'multipart/form-data'),
+        cancelToken: cancelToken,
+        onSendProgress: onSendProgress,
+        onReceiveProgress: onReceiveProgress,
+      );
+      print(response.data);
+
+      return response.data;
+    } on FormatException catch (_) {
+      throw FormatException("Unable to process the data");
+    } on DioError catch (dioError) {
+      _handleDioError(dioError);
+      return dioError;
+    } catch (e) {
+      _handleError(e);
+    }
+  }
+
+  Future<dynamic> patchWithAuthForMultiPart(
+    String uri, {
+    data,
+    Map<String, dynamic>? queryParameters,
+    Options? options,
+    CancelToken? cancelToken,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      var accessToken = prefs.getString('access');
+
+      var response = await _dio.patch(
+        uri,
+        data: data,
+        queryParameters: queryParameters,
+        options: Options(headers: {
+          Headers.contentTypeHeader: Headers.jsonContentType,
+          HttpHeaders.authorizationHeader: "Bearer $accessToken",
+        }, contentType: 'multipart/form-data'),
         cancelToken: cancelToken,
         onSendProgress: onSendProgress,
         onReceiveProgress: onReceiveProgress,
