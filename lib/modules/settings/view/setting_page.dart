@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:krrng_client/modules/ads_request/view/ads_request_screen.dart';
 import 'package:krrng_client/modules/authentication/bloc/authentication_bloc.dart';
+import 'package:krrng_client/modules/authentication/signin/cubit/signin_cubit.dart';
 import 'package:krrng_client/modules/delete_account/delete_account_screen.dart';
 import 'package:krrng_client/modules/mypage/components/sub_menu.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +20,7 @@ class SettingPage extends StatefulWidget {
 
 class _SettingPageState extends State<SettingPage> {
   late AuthenticationBloc _authenticationBloc;
+  late SignInCubit _signInCubit;
 
   final textEditingController = TextEditingController();
 
@@ -26,6 +28,7 @@ class _SettingPageState extends State<SettingPage> {
   void initState() {
     super.initState();
     _authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
+    _signInCubit = BlocProvider.of<SignInCubit>(context);
   }
 
   @override
@@ -47,6 +50,7 @@ class _SettingPageState extends State<SettingPage> {
               builder: (context, authState) {
             if (authState.status == AuthenticationStatus.authenticated)
               return buildProfileSetting(
+                  signInCubit: _signInCubit,
                   textEditingController: textEditingController,
                   authState: authState);
             return Container();
@@ -152,30 +156,43 @@ class _SettingPageState extends State<SettingPage> {
 
 class buildProfileSetting extends StatelessWidget {
   const buildProfileSetting(
-      {Key? key, required this.textEditingController, required this.authState})
+      {Key? key,
+      required this.textEditingController,
+      required this.signInCubit,
+      required this.authState})
       : super(key: key);
 
   final TextEditingController textEditingController;
   final AuthenticationState authState;
+  final SignInCubit signInCubit;
 
   @override
   Widget build(BuildContext context) {
     return Container(
+        alignment: Alignment.centerLeft,
         padding: EdgeInsets.only(left: 16, right: 16, top: 30, bottom: 40),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text('닉네임', style: Theme.of(context).textTheme.headline4),
           SizedBox(height: 10),
           Text(authState.user.nickname.toString(),
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+          // if (!authState.user.email!.endsWith('kakao.com') &&
+          //     !authState.user.email!.endsWith('icloud.com'))
           SizedBox(height: 30),
+          // if (!authState.user.email!.endsWith('kakao.com') &&
+          //     !authState.user.email!.endsWith('icloud.com'))
           Text('비밀번호', style: Theme.of(context).textTheme.headline4),
+          // if (!authState.user.email!.endsWith('kakao.com') &&
+          //     !authState.user.email!.endsWith('icloud.com'))
           SizedBox(height: 10),
+          // if (!authState.user.email!.endsWith('kakao.com') &&
+          //     !authState.user.email!.endsWith('icloud.com'))
           Row(children: [
             Expanded(
                 child: Container(
                     height: 44,
                     child: TextField(
-                        onSubmitted: (value) {},
+                        // onSubmitted: (value) {},
                         obscureText: true,
                         autofocus: true,
                         controller: textEditingController,
@@ -197,7 +214,30 @@ class buildProfileSetting extends StatelessWidget {
                                     BorderSide(color: Color(0xFFDFE2E9))))))),
             SizedBox(width: 10),
             GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  if (textEditingController.text.trim() == '') {
+                  } else {
+                    signInCubit.updatePasswordSetting(
+                        password: textEditingController.text);
+                    textEditingController.clear();
+                    showDialog(
+                        context: context,
+                        barrierDismissible: true, // 바깥 영역 터치시 닫을지 여부
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                              content: Text("비밀번호가 변경되었습니다."),
+                              insetPadding:
+                                  const EdgeInsets.fromLTRB(0, 80, 0, 80),
+                              actions: [
+                                TextButton(
+                                    child: const Text('확인'),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    })
+                              ]);
+                        });
+                  }
+                },
                 child: Container(
                     height: 44,
                     padding: EdgeInsets.symmetric(horizontal: 17),

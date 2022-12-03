@@ -84,6 +84,17 @@ class SignInCubit extends Cubit<SignInState> {
     });
   }
 
+  Future<void> updatePasswordSetting({required String? password}) async {
+    var response =
+        await _authenticationRepository.changePassworInSetting(password!);
+
+    response.when(success: (void result) {
+      return true;
+    }, failure: (NetworkExceptions? error) {
+      return false;
+    });
+  }
+
   void errorMsg() {
     emit(state.copyWith(errorMessage: ""));
   }

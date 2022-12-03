@@ -231,5 +231,16 @@ class AuthenticationRepository {
     }
   }
 
+  Future<ApiResult<void>> changePassworInSetting(String password) async {
+    try {
+      var response = await _dioClient.postWithAuth('/dev/api/v1/user/update/',
+          data: {'password': password});
+
+      return ApiResult.success(data: response);
+    } catch (e) {
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e));
+    }
+  }
+
   void dispose() => _controller.close();
 }
