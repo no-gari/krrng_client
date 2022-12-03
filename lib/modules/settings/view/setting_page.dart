@@ -176,81 +176,81 @@ class buildProfileSetting extends StatelessWidget {
           SizedBox(height: 10),
           Text(authState.user.nickname.toString(),
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-          // if (!authState.user.email!.endsWith('kakao.com') &&
-          //     !authState.user.email!.endsWith('icloud.com'))
-          SizedBox(height: 30),
-          // if (!authState.user.email!.endsWith('kakao.com') &&
-          //     !authState.user.email!.endsWith('icloud.com'))
-          Text('비밀번호', style: Theme.of(context).textTheme.headline4),
-          // if (!authState.user.email!.endsWith('kakao.com') &&
-          //     !authState.user.email!.endsWith('icloud.com'))
-          SizedBox(height: 10),
-          // if (!authState.user.email!.endsWith('kakao.com') &&
-          //     !authState.user.email!.endsWith('icloud.com'))
-          Row(children: [
-            Expanded(
-                child: Container(
-                    height: 44,
-                    child: TextField(
-                        // onSubmitted: (value) {},
-                        obscureText: true,
-                        autofocus: true,
-                        controller: textEditingController,
-                        textAlignVertical: TextAlignVertical.center,
-                        decoration: InputDecoration(
-                            contentPadding:
-                                EdgeInsets.symmetric(horizontal: 15),
-                            enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(15.0),
-                                borderSide:
-                                    BorderSide(color: Color(0xFFDFE2E9))),
-                            focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(15),
-                                borderSide:
-                                    BorderSide(color: Color(0xFFDFE2E9))),
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(15.0),
-                                borderSide:
-                                    BorderSide(color: Color(0xFFDFE2E9))))))),
-            SizedBox(width: 10),
-            GestureDetector(
-                onTap: () {
-                  if (textEditingController.text.trim() == '') {
-                  } else {
-                    signInCubit.updatePasswordSetting(
-                        password: textEditingController.text);
-                    textEditingController.clear();
-                    showDialog(
-                        context: context,
-                        barrierDismissible: true, // 바깥 영역 터치시 닫을지 여부
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                              content: Text("비밀번호가 변경되었습니다."),
-                              insetPadding:
-                                  const EdgeInsets.fromLTRB(0, 80, 0, 80),
-                              actions: [
-                                TextButton(
-                                    child: const Text('확인'),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    })
-                              ]);
-                        });
-                  }
-                },
-                child: Container(
-                    height: 44,
-                    padding: EdgeInsets.symmetric(horizontal: 17),
-                    decoration: BoxDecoration(
-                        color: Theme.of(context).accentColor,
-                        borderRadius: BorderRadius.circular(15)),
-                    alignment: Alignment.center,
-                    child: Text('수정',
-                        style: Theme.of(context)
-                            .textTheme
-                            .headline4!
-                            .copyWith(color: Colors.white))))
-          ])
+          if (!authState.user.email!.endsWith('kakao.com') &&
+              !authState.user.email!.endsWith('icloud.com'))
+            SizedBox(height: 30),
+          if (!authState.user.email!.endsWith('kakao.com') &&
+              !authState.user.email!.endsWith('icloud.com'))
+            Text('비밀번호', style: Theme.of(context).textTheme.headline4),
+          if (!authState.user.email!.endsWith('kakao.com') &&
+              !authState.user.email!.endsWith('icloud.com'))
+            SizedBox(height: 10),
+          if (!authState.user.email!.endsWith('kakao.com') &&
+              !authState.user.email!.endsWith('icloud.com'))
+            Row(children: [
+              Expanded(
+                  child: Container(
+                      height: 44,
+                      child: TextField(
+                          // onSubmitted: (value) {},
+                          obscureText: true,
+                          autofocus: true,
+                          controller: textEditingController,
+                          textAlignVertical: TextAlignVertical.center,
+                          decoration: InputDecoration(
+                              contentPadding:
+                                  EdgeInsets.symmetric(horizontal: 15),
+                              enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(15.0),
+                                  borderSide:
+                                      BorderSide(color: Color(0xFFDFE2E9))),
+                              focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                  borderSide:
+                                      BorderSide(color: Color(0xFFDFE2E9))),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(15.0),
+                                  borderSide:
+                                      BorderSide(color: Color(0xFFDFE2E9))))))),
+              SizedBox(width: 10),
+              GestureDetector(
+                  onTap: () {
+                    if (textEditingController.text.trim() == '') {
+                    } else {
+                      signInCubit.updatePasswordSetting(
+                          password: textEditingController.text);
+                      textEditingController.clear();
+                      showDialog(
+                          context: context,
+                          barrierDismissible: true, // 바깥 영역 터치시 닫을지 여부
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                                content: Text("비밀번호가 변경되었습니다."),
+                                insetPadding:
+                                    const EdgeInsets.fromLTRB(0, 80, 0, 80),
+                                actions: [
+                                  TextButton(
+                                      child: const Text('확인'),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      })
+                                ]);
+                          });
+                    }
+                  },
+                  child: Container(
+                      height: 44,
+                      padding: EdgeInsets.symmetric(horizontal: 17),
+                      decoration: BoxDecoration(
+                          color: Theme.of(context).accentColor,
+                          borderRadius: BorderRadius.circular(15)),
+                      alignment: Alignment.center,
+                      child: Text('수정',
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline4!
+                              .copyWith(color: Colors.white))))
+            ])
         ]));
   }
 }
