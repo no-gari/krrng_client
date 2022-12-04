@@ -382,8 +382,8 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "65f8404503aee8dd2f1c4e92afe45808cccb8ea5"
-      url: "https://github.com/wnsgh78b/flutter_naver_map.git"
+      resolved-ref: "9850b7f56261c0a3c2625ccf8d4624171cbaf006"
+      url: "https://github.com/no-gari/flutter_naver_map.git"
     source: git
     version: "0.10.5"
   flutter_plugin_android_lifecycle:
@@ -1472,6 +1472,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.9.5"
+  widgets_to_image:
+    dependency: "direct main"
+    description:
+      name: widgets_to_image
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.2"
   win32:
     dependency: transitive
     description:
