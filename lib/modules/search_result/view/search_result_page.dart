@@ -5,7 +5,9 @@ import 'package:krrng_client/modules/search_result/components/search_filter.dart
 import '../components/hospital_tile.dart';
 
 class SearchResultPage extends StatefulWidget {
-  const SearchResultPage({Key? key}) : super(key: key);
+  SearchResultPage({this.keyword});
+
+  final String? keyword;
 
   @override
   State<SearchResultPage> createState() => _SearchResultPageState();

@@ -3,6 +3,7 @@ import 'package:krrng_client/support/networks/dio_client.dart';
 import 'package:krrng_client/support/networks/map_client.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
+import 'package:is_first_run/is_first_run.dart';
 import 'package:url_strategy/url_strategy.dart';
 import 'package:krrng_client/app_view.dart';
 import 'package:krrng_client/my_app.dart';
@@ -35,9 +36,12 @@ void main() async {
   DioClient dioClient = DioClient(Dio());
   MapClient mapClient = MapClient(Dio());
 
+  bool firstRun = await IsFirstRun.isFirstRun();
+
   runApp(MyApp(
-      authenticationRepository: AuthenticationRepository(dioClient),
-      dioClient: dioClient,
-      mapClient: mapClient,
+    authenticationRepository: AuthenticationRepository(dioClient),
+    dioClient: dioClient,
+    mapClient: mapClient,
+    isFirstRun: firstRun,
   ));
 }

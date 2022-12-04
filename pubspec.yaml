@@ -20,17 +20,18 @@ dependencies:
   build_runner:
   package_info:
   json_annotation:
-  shared_preferences:
   json_serializable:
+  shared_preferences:
 
+  intl: ^0.17.0
   formz: ^0.4.0
   logger: ^1.1.0
   freezed: ^0.14.1
   equatable: ^2.0.3
 
   # login
-  kakao_flutter_sdk: ^1.3.0-beta.4
   sign_in_with_apple: ^3.2.0
+  kakao_flutter_sdk: ^1.3.0-beta.4
 
   # onesignal
   onesignal_flutter:
@@ -50,33 +51,36 @@ dependencies:
   webview_flutter: ^2.0.4
 
   # helpers
+  kpostal: ^0.4.2
+  onboarding: ^3.1.0
+  heic_to_jpg: ^0.1.3
+  is_first_run: ^1.0.0
   flutter_svg: ^0.23.0
+  flutter_sizer: ^1.0.5
+  carousel_slider: ^4.1.1
   currency_formatter: ^1.2.1
   permission_handler: ^9.2.0
-  wrapped_korean_text: ^0.0.2
   flutter_swiper_plus: ^2.0.4
-  flutter_svg_provider: ^0.1.11
-  flutter_native_splash: ^1.3.3
-  carousel_slider: ^4.1.1
-  flutter_sizer: ^1.0.5
-  kpostal: ^0.4.2
-  flutter_swipe_action_cell: ^3.0.4
   double_back_to_close: ^2.0.0
   cached_network_image: ^3.2.2
+  flutter_svg_provider: ^0.1.11
+  flutter_native_splash: ^1.3.3
+  flutter_swipe_action_cell: ^3.0.4
 
   # payment
-#  iamport_flutter: ^0.10.3
   flutter_multi_formatter:
 
   # cupertino_icons
   cupertino_icons: ^1.0.2
 
   # image
+  image_picker: ^0.8.6
+  widgets_to_image: ^0.0.2
   multi_image_picker: ^4.8.1
 
   # map
   flutter_naver_map:
-    git: https://github.com/wnsgh78b/flutter_naver_map.git
+    git: https://github.com/no-gari/flutter_naver_map.git
   geolocator: ^8.2.0
   widgets_to_image: ^0.0.2
 

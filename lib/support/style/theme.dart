@@ -11,6 +11,7 @@ final Color subtitleColor = const Color(0xFF999999);
 final TextStyle font_24_w900 = const TextStyle(fontFamily: 'NanumSquareRound', fontSize: 24, fontWeight: FontWeight.w900, color: Colors.black);
 final TextStyle font_22_w900 = const TextStyle(fontFamily: 'NanumSquareRound', fontSize: 22, fontWeight: FontWeight.w900, color: Colors.black);
 final TextStyle font_20_w900 = const TextStyle(fontFamily: 'NanumSquareRound', fontSize: 20, fontWeight: FontWeight.w900, color: Colors.black);
+final TextStyle font_16_w900 = const TextStyle(fontFamily: 'NanumSquareRound', fontSize: 16, fontWeight: FontWeight.w900, color: Colors.black);
 final TextStyle font_17_w900 = const TextStyle(fontFamily: 'NanumSquareRound', fontSize: 17, fontWeight: FontWeight.w900, color: Colors.black);
 final TextStyle font_18_w900 = const TextStyle(fontFamily: 'NanumSquareRound', fontSize: 18, fontWeight: FontWeight.w900, color: Colors.black);
 final TextStyle font_16_w700 = const TextStyle(fontFamily: 'NanumSquareRound', fontSize: 16, fontWeight: FontWeight.w700, color: Colors.black);

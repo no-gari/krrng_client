@@ -1,4 +1,5 @@
 import 'package:krrng_client/modules/authentication/signin/view/signin_screen.dart';
+import 'package:krrng_client/modules/authentication/signin/view/sns_phone_screen.dart';
 import 'package:krrng_client/modules/authentication/signup/view/signup_screen.dart';
 import 'package:krrng_client/modules/ads_request/view/ads_request_screen.dart';
 import 'package:krrng_client/modules/delete_account/delete_account_result_screen.dart';
@@ -11,7 +12,7 @@ import 'package:krrng_client/modules/mypage/view/mypage_screen.dart';
 import 'package:krrng_client/modules/main/main_screen.dart';
 import 'package:krrng_client/modules/notice/view/notice_screen.dart';
 import 'package:krrng_client/modules/notification/view/notification_screen.dart';
-import 'package:krrng_client/modules/pet_register/view/pet_register_screen.dart';
+import 'package:krrng_client/modules/pet/view/pet_screen.dart';
 import 'package:krrng_client/modules/point/page/point_screen.dart';
 import 'package:krrng_client/modules/profile_change/view/profile_change_screen.dart';
 import 'package:krrng_client/modules/search/view/search_screen.dart';
@@ -31,14 +32,16 @@ final routes = [
   VWidget(path: MainScreen.routeName, widget: MainScreen(), stackedRoutes: [
     VWidget(path: MyPageScreen.routeName, widget: MyPageScreen()),
     VWidget(path: HospitalScreen.routeName, widget: HospitalScreen()),
-    VWidget(path: PetRegisterScreen.routeName, widget: PetRegisterScreen()),
+    VWidget(path: PetScreen.routeName, widget: PetScreen()),
     VWidget(path: StoreScreen.routeName, widget: StoreScreen()),
     VWidget(
         path: SearchScreen.routeName,
         widget: SearchScreen(),
         stackedRoutes: [
           VWidget(
-              path: SearchResultScreen.routeName, widget: SearchResultScreen())
+              path: SearchResultScreen.routeName + '/:keyword',
+              widget: SearchResultScreen(),
+              name: SearchResultScreen.routeName)
         ]),
     VWidget(path: NotificationScreen.routeName, widget: NotificationScreen()),
     VWidget(
@@ -68,7 +71,10 @@ final routes = [
         widget: SigninScreen(),
         stackedRoutes: [
           VWidget(path: SignupScreen.routeName, widget: SignupScreen()),
-          VWidget(path: FindingScreen.routeName, widget: FindingScreen())
+          VWidget(path: SnsPhoneScreen.routeName, widget: SnsPhoneScreen()),
+          VWidget(path: FindingScreen.routeName, widget: FindingScreen()),
+          VWidget(
+              path: FindingResultPage.routeName, widget: FindingResultPage())
         ]),
   ]),
   VWidget(path: SplashScreen.routeName, widget: SplashScreen()),
@@ -76,9 +82,13 @@ final routes = [
       path: HospitalDetailScreen.routeName,
       widget: HospitalDetailScreen(),
       stackedRoutes: [
-        VWidget(path: WritingReviewScreen.routeName, widget: WritingReviewScreen(),
-          stackedRoutes: [ VWidget(path: ReviewNoticePage.routeName, widget: ReviewNoticePage()) ]
-        ),
+        VWidget(
+            path: WritingReviewScreen.routeName,
+            widget: WritingReviewScreen(),
+            stackedRoutes: [
+              VWidget(
+                  path: ReviewNoticePage.routeName, widget: ReviewNoticePage())
+            ]),
       ]),
   VWidget(path: '*', widget: MainScreen()),
 ];

@@ -1,7 +1,8 @@
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:krrng_client/repositories/animal_repository/animal_repository.dart';
 import 'package:krrng_client/repositories/user_repository/models/user.dart';
 import 'package:krrng_client/support/networks/api_result.dart';
 import 'package:krrng_client/support/networks/dio_client.dart';
+import 'dart:convert';
 
 class UserGetFailure implements Exception {}
 
@@ -12,17 +13,9 @@ class UserRepository {
 
   Future<ApiResult<User>> getUser() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      var response = await _dioClient.getWithAuth('/dev/api/v1/user/profile/');
 
-      var response = await _dioClient.put('/api/v1/user/profile_change/',
-          data: {'firebaseToken': prefs.get('firebaseToken')});
-
-      return ApiResult.success(
-          data: User(
-        nickname: response['nickname'],
-        profileImage: response['profileImage'],
-        points: response['points'],
-      ));
+      return ApiResult.success(data: User.fromJson(response));
     } on Exception {
       throw UserGetFailure();
     }
@@ -37,7 +30,6 @@ class UserRepository {
           data: User(
         nickname: response['nickname'],
         profileImage: response['profileImage'],
-        points: response['points'],
       ));
     } on Exception {
       throw UserGetFailure();

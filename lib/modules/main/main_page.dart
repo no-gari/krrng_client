@@ -1,10 +1,8 @@
 import 'package:krrng_client/modules/authentication/bloc/authentication_bloc.dart';
-import 'package:krrng_client/modules/home/view/home_screen.dart';
 import 'package:krrng_client/modules/hospital/view/hospital_screen.dart';
 import 'package:krrng_client/modules/mypage/view/mypage_screen.dart';
 import 'package:krrng_client/modules/store/view/store_screen.dart';
-import 'package:krrng_client/repositories/authentication_repository/src/authentication_repository.dart';
-import 'package:krrng_client/support/base_component/login_needed.dart';
+import 'package:krrng_client/modules/home/view/home_screen.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 import 'package:double_back_to_close/double_back_to_close.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -30,12 +28,15 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+  late AuthenticationBloc _authenticationBloc;
+
   PageController _pageController = PageController();
   int _pageIndex = 0;
 
   @override
   void initState() {
     super.initState();
+    _authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
     _pageController = PageController(initialPage: 0);
     _pageIndex = 0;
   }
@@ -64,11 +65,13 @@ class _MainPageState extends State<MainPage> {
       return Scaffold(
           body: DoubleBack(
               message: '앱을 닫으시려면 한 번 더 눌러주세요.',
-              child: PageView(
-                  children: pageList,
-                  controller: _pageController,
-                  onPageChanged: _onPageChanged,
-                  physics: const NeverScrollableScrollPhysics())),
+              child: BlocProvider.value(
+                  value: _authenticationBloc,
+                  child: PageView(
+                      children: pageList,
+                      controller: _pageController,
+                      onPageChanged: _onPageChanged,
+                      physics: const NeverScrollableScrollPhysics()))),
           bottomNavigationBar: Container(
               decoration: const BoxDecoration(
                   border:
@@ -87,14 +90,7 @@ class _MainPageState extends State<MainPage> {
                                   ),
                                   size: 32)
                               : Image.asset('assets/icons/mypage.png'))),
-                  onTap: (context) {
-                    // if (state.status != AuthenticationStatus.authenticated &&
-                    //     context == 3) {
-                    //   showSocialLoginNeededDialog(ScaffoldContext);
-                    // } else {
-                    _onItemTapped(context);
-                    // }
-                  },
+                  onTap: (context) => _onItemTapped(context),
                   selectedItemColor: Theme.of(context).accentColor,
                   unselectedItemColor: const Color(0xFF979797),
                   currentIndex: _pageIndex,
