@@ -60,209 +60,231 @@ class _MyPagePageState extends State<MyPagePage> {
                       padding: EdgeInsets.only(right: 16),
                       child: SvgPicture.asset('assets/icons/settings.svg')))
             ]),
-        body: SafeArea(
-            child: SingleChildScrollView(
-                child: Column(children: [
-          BlocBuilder<AuthenticationBloc, AuthenticationState>(
-              builder: (context, authState) {
-            if (authState.status == AuthenticationStatus.authenticated) {
-              return Column(children: [
-                Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 21),
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Flexible(
-                              child: Text(authState.user.nickname!,
-                                  style: TextStyle(
-                                      fontSize: 22,
-                                      fontWeight: FontWeight.w900,
-                                      overflow: TextOverflow.ellipsis))),
-                          GestureDetector(
-                              onTap: () {
-                                showModalBottomSheet(
-                                    context: context,
-                                    isScrollControlled: true,
-                                    builder: (BuildContext context) {
-                                      return LevelInfo();
-                                    });
-                              },
-                              child: Row(children: [
-                                Image.asset('assets/images/level1.png',
-                                    width: 20),
-                                Text('씨앗단계', style: TextStyle(fontSize: 14)),
-                                SizedBox(width: 6),
-                                Icon(Icons.info_outline,
-                                    size: 20, color: Colors.grey)
-                              ]))
-                        ])),
-                if (authState.user.animals!.isNotEmpty)
-                  SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(children: [
-                        Container(
-                            height: 112,
-                            child: ListView.builder(
-                                shrinkWrap: true,
-                                scrollDirection: Axis.horizontal,
-                                itemCount: authState.user.animals!.length,
-                                itemBuilder: (context, index) {
-                                  var birthday = authState
-                                      .user.animals![index].birthday
-                                      .toString();
-                                  var year = int.parse(birthday.split('-')[0]);
-                                  var nowYear = DateTime.now().year;
-                                  var age = (nowYear - year + 1).toString();
+        body: BlocBuilder<AuthenticationBloc, AuthenticationState>(
+            builder: (context, authState) {
+          if (authState.status != AuthenticationStatus.unknown) {
+            return SafeArea(
+                child: SingleChildScrollView(
+                    child: Column(children: [
+              BlocBuilder<AuthenticationBloc, AuthenticationState>(
+                  builder: (context, authState) {
+                if (authState.status == AuthenticationStatus.authenticated) {
+                  return Column(children: [
+                    Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 21),
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Flexible(
+                                  child: Text(authState.user.nickname!,
+                                      style: TextStyle(
+                                          fontSize: 22,
+                                          fontWeight: FontWeight.w900,
+                                          overflow: TextOverflow.ellipsis))),
+                              GestureDetector(
+                                  onTap: () {
+                                    showModalBottomSheet(
+                                        context: context,
+                                        isScrollControlled: true,
+                                        builder: (BuildContext context) {
+                                          return LevelInfo();
+                                        });
+                                  },
+                                  child: Row(children: [
+                                    Image.asset('assets/images/level1.png',
+                                        width: 20),
+                                    Text('씨앗단계',
+                                        style: TextStyle(fontSize: 14)),
+                                    SizedBox(width: 6),
+                                    Icon(Icons.info_outline,
+                                        size: 20, color: Colors.grey)
+                                  ]))
+                            ])),
+                    if (authState.user.animals!.isNotEmpty)
+                      SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(children: [
+                            Container(
+                                height: 112,
+                                child: ListView.builder(
+                                    shrinkWrap: true,
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: authState.user.animals!.length,
+                                    itemBuilder: (context, index) {
+                                      var birthday = authState
+                                          .user.animals![index].birthday
+                                          .toString();
+                                      var year =
+                                          int.parse(birthday.split('-')[0]);
+                                      var nowYear = DateTime.now().year;
+                                      var age = (nowYear - year + 1).toString();
 
-                                  return buildAnimalTile(
-                                      authState, index, age, context);
-                                })),
-                        InkWell(
-                          onTap: () => context.vRouter.to(PetScreen.routeName),
-                          child: Container(
-                              child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    CircleAvatar(
-                                        radius: 35,
-                                        backgroundColor:
-                                            Colors.black.withOpacity(0.04),
-                                        child: Icon(Icons.add,
-                                            size: 32, color: Colors.grey)),
-                                    SizedBox(width: 15),
-                                    Text('등록하기',
-                                        style: TextStyle(
-                                            fontSize: 17,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.grey))
-                                  ]),
-                              margin: EdgeInsets.symmetric(horizontal: 16),
-                              padding: EdgeInsets.symmetric(horizontal: 20),
-                              height: 112,
-                              width: MediaQuery.of(context).size.width * 0.85,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(15),
-                                  border:
-                                      Border.all(color: Color(0xFFDFE2E9)))),
-                        )
-                      ])),
-                if (authState.user.animals!.isEmpty)
-                  Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 0, horizontal: 16),
-                      child: InkWell(
-                          onTap: () => context.vRouter.to(PetScreen.routeName),
-                          child: Container(
-                              child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    CircleAvatar(
-                                        radius: 35,
-                                        backgroundColor:
-                                            Colors.black.withOpacity(0.04),
-                                        child: Icon(Icons.add,
-                                            size: 32, color: Colors.grey)),
-                                    SizedBox(width: 15),
-                                    Text('등록하기',
-                                        style: TextStyle(
-                                            fontSize: 17,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.grey))
-                                  ]),
-                              padding: EdgeInsets.symmetric(horizontal: 20),
-                              height: 112,
-                              width: double.maxFinite,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(15),
-                                  border:
-                                      Border.all(color: Color(0xFFDFE2E9))))))
-              ]);
-            }
-            return Column(
-              children: [
-                SizedBox(height: 30),
-                Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(children: [
-                            Image.asset('assets/images/default_image.png',
-                                width: 44, height: 44),
-                            SizedBox(width: 10),
-                            GestureDetector(
-                                onTap: () =>
-                                    context.vRouter.to(SigninScreen.routeName),
-                                child: Text('로그인',
-                                    style: TextStyle(
-                                        fontSize: 22,
-                                        fontWeight: FontWeight.w900,
-                                        color: Theme.of(context).accentColor,
-                                        decoration: TextDecoration.underline)))
-                          ]),
-                          GestureDetector(
-                              onTap: () {
-                                showModalBottomSheet(
-                                    context: context,
-                                    isScrollControlled: true,
-                                    builder: (BuildContext context) {
-                                      return LevelInfo();
-                                    });
-                              },
-                              child: Row(children: [
-                                Text('등급안내', style: TextStyle(fontSize: 14)),
-                                SizedBox(width: 6),
-                                Icon(Icons.info_outline,
-                                    size: 20, color: Colors.grey)
-                              ]))
-                        ])),
-              ],
-            );
-          }),
-          Padding(
-              padding: EdgeInsets.symmetric(horizontal: 36, vertical: 30),
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      return buildAnimalTile(
+                                          authState, index, age, context);
+                                    })),
+                            InkWell(
+                              onTap: () =>
+                                  context.vRouter.to(PetScreen.routeName),
+                              child: Container(
+                                  child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        CircleAvatar(
+                                            radius: 35,
+                                            backgroundColor:
+                                                Colors.black.withOpacity(0.04),
+                                            child: Icon(Icons.add,
+                                                size: 32, color: Colors.grey)),
+                                        SizedBox(width: 15),
+                                        Text('등록하기',
+                                            style: TextStyle(
+                                                fontSize: 17,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.grey))
+                                      ]),
+                                  margin: EdgeInsets.symmetric(horizontal: 16),
+                                  padding: EdgeInsets.symmetric(horizontal: 20),
+                                  height: 112,
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.85,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(15),
+                                      border: Border.all(
+                                          color: Color(0xFFDFE2E9)))),
+                            )
+                          ])),
+                    if (authState.user.animals!.isEmpty)
+                      Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 0, horizontal: 16),
+                          child: InkWell(
+                              onTap: () =>
+                                  context.vRouter.to(PetScreen.routeName),
+                              child: Container(
+                                  child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        CircleAvatar(
+                                            radius: 35,
+                                            backgroundColor:
+                                                Colors.black.withOpacity(0.04),
+                                            child: Icon(Icons.add,
+                                                size: 32, color: Colors.grey)),
+                                        SizedBox(width: 15),
+                                        Text('등록하기',
+                                            style: TextStyle(
+                                                fontSize: 17,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.grey))
+                                      ]),
+                                  padding: EdgeInsets.symmetric(horizontal: 20),
+                                  height: 112,
+                                  width: double.maxFinite,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(15),
+                                      border: Border.all(
+                                          color: Color(0xFFDFE2E9))))))
+                  ]);
+                }
+                return Column(
                   children: [
-                    MainMenu(
-                        iconPath: 'assets/icons/point.svg',
-                        title: '포인트',
-                        onTap: () => _authenticationBloc.state.status ==
-                                AuthenticationStatus.authenticated
-                            ? context.vRouter.to(PointScreen.routeName)
-                            : showLoginNeededDialog(context)),
-                    MainMenu(
-                        onTap: () => showOnProgressDialog(context),
-                        iconPath: 'assets/icons/favorite.svg',
-                        title: '찜 목록'),
-                    MainMenu(
-                        onTap: () => showOnProgressDialog(context),
-                        iconPath: 'assets/icons/order.svg',
-                        title: '주문 목록')
-                  ])),
-          Container(
-              width: double.maxFinite, height: 12, color: Color(0xFFF3F3F3)),
-          SubMenu(
-              title: '친구초대',
-              onTap: () => context.vRouter.to(InviteScreen.routeName)),
-          SubMenu(title: '내가 쓴 리뷰'),
-          // SubMenu(title: '내가 즐겨찾는 상품'),
-          SubMenu(
-              title: '자주 묻는 질문 (FAQ)',
-              onTap: () => context.vRouter.to(FaqScreen.routeName)),
-          SubMenu(
-              title: '공지사항',
-              onTap: () => context.vRouter.to(NoticeScreen.routeName)),
-          SubMenu(
-              title: '내 정보 변경',
-              onTap: () => _authenticationBloc.state.status ==
-                      AuthenticationStatus.authenticated
-                  ? context.vRouter.to(ProfileChangeScreen.routeName)
-                  : showLoginNeededDialog(context))
-        ]))));
+                    SizedBox(height: 30),
+                    Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16),
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(children: [
+                                Image.asset('assets/images/default_image.png',
+                                    width: 44, height: 44),
+                                SizedBox(width: 10),
+                                GestureDetector(
+                                    onTap: () => context.vRouter
+                                        .to(SigninScreen.routeName),
+                                    child: Text('로그인',
+                                        style: TextStyle(
+                                            fontSize: 22,
+                                            fontWeight: FontWeight.w900,
+                                            color:
+                                                Theme.of(context).accentColor,
+                                            decoration:
+                                                TextDecoration.underline)))
+                              ]),
+                              GestureDetector(
+                                  onTap: () {
+                                    showModalBottomSheet(
+                                        context: context,
+                                        isScrollControlled: true,
+                                        builder: (BuildContext context) {
+                                          return LevelInfo();
+                                        });
+                                  },
+                                  child: Row(children: [
+                                    Text('등급안내',
+                                        style: TextStyle(fontSize: 14)),
+                                    SizedBox(width: 6),
+                                    Icon(Icons.info_outline,
+                                        size: 20, color: Colors.grey)
+                                  ]))
+                            ])),
+                  ],
+                );
+              }),
+              Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 36, vertical: 30),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        MainMenu(
+                            iconPath: 'assets/icons/point.svg',
+                            title: '포인트',
+                            onTap: () => _authenticationBloc.state.status ==
+                                    AuthenticationStatus.authenticated
+                                ? context.vRouter.to(PointScreen.routeName)
+                                : showLoginNeededDialog(context)),
+                        MainMenu(
+                            onTap: () => showOnProgressDialog(context),
+                            iconPath: 'assets/icons/favorite.svg',
+                            title: '찜 목록'),
+                        MainMenu(
+                            onTap: () => showOnProgressDialog(context),
+                            iconPath: 'assets/icons/order.svg',
+                            title: '주문 목록')
+                      ])),
+              Container(
+                  width: double.maxFinite,
+                  height: 12,
+                  color: Color(0xFFF3F3F3)),
+              SubMenu(
+                  title: '친구초대',
+                  onTap: () => context.vRouter.to(InviteScreen.routeName)),
+              SubMenu(title: '내가 쓴 리뷰'),
+              // SubMenu(title: '내가 즐겨찾는 상품'),
+              SubMenu(
+                  title: '자주 묻는 질문 (FAQ)',
+                  onTap: () => context.vRouter.to(FaqScreen.routeName)),
+              SubMenu(
+                  title: '공지사항',
+                  onTap: () => context.vRouter.to(NoticeScreen.routeName)),
+              SubMenu(
+                  title: '내 정보 변경',
+                  onTap: () => _authenticationBloc.state.status ==
+                          AuthenticationStatus.authenticated
+                      ? context.vRouter.to(ProfileChangeScreen.routeName)
+                      : showLoginNeededDialog(context))
+            ])));
+          }
+          return Center(
+              child: Image.asset('assets/images/indicator.gif',
+                  width: 100, height: 100));
+        }));
   }
 
   Future<dynamic> showOnProgressDialog(BuildContext context) {
@@ -324,7 +346,8 @@ class _MyPagePageState extends State<MyPagePage> {
                           Text.rich(
                               TextSpan(children: [
                                 TextSpan(
-                                    text: authState.user.animals![index].name ?? ""),
+                                    text: authState.user.animals![index].name ??
+                                        ""),
                                 TextSpan(
                                     text: '(${age}세)',
                                     style: TextStyle(

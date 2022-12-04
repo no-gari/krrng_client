@@ -29,48 +29,47 @@ class _SignupPageState extends State<SignupPage> {
   Widget build(BuildContext context) {
     return BlocConsumer<SignupCubit, SignupState>(
         listenWhen: (previous, current) {
-          return previous.isCompleteCode != current.isCompleteCode;
-        },
-        listener: (context, state) {
-          final isCompletePassword = state.isCompletePassword ?? false;
-          final isCompleteCode = state.isCompletePassword ?? false;
+      return previous.isCompleteCode != current.isCompleteCode;
+    }, listener: (context, state) {
+      final isCompletePassword = state.isCompletePassword ?? false;
+      final isCompleteCode = state.isCompletePassword ?? false;
 
-          if (isCompletePassword && isCompleteCode) {
-            showDialog(
-                context: context,
-                barrierDismissible: true, // 바깥 영역 터치시 닫을지 여부
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    content: Text("입력하신 정보로 회원가입을 하시겠습니까?"),
-                    insetPadding: const EdgeInsets.fromLTRB(0, 80, 0, 80),
-                    actions: [
-                      TextButton(
-                        child: const Text('확인'),
-                        onPressed: () {
-                          _signupCubit.signup();
-                          Navigator.of(context).pop();
-                          context.vRouter.to(SigninScreen.routeName);
-                        },
-                      ),
-                      TextButton(
-                        child: const Text('취소'),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                    ],
-                  );
-                });
-            }
-        },
-        builder: (context, state) {
-        return Scaffold(
+      if (isCompletePassword && isCompleteCode) {
+        showDialog(
+            context: context,
+            barrierDismissible: true, // 바깥 영역 터치시 닫을지 여부
+            builder: (BuildContext context) {
+              return AlertDialog(
+                content: Text("입력하신 정보로 회원가입을 하시겠습니까?"),
+                insetPadding: const EdgeInsets.fromLTRB(0, 80, 0, 80),
+                actions: [
+                  TextButton(
+                    child: const Text('확인'),
+                    onPressed: () {
+                      _signupCubit.signup();
+                      Navigator.of(context).pop();
+                      context.vRouter.to(SigninScreen.routeName);
+                    },
+                  ),
+                  TextButton(
+                    child: const Text('취소'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            });
+      }
+    }, builder: (context, state) {
+      return Scaffold(
           bottomSheet: MaterialButton(
             height: 75,
             onPressed: () {
               _formKey.currentState!.validate();
               if (state.selectedTap == 0) {
-                if ((state.isCompletePassword ?? false) && (state.isNotDuplicateId ?? false)) {
+                if ((state.isCompletePassword ?? false) &&
+                    (state.isNotDuplicateId ?? false)) {
                   _signupCubit.selectedTap(1);
                 } else {
                   showDialog(
@@ -115,7 +114,6 @@ class _SignupPageState extends State<SignupPage> {
                 } else {
                   _signupCubit.confirmCode(state.inputCode ?? "");
                 }
-
               }
             },
             minWidth: MediaQuery.of(context).size.width,
@@ -147,21 +145,28 @@ class _SignupPageState extends State<SignupPage> {
                                             'assets/icons/property1Off.svg')),
                                 IconButton(
                                     onPressed: () {
-                                      if (state.selectedTap == 0 && (state.isCompletePassword ?? false) && (state.isNotDuplicateId ?? false)) {
+                                      if (state.selectedTap == 0 &&
+                                          (state.isCompletePassword ?? false) &&
+                                          (state.isNotDuplicateId ?? false)) {
                                         _signupCubit.selectedTap(1);
                                       } else {
                                         showDialog(
                                             context: context,
-                                            barrierDismissible: true, // 바깥 영역 터치시 닫을지 여부
+                                            barrierDismissible: true,
+                                            // 바깥 영역 터치시 닫을지 여부
                                             builder: (BuildContext context) {
                                               return AlertDialog(
-                                                content: Text("아이디, 비빌번호를 설정해주세요."),
-                                                insetPadding: const EdgeInsets.fromLTRB(0, 80, 0, 80),
+                                                content:
+                                                    Text("아이디, 비빌번호를 설정해주세요."),
+                                                insetPadding:
+                                                    const EdgeInsets.fromLTRB(
+                                                        0, 80, 0, 80),
                                                 actions: [
                                                   TextButton(
                                                     child: const Text('확인'),
                                                     onPressed: () {
-                                                      Navigator.of(context).pop();
+                                                      Navigator.of(context)
+                                                          .pop();
                                                     },
                                                   ),
                                                 ],
@@ -185,7 +190,8 @@ class _SignupPageState extends State<SignupPage> {
                     Form(
                       key: _formKey,
                       child: BlocProvider.value(
-                          value: _signupCubit, child: _taps[state.selectedTap!]),
+                          value: _signupCubit,
+                          child: _taps[state.selectedTap!]),
                     )
                   ]))));
     });
