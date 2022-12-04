@@ -13,7 +13,7 @@ class HospitalCubit extends Cubit<HospitalState> {
 
   final MapRepository _mapRepository;
 
-  Future<void> setPosition() async {
+  Future<void> currentPosition() async {
     Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     var lat = position.latitude;
     var lon = position.longitude;
@@ -21,10 +21,17 @@ class HospitalCubit extends Cubit<HospitalState> {
     emit(state.copyWith(
       location: LatLng(lat, lon)
     ));
-    currentLocation();
+    currentLocation(LatLng(lat, lon));
   }
 
-  Future<void> currentLocation() async {
+  Future<void> updatePosition(LatLng latLng) async {
+    emit(state.copyWith(
+      location: latLng
+    ));
+    currentLocation(latLng);
+  }
+
+  Future<void> currentLocation(LatLng latLng) async {
     var response = await _mapRepository.getCurruentLocation(state.location);
 
     response.when(success: (MapData? mapResponse) {

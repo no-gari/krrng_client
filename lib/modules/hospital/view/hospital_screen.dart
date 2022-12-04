@@ -9,11 +9,9 @@ class HospitalScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: BlocProvider(
-        create: (context) => HospitalCubit(RepositoryProvider.of<MapRepository>(context)),
-        child: HospitalPage(),
-      ),
+    return BlocProvider(
+      create: (context) => HospitalCubit(RepositoryProvider.of<MapRepository>(context)),
+      child: HospitalPage(),
     );
   }
 }
