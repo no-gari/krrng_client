@@ -90,240 +90,271 @@ class _HomePageState extends State<HomePage> {
                       child: Image.asset('assets/images/default_image.png'))),
               SizedBox(width: 16)
             ]),
-        body: SafeArea(
-            child: SingleChildScrollView(
-                padding: EdgeInsets.symmetric(vertical: 10),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      BlocBuilder<AuthenticationBloc, AuthenticationState>(
-                          builder: (context, authState) {
-                        if (authState.status ==
-                                AuthenticationStatus.authenticated &&
-                            authState.user.animals!.isNotEmpty) {
-                          return Column(children: [
-                            SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                          height: 112,
-                                          child: ListView.builder(
-                                              shrinkWrap: true,
-                                              scrollDirection: Axis.horizontal,
-                                              itemCount: authState
-                                                  .user.animals!.length,
-                                              itemBuilder: (context, index) {
-                                                var birthday = authState.user
-                                                    .animals![index].birthday
-                                                    .toString();
-                                                var year = int.parse(
-                                                    birthday.split('-')[0]);
-                                                var nowYear =
-                                                    DateTime.now().year;
-                                                var age = (nowYear - year + 1)
-                                                    .toString();
+        body: BlocBuilder<AuthenticationBloc, AuthenticationState>(
+            builder: (context, state) {
+          if (state.status != AuthenticationStatus.unknown) {
+            return SafeArea(
+                child: SingleChildScrollView(
+                    padding: EdgeInsets.symmetric(vertical: 10),
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          BlocBuilder<AuthenticationBloc, AuthenticationState>(
+                              builder: (context, authState) {
+                            if (authState.status ==
+                                    AuthenticationStatus.authenticated &&
+                                authState.user.animals!.isNotEmpty) {
+                              return Column(children: [
+                                SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                              height: 112,
+                                              child: ListView.builder(
+                                                  shrinkWrap: true,
+                                                  scrollDirection:
+                                                      Axis.horizontal,
+                                                  itemCount: authState
+                                                      .user.animals!.length,
+                                                  itemBuilder:
+                                                      (context, index) {
+                                                    var birthday = authState
+                                                        .user
+                                                        .animals![index]
+                                                        .birthday
+                                                        .toString();
+                                                    var year = int.parse(
+                                                        birthday.split('-')[0]);
+                                                    var nowYear =
+                                                        DateTime.now().year;
+                                                    var age =
+                                                        (nowYear - year + 1)
+                                                            .toString();
 
-                                                return buildAnimalTile(
-                                                    authState,
-                                                    index,
-                                                    age,
-                                                    context);
-                                              })),
-                                      InkWell(
-                                        onTap: () => context.vRouter
-                                            .to(PetScreen.routeName),
-                                        child: Container(
-                                            child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                children: [
-                                                  CircleAvatar(
-                                                      radius: 35,
-                                                      backgroundColor: Colors
-                                                          .black
-                                                          .withOpacity(0.04),
-                                                      child: Icon(Icons.add,
-                                                          size: 32,
-                                                          color: Colors.grey)),
-                                                  SizedBox(width: 15),
-                                                  Text('등록하기',
-                                                      style: TextStyle(
-                                                          fontSize: 17,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          color: Colors.grey))
-                                                ]),
-                                            margin: EdgeInsets.symmetric(
-                                                horizontal: 16),
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 20),
-                                            height: 112,
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.85,
-                                            decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(15),
-                                                border: Border.all(
-                                                    color: Color(0xFFDFE2E9)))),
-                                      )
-                                    ])),
-                            SizedBox(height: 50)
-                          ]);
-                        }
-                        return Column(children: [
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 16.0),
-                            child: GestureDetector(
-                                onTap: () => _authenticationBloc.state.status ==
-                                        AuthenticationStatus.authenticated
-                                    ? context.vRouter.to(PetScreen.routeName)
-                                    : showLoginNeededDialog(context),
-                                child: Image.asset(
-                                    "assets/images/mainbanner.png")),
-                          ),
-                          SizedBox(height: 50)
-                        ]);
-                      }),
-                      Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 16),
-                          child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text.rich(TextSpan(
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold),
-                                    children: [
-                                      TextSpan(text: '내 주변 동물병원\n'),
-                                      TextSpan(text: '진료비를 검색해 보세요'),
-                                    ])),
-                                SizedBox(height: 15),
-                                Row(children: [
-                                  Expanded(
-                                      child: Container(
-                                          height: 44,
-                                          child: TextField(
-                                              textAlignVertical:
-                                                  TextAlignVertical.center,
-                                              textInputAction:
-                                                  TextInputAction.go,
-                                              onSubmitted: (value) {
-                                                if (value.trim() != '') {
-                                                  // context.vRouter.toNamed('/search_result',
-                                                  //     pathParameters: {
-                                                  //       'keyword': _textEditingController.text
-                                                  //     });
-                                                  _textEditingController
-                                                      .clear();
-                                                }
-                                              },
-                                              autofocus: true,
-                                              controller:
-                                                  _textEditingController,
-                                              decoration: InputDecoration(
-                                                  isCollapsed: true,
-                                                  contentPadding:
-                                                      EdgeInsets.symmetric(
-                                                          horizontal: 15),
-                                                  enabledBorder: OutlineInputBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              15.0),
-                                                      borderSide: BorderSide(
-                                                          color: Color(
-                                                              0xFFDFE2E9))),
-                                                  focusedBorder: OutlineInputBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              15),
-                                                      borderSide: BorderSide(
-                                                          color:
-                                                              Color(0xFFDFE2E9))),
-                                                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0), borderSide: BorderSide(color: Color(0xFFDFE2E9))),
-                                                  hintText: '중성화 수술',
-                                                  hintStyle: TextStyle(color: Colors.grey, fontSize: 16),
-                                                  suffixIcon: IconButton(icon: SvgPicture.asset('assets/icons/search_icon.svg', color: Colors.grey), color: Colors.black, onPressed: () => _textEditingController.clear()))))),
-                                  SizedBox(width: 10),
-                                  SizedBox(width: 10),
-                                  GestureDetector(
-                                      onTap: () => Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  SearchResultScreen())),
-                                      child: Container(
-                                          alignment: Alignment.center,
-                                          width: 93,
-                                          height: 44,
-                                          child: Text('검색하기',
-                                              style: TextStyle(
-                                                  fontSize: 16,
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold)),
-                                          decoration: BoxDecoration(
-                                              color:
-                                                  Theme.of(context).accentColor,
-                                              borderRadius:
-                                                  BorderRadius.circular(15))))
-                                ]),
-                                SizedBox(height: 40),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 19),
-                                  child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Menu(
-                                            iconPath: 'assets/icons/24hour.svg',
-                                            title: '24시 진료'),
-                                        Menu(
-                                            iconPath: 'assets/icons/eye.svg',
-                                            title: '안과 진료'),
-                                        Menu(
-                                            iconPath: 'assets/icons/skin.svg',
-                                            title: '피부진료'),
-                                        Menu(
-                                            iconPath:
-                                                'assets/icons/stomache.svg',
-                                            title: '소화기관'),
-                                      ]),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 19, vertical: 15),
-                                  child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Menu(
-                                            iconPath: 'assets/icons/lungs.svg',
-                                            title: '호흡기'),
-                                        Menu(
-                                            iconPath: 'assets/icons/tooth.svg',
-                                            title: '치과 전문'),
-                                        Menu(
-                                            iconPath: 'assets/icons/brain.svg',
-                                            title: '정신(뇌)'),
-                                        Menu(
-                                            iconPath:
-                                                'assets/icons/korean_hospital.svg',
-                                            title: '한의원'),
-                                      ]),
-                                ),
-                                SizedBox(height: 15),
-                                GestureDetector(
-                                    onTap: () {},
+                                                    return buildAnimalTile(
+                                                        authState,
+                                                        index,
+                                                        age,
+                                                        context);
+                                                  })),
+                                          InkWell(
+                                            onTap: () => context.vRouter
+                                                .to(PetScreen.routeName),
+                                            child: Container(
+                                                child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      CircleAvatar(
+                                                          radius: 35,
+                                                          backgroundColor:
+                                                              Colors.black
+                                                                  .withOpacity(
+                                                                      0.04),
+                                                          child: Icon(Icons.add,
+                                                              size: 32,
+                                                              color:
+                                                                  Colors.grey)),
+                                                      SizedBox(width: 15),
+                                                      Text('등록하기',
+                                                          style: TextStyle(
+                                                              fontSize: 17,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              color:
+                                                                  Colors.grey))
+                                                    ]),
+                                                margin: EdgeInsets.symmetric(
+                                                    horizontal: 16),
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 20),
+                                                height: 112,
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.85,
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            15),
+                                                    border: Border.all(
+                                                        color: Color(
+                                                            0xFFDFE2E9)))),
+                                          )
+                                        ])),
+                                SizedBox(height: 50)
+                              ]);
+                            }
+                            return Column(children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16.0),
+                                child: GestureDetector(
+                                    onTap: () => _authenticationBloc
+                                                .state.status ==
+                                            AuthenticationStatus.authenticated
+                                        ? context.vRouter
+                                            .to(PetScreen.routeName)
+                                        : showLoginNeededDialog(context),
                                     child: Image.asset(
-                                        'assets/images/home_screen_banner.png'))
-                              ]))
-                    ]))));
+                                        "assets/images/mainbanner.png")),
+                              ),
+                              SizedBox(height: 50)
+                            ]);
+                          }),
+                          Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 16),
+                              child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text.rich(TextSpan(
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold),
+                                        children: [
+                                          TextSpan(text: '내 주변 동물병원\n'),
+                                          TextSpan(text: '진료비를 검색해 보세요'),
+                                        ])),
+                                    SizedBox(height: 15),
+                                    Row(children: [
+                                      Expanded(
+                                          child: Container(
+                                              height: 44,
+                                              child: TextField(
+                                                  textAlignVertical:
+                                                      TextAlignVertical.center,
+                                                  textInputAction:
+                                                      TextInputAction.go,
+                                                  onSubmitted: (value) {
+                                                    if (value.trim() != '') {
+                                                      // context.vRouter.toNamed('/search_result',
+                                                      //     pathParameters: {
+                                                      //       'keyword': _textEditingController.text
+                                                      //     });
+                                                      _textEditingController
+                                                          .clear();
+                                                    }
+                                                  },
+                                                  autofocus: false,
+                                                  controller:
+                                                      _textEditingController,
+                                                  decoration: InputDecoration(
+                                                      isCollapsed: true,
+                                                      contentPadding:
+                                                          EdgeInsets.symmetric(
+                                                              horizontal: 15),
+                                                      enabledBorder: OutlineInputBorder(
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                  15.0),
+                                                          borderSide: BorderSide(
+                                                              color: Color(
+                                                                  0xFFDFE2E9))),
+                                                      focusedBorder: OutlineInputBorder(
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                  15),
+                                                          borderSide: BorderSide(
+                                                              color: Color(0xFFDFE2E9))),
+                                                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0), borderSide: BorderSide(color: Color(0xFFDFE2E9))),
+                                                      hintText: '중성화 수술',
+                                                      hintStyle: TextStyle(color: Colors.grey, fontSize: 16),
+                                                      suffixIcon: IconButton(icon: SvgPicture.asset('assets/icons/search_icon.svg', color: Colors.grey), color: Colors.black, onPressed: () => _textEditingController.clear()))))),
+                                      SizedBox(width: 10),
+                                      SizedBox(width: 10),
+                                      GestureDetector(
+                                          onTap: () => Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      SearchResultScreen())),
+                                          child: Container(
+                                              alignment: Alignment.center,
+                                              width: 93,
+                                              height: 44,
+                                              child: Text('검색하기',
+                                                  style: TextStyle(
+                                                      fontSize: 16,
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.bold)),
+                                              decoration: BoxDecoration(
+                                                  color: Theme.of(context)
+                                                      .accentColor,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          15))))
+                                    ]),
+                                    SizedBox(height: 40),
+                                    Padding(
+                                      padding:
+                                          EdgeInsets.symmetric(horizontal: 19),
+                                      child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Menu(
+                                                iconPath:
+                                                    'assets/icons/24hour.svg',
+                                                title: '24시 진료'),
+                                            Menu(
+                                                iconPath:
+                                                    'assets/icons/eye.svg',
+                                                title: '안과 진료'),
+                                            Menu(
+                                                iconPath:
+                                                    'assets/icons/skin.svg',
+                                                title: '피부진료'),
+                                            Menu(
+                                                iconPath:
+                                                    'assets/icons/stomache.svg',
+                                                title: '소화기관'),
+                                          ]),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 19, vertical: 15),
+                                      child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Menu(
+                                                iconPath:
+                                                    'assets/icons/lungs.svg',
+                                                title: '호흡기'),
+                                            Menu(
+                                                iconPath:
+                                                    'assets/icons/tooth.svg',
+                                                title: '치과 전문'),
+                                            Menu(
+                                                iconPath:
+                                                    'assets/icons/brain.svg',
+                                                title: '정신(뇌)'),
+                                            Menu(
+                                                iconPath:
+                                                    'assets/icons/korean_hospital.svg',
+                                                title: '한의원'),
+                                          ]),
+                                    ),
+                                    SizedBox(height: 15),
+                                    GestureDetector(
+                                        onTap: () {},
+                                        child: Image.asset(
+                                            'assets/images/home_screen_banner.png'))
+                                  ]))
+                        ])));
+          }
+          return Center(
+              child: Image.asset('assets/images/indicator.gif',
+                  width: 100, height: 100));
+        }));
   }
 
   Future<dynamic> showLoginNeededDialog(BuildContext context) {
@@ -372,7 +403,8 @@ class _HomePageState extends State<HomePage> {
                           Text.rich(
                               TextSpan(children: [
                                 TextSpan(
-                                    text: authState.user.animals![index].name ?? ""),
+                                    text: authState.user.animals![index].name ??
+                                        ""),
                                 TextSpan(
                                     text: '(${age}세)',
                                     style: TextStyle(
