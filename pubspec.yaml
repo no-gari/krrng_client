@@ -78,6 +78,7 @@ dependencies:
   flutter_naver_map:
     git: https://github.com/wnsgh78b/flutter_naver_map.git
   geolocator: ^8.2.0
+  widgets_to_image: ^0.0.2
 
 dev_dependencies:
   flutter_test:
