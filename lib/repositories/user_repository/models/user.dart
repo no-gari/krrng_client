@@ -7,7 +7,8 @@ part 'user.g.dart';
 @JsonSerializable()
 class User extends Equatable {
   const User(
-      {this.nickname,
+      {this.noti,
+      this.nickname,
       this.profileImage,
       this.birthday,
       this.sexChoices,
@@ -15,6 +16,7 @@ class User extends Equatable {
       this.phone,
       this.email});
 
+  final bool? noti;
   final String? nickname;
   final String? profileImage;
   final String? birthday;
@@ -24,14 +26,23 @@ class User extends Equatable {
   final String? email;
 
   @override
-  List<Object?> get props =>
-      [nickname, profileImage, birthday, sexChoices, animals, phone, email];
+  List<Object?> get props => [
+        noti,
+        nickname,
+        profileImage,
+        birthday,
+        sexChoices,
+        animals,
+        phone,
+        email
+      ];
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 
   Map<String, dynamic> toJson() => _$UserToJson(this);
 
   User copyWith({
+    bool? noti,
     String? nickname,
     String? profileImage,
     String? birthday,
@@ -41,6 +52,7 @@ class User extends Equatable {
     String? email,
   }) {
     return User(
+      noti: noti ?? this.noti,
       nickname: nickname ?? this.nickname,
       profileImage: profileImage ?? this.profileImage,
       birthday: birthday ?? this.birthday,
