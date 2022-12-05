@@ -5,18 +5,19 @@ part 'notification.g.dart';
 
 @JsonSerializable()
 class Notification extends Equatable {
-  const Notification(this.id, this.title, this.subTitle, this.url, this.hits);
+  const Notification(
+      this.id, this.sort, this.title, this.content, this.timesince);
 
   final int? id;
-  final int? hits;
+  final String? sort;
   final String? title;
-  final String? subTitle;
-  final String? url;
+  final String? content;
+  final String? timesince;
 
   factory Notification.fromJson(Map<String, dynamic> json) =>
       _$NotificationFromJson(json);
   Map<String, dynamic> toJson() => _$NotificationToJson(this);
 
   @override
-  List<Object?> get props => [id, title, subTitle, url, hits];
+  List<Object?> get props => [id, sort, title, content, timesince];
 }

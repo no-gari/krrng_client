@@ -8,7 +8,6 @@ import 'package:kpostal/kpostal.dart';
 import 'package:krrng_client/modules/authentication/bloc/authentication_bloc.dart';
 import 'package:krrng_client/modules/pet/cubit/kind_cubit.dart';
 import 'package:krrng_client/modules/pet/cubit/pet_cubit.dart';
-import 'package:krrng_client/repositories/authentication_repository/authentication_repository.dart';
 import 'package:krrng_client/support/style/theme.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:vrouter/vrouter.dart';

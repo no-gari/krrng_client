@@ -1,6 +1,5 @@
 import 'package:krrng_client/repositories/notification_repository/models/notification.dart';
 import 'package:krrng_client/support/networks/network_exceptions.dart';
-import 'package:krrng_client/support/networks/page_response.dart';
 import 'package:krrng_client/support/networks/api_result.dart';
 import 'package:krrng_client/support/networks/dio_client.dart';
 
@@ -11,19 +10,31 @@ class NotificationRepository {
 
   NotificationRepository(this._dioClient);
 
-  Future<ApiResult<PageResponse>> getNotification(int page) async {
+  Future<ApiResult<List<dynamic>>> getNotificationList() async {
     try {
-      var response = await _dioClient.get('/api/notification?page=$page');
-      return ApiResult.success(data: PageResponse.fromJson(response));
+      var response =
+          await _dioClient.getWithAuth('/dev/api/v1/cs/notification/list/');
+      return ApiResult.success(data: response);
     } catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
   }
 
-  Future<ApiResult<Notification>> getNotificationDetail(int id) async {
+  Future<ApiResult<void>> readlAllNotification() async {
     try {
-      var response = await _dioClient.get('/api/notification/$id');
-      return ApiResult.success(data: Notification.fromJson(response));
+      var response =
+          await _dioClient.getWithAuth('/dev/api/v1/cs/notification/read-all/');
+      return ApiResult.success(data: response);
+    } catch (e) {
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e));
+    }
+  }
+
+  Future<ApiResult<List<dynamic>>> notificationDelete(int id) async {
+    try {
+      var response =
+          await _dioClient.delete('/dev/api/v1/cs/notification/delete/${id}/');
+      return ApiResult.success(data: response);
     } catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
