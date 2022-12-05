@@ -81,7 +81,12 @@ class _HomePageState extends State<HomePage> {
                                           Navigator.of(context).pop())
                                 ]);
                           }),
-                  child: SvgPicture.asset('assets/icons/noti_icon.svg')),
+                  child: _authenticationBloc.state.status ==
+                          AuthenticationStatus.unauthenticated
+                      ? SvgPicture.asset('assets/icons/noti_no.svg')
+                      : _authenticationBloc.state.user.noti == true
+                          ? SvgPicture.asset('assets/icons/noti_icon.svg')
+                          : SvgPicture.asset('assets/icons/noti_no.svg')),
               SizedBox(width: 20),
               GestureDetector(
                   onTap: () => context.vRouter.to(MyPageScreen.routeName),
