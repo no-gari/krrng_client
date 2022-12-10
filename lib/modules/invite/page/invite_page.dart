@@ -112,13 +112,17 @@ class _InvitePageState extends State<InvitePage> {
           imageUrl: Uri.parse(
               "https://t1.daumcdn.net/cfile/tistory/24283C3858F778CA2E"),
           link: Link(
-              webUrl: Uri.parse('https://onelink.to/82ttrz'),
-              mobileWebUrl: Uri.parse('https://onelink.to/82ttrz'))),
+              webUrl: Uri.parse(
+                  'https://6vvpl67pw2.execute-api.ap-northeast-2.amazonaws.com/dev'),
+              mobileWebUrl: Uri.parse(
+                  'https://6vvpl67pw2.execute-api.ap-northeast-2.amazonaws.com/dev'))),
       buttons: [
         Button(
             title: '앱 다운로드',
             link: Link(
-                webUrl: Uri.parse('https://onelink.to/82ttrz'),
-                mobileWebUrl: Uri.parse('https://onelink.to/82ttrz')))
+                webUrl: Uri.parse(
+                    'https://6vvpl67pw2.execute-api.ap-northeast-2.amazonaws.com/dev'),
+                mobileWebUrl: Uri.parse(
+                    'https://6vvpl67pw2.execute-api.ap-northeast-2.amazonaws.com/dev')))
       ]);
 }
