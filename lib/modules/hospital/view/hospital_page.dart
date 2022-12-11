@@ -4,7 +4,6 @@ import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:krrng_client/modules/hospital/cubit/hospital_cubit.dart';
 import 'package:krrng_client/modules/hospital_search/view/hostipal_search_page.dart';
 import 'package:krrng_client/support/style/theme.dart';
-import 'package:vrouter/vrouter.dart';
 import 'package:widgets_to_image/widgets_to_image.dart';
 
 import '../widget_marker.dart';
@@ -33,6 +32,8 @@ class _HospitalPageState extends State<HospitalPage> {
     return Scaffold(
       bottomSheet: GestureDetector(
         onTap: ()  {
+          _hospitalCubit.currentLocation(_hospitalCubit.state.location!);
+          _hospitalCubit.getHosipitals();
           Navigator.push(context,
             MaterialPageRoute(
                 builder: (_) => BlocProvider.value(value: _hospitalCubit, child: HospitalSearchPage(),)
@@ -95,25 +96,15 @@ class _HospitalPageState extends State<HospitalPage> {
     var overlayImage = OverlayImage.fromByteArray(bytes!);
     final place = _hospitalCubit.state.currentPlace ?? "";
 
-    if (_markers.length == 0) {
-      _markers.add(Marker(
-          markerId: DateTime.now().toIso8601String(),
-          position: latLng,
-          icon: overlayImage,
-          anchor: AnchorPoint(0.5, 1),
-          width: 175,
-          height: (place.length/10).toInt() * 30 + 15,
-      ));
-    } else {
-      _markers[0] = Marker(
-          markerId: DateTime.now().toIso8601String(),
-          position: latLng,
-          icon: overlayImage,
-          anchor: AnchorPoint(0.5, 1),
-          width: 175,
-          height: (place.length/10).toInt() * 30 + 15,
-      );
-    }
+    _markers = [];
+    _markers.add(Marker(
+      markerId: DateTime.now().toIso8601String(),
+      position: latLng,
+      icon: overlayImage,
+      anchor: AnchorPoint(0.5, 1),
+      width: 175,
+      height: (place.length/10).round() * 38 ,
+    ));
 
     setState(() {});
   }

@@ -17,12 +17,12 @@ class _WidgetMarkerState extends State<WidgetMarker> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: (place.length/10).toInt() * 30 + 15,
+      height: (place.length/10).round() * 38 ,
       child: Column(
         children: [
           Container(
             width: 175,
-            height: (place.length/10).toInt() * 25,
+            height: (place.length/10).round() * 38 - 24,
             alignment: Alignment.center,
             decoration: BoxDecoration(
               color: primaryColor,
