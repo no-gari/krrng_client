@@ -16,6 +16,8 @@ Hospital _$HospitalFromJson(Map<String, dynamic> json) => Hospital(
       address: json['address'] as String?,
       addressDetail: json['addressDetail'] as String?,
       recommend: json['recommend'] as num?,
+      latitude: json['latitude'] as String?,
+      longitude: json['longitude'] as String?,
     );
 
 Map<String, dynamic> _$HospitalToJson(Hospital instance) => <String, dynamic>{
@@ -28,4 +30,6 @@ Map<String, dynamic> _$HospitalToJson(Hospital instance) => <String, dynamic>{
       'address': instance.address,
       'addressDetail': instance.addressDetail,
       'recommend': instance.recommend,
+      'latitude': instance.latitude,
+      'longitude': instance.longitude,
     };

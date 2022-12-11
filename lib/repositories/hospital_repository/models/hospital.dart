@@ -14,7 +14,9 @@ class Hospital extends Equatable {
     this.name,
     this.address,
     this.addressDetail,
-    this.recommend
+    this.recommend,
+    this.latitude,
+    this.longitude,
   });
 
   final int id;
@@ -26,11 +28,13 @@ class Hospital extends Equatable {
   final String? address;
   final String? addressDetail;
   final num? recommend;
+  final String? latitude;
+  final String? longitude;
 
 
   factory Hospital.fromJson(Map<String, dynamic> json) => _$HospitalFromJson(json);
   Map<String, dynamic> toJson() => _$HospitalToJson(this);
 
   @override
-  List<Object?> get props => [id, price, distance, reviewCount, image, name, address, addressDetail, recommend];
+  List<Object?> get props => [id, price, distance, reviewCount, image, name, address, addressDetail, recommend, latitude, longitude];
 }
