@@ -144,9 +144,9 @@ class _HospitalSearchPageState extends State<HospitalSearchPage> {
                                     location: "${hospitals[index].address} ${hospitals[index].addressDetail}",
                                     price: hospitals[index].price,
                                     image: hospitals[index].image,
-                                    temperature: 68,
+                                    temperature: hospitals[index].recommend!.toDouble(),
                                     reviews: hospitals[index].reviewCount,
-                                    howFar: 31),
+                                    howFar: hospitals[index].distance),
                               );
                             },
                             separatorBuilder: (BuildContext ctx, int idx) => Divider(height: 15, color: dividerColor)
