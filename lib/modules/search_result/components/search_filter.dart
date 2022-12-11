@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:krrng_client/repositories/hospital_repository/models/enums.dart';
 
 import 'search_filter_button.dart';
 
@@ -63,74 +64,30 @@ class _SearchFilterState extends State<SearchFilter> {
                           Text('기준',
                               style: TextStyle(
                                   fontSize: 18, fontWeight: FontWeight.w900)),
-                          Wrap(children: [
-                            SearchFilterButton(
-                                title: '거리순',
-                                isSelected: _selectedOrderIndex == 0,
-                                onTap: () =>
-                                    setState(() => _selectedOrderIndex = 0)),
-                            SearchFilterButton(
-                                title: '가격순',
-                                isSelected: _selectedOrderIndex == 1,
-                                onTap: () =>
-                                    setState(() => _selectedOrderIndex = 1)),
-                            SearchFilterButton(
-                                title: '애정온도순',
-                                isSelected: _selectedOrderIndex == 2,
-                                onTap: () =>
-                                    setState(() => _selectedOrderIndex = 2)),
-                            SearchFilterButton(
-                                title: '리뷰순',
-                                isSelected: _selectedOrderIndex == 3,
-                                onTap: () =>
-                                    setState(() => _selectedOrderIndex = 3))
-                          ]),
+                          Wrap(
+                              children: List.generate(HospitalFilter.values.length,
+                                      (index) => SearchFilterButton(
+                                          title: HospitalFilter.values[index].title,
+                                          isSelected: _selectedOrderIndex == index,
+                                          onTap: () => setState(() => _selectedOrderIndex = index))
+                              )
+                          ),
                           SizedBox(height: 60),
                           Text('특화 분야',
                               style: TextStyle(
                                   fontSize: 18, fontWeight: FontWeight.w900)),
-                          Wrap(children: [
-                            SearchFilterButton(
-                                title: '24시 진료',
-                                isSelected: _selectedHospitalIndex == 0,
-                                onTap: () =>
-                                    setState(() => _selectedHospitalIndex = 0)),
-                            SearchFilterButton(
-                                title: '안과진료',
-                                isSelected: _selectedHospitalIndex == 0,
-                                onTap: () =>
-                                    setState(() => _selectedHospitalIndex = 0)),
-                            SearchFilterButton(
-                                title: '피부진료',
-                                isSelected: _selectedHospitalIndex == 1,
-                                onTap: () =>
-                                    setState(() => _selectedHospitalIndex = 1)),
-                            SearchFilterButton(
-                                title: '소화기관',
-                                isSelected: _selectedHospitalIndex == 2,
-                                onTap: () =>
-                                    setState(() => _selectedHospitalIndex = 2)),
-                            SearchFilterButton(
-                                title: '호흡기',
-                                isSelected: _selectedHospitalIndex == 3,
-                                onTap: () =>
-                                    setState(() => _selectedHospitalIndex = 3)),
-                            SearchFilterButton(
-                                title: '치과 전문',
-                                isSelected: _selectedHospitalIndex == 4,
-                                onTap: () =>
-                                    setState(() => _selectedHospitalIndex = 4)),
-                            SearchFilterButton(
-                                title: '정신(뇌)',
-                                isSelected: _selectedHospitalIndex == 5,
-                                onTap: () =>
-                                    setState(() => _selectedHospitalIndex = 5)),
-                            SearchFilterButton(
-                                title: '한의원',
-                                isSelected: _selectedHospitalIndex == 5,
-                                onTap: () =>
-                                    setState(() => _selectedHospitalIndex = 5))
-                          ])
-                        ])))));
+                          Wrap(children: List.generate(HospitalPart.values.length, (index) =>
+                              SearchFilterButton(
+                                  title: HospitalPart.values[index].title,
+                                  isSelected: _selectedHospitalIndex == index,
+                                  onTap: () =>
+                                      setState(() => _selectedHospitalIndex = index))
+                          ))
+                        ]
+                    )
+                )
+            )
+        )
+    );
   }
 }
