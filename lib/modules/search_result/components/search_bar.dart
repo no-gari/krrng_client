@@ -40,6 +40,8 @@ class SearchBar extends StatelessWidget {
             border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(15.0),
                 borderSide: BorderSide(color: Color(0xFFDFE2E9))),
+            fillColor: Colors.white,
+            filled: true,
             hintText: '검색어를 입력 하세요.',
             suffixIcon: Container(
                 width: 66,

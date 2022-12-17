@@ -18,7 +18,7 @@ class HospitalTile extends StatelessWidget {
   final String? location;
   final String? image;
   final int? price;
-  final int? temperature;
+  final double? temperature;
   final int? reviews;
   final int? howFar;
 
