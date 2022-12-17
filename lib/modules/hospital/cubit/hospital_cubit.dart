@@ -17,6 +17,22 @@ class HospitalCubit extends Cubit<HospitalState> {
   final MapRepository _mapRepository;
   final HospitalRepository _hospitalRepository;
 
+  void selectedFilter(String filter) {
+    emit(state.copyWith(
+      selectedFilter: HospitalFilter.getFilter(filter)
+    ));
+
+    getHosipitals();
+  }
+
+  void selectedPart(String part) {
+    emit(state.copyWith(
+      selectedPart: HospitalPart.getPart(part)
+    ));
+
+    getHosipitals();
+  }
+
   Future<void> currentPosition() async {
     Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     var lat = position.latitude;
@@ -59,6 +75,12 @@ class HospitalCubit extends Cubit<HospitalState> {
     final location = state.location;
     final selectedPart = state.selectedPart ?? HospitalPart.allDay;
     final selectedFilter = state.selectedFilter ?? HospitalFilter.distance;
+
+    emit(state.copyWith(
+        selectedPart: selectedPart,
+        selectedFilter: selectedFilter
+    ));
+
     if (location != null) {
       var response = await _hospitalRepository.getHospitals(location, selectedPart, selectedFilter);
 

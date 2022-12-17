@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
@@ -35,6 +36,7 @@ class _HospitalSearchPageState extends State<HospitalSearchPage> {
   void initState() {
     super.initState();
     _hospitalCubit = BlocProvider.of<HospitalCubit>(context);
+    _hospitalCubit.getHosipitals();
   }
 
   @override
@@ -112,15 +114,63 @@ class _HospitalSearchPageState extends State<HospitalSearchPage> {
                           // color: Colors.red,
                           child: Row(
                             children: [
-                              SearchFilterButton(
-                                  title: "필터1",//state.selectedFilter!.title,
-                                  isSelected: false,
-                                  onTap: () => print("selectedFilter")
+                            Container(
+                            margin: EdgeInsets.only(right: 7, top: 10),
+                            padding: EdgeInsets.symmetric(horizontal: 17, vertical: 10),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(25),
+                                border: Border.all(color: dividerColor),
+                                color: Colors.white
+                            ),
+                            height: 38,
+                            child: DropdownButton<String>(
+                                borderRadius: BorderRadius.circular(18.0),
+                                dropdownColor: Colors.white,
+                                value: state.selectedFilter?.title,
+                                elevation: 8,
+                                underline: SizedBox.shrink(),
+                                style: TextStyle(color: Colors.black),
+                                items: HospitalFilter.values.map((e) => e.title).toList().map<DropdownMenuItem<String>>((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                }).toList(),
+                                onChanged: (value) {
+                                  if (value != null) {
+                                    _hospitalCubit.selectedFilter(value);
+                                  }
+                                },
                               ),
-                              SearchFilterButton(
-                                  title: "필터2",//state.selectedFilter!.title,
-                                  isSelected: false,
-                                  onTap: () => print("selectedFilter")
+                            ),
+                              Container(
+                                margin: EdgeInsets.only(right: 7, top: 10),
+                                padding: EdgeInsets.symmetric(horizontal: 17, vertical: 10),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(25),
+                                    border: Border.all(color: dividerColor),
+                                    color: Colors.white
+                                ),
+                                height: 38,
+                                child: DropdownButton<String>(
+                                  borderRadius: BorderRadius.circular(18.0),
+                                  dropdownColor: Colors.white,
+                                  value: state.selectedPart?.title,
+                                  elevation: 8,
+                                  underline: SizedBox.shrink(),
+                                  style: TextStyle(color: Colors.black),
+                                  items: HospitalPart.values.map((e) => e.title).toList().map<DropdownMenuItem<String>>((String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(value),
+                                    );
+                                  }).toList(),
+                                  onChanged: (value) {
+                                    if (value != null) {
+                                      _hospitalCubit.selectedPart(value);
+                                    }
+                                  },
+                                ),
                               ),
                             ],
                           ),
@@ -134,7 +184,7 @@ class _HospitalSearchPageState extends State<HospitalSearchPage> {
                                   final latitude = double.parse(hospitals[index].latitude ?? "0");
                                   final longitude = double.parse(hospitals[index].longitude ?? "0");
 
-                                  _naver?.moveCamera(CameraUpdate.toCameraPosition(
+                                  _naver.moveCamera(CameraUpdate.toCameraPosition(
                                       CameraPosition(target: LatLng(latitude, longitude))),
                                       animationDuration: 1000
                                   );

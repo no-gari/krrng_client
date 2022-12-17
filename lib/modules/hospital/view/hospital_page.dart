@@ -33,7 +33,6 @@ class _HospitalPageState extends State<HospitalPage> {
       bottomSheet: GestureDetector(
         onTap: ()  {
           _hospitalCubit.currentLocation(_hospitalCubit.state.location!);
-          _hospitalCubit.getHosipitals();
           Navigator.push(context,
             MaterialPageRoute(
                 builder: (_) => BlocProvider.value(value: _hospitalCubit, child: HospitalSearchPage(),)

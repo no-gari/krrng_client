@@ -7,6 +7,10 @@ enum HospitalFilter {
   static int getIndex(HospitalFilter filter) {
   return HospitalFilter.values.firstWhere((element) => element == filter).index+1;
   }
+
+  static HospitalFilter getFilter(String value) {
+    return HospitalFilter.values.firstWhere((element) => element.title == value);
+}
 }
 
 enum HospitalPart {
@@ -20,4 +24,8 @@ enum HospitalPart {
   static int getIndex(HospitalPart part) {
     return HospitalPart.values.firstWhere((element) => element == part).index+1;
   }
+
+  static HospitalPart getPart(String value) {
+    return HospitalPart.values.firstWhere((element) => element.title == value);
+}
 }
