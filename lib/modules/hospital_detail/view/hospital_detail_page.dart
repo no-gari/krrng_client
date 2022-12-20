@@ -2,7 +2,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:krrng_client/modules/hospital_detail/components/hospital_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:krrng_client/modules/hospital_detail/components/review_tile.dart';
+import 'package:krrng_client/modules/review/review_detail_page.dart';
 import 'package:krrng_client/modules/writing_review/views/views.dart';
+import 'package:krrng_client/repositories/hospital_repository/models/review.dart';
+import 'package:krrng_client/repositories/hospital_repository/models/review_image.dart';
 import 'package:vrouter/vrouter.dart';
 
 import '../../../support/style/format_unit.dart';
@@ -27,6 +30,18 @@ class _HospitalDetailPageState extends State<HospitalDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    final List<Review> testReivew = [Review(
+      nickname: '하이하이하이',
+      rates: 4,
+      diagnosis: '내시경',
+      createdAt: '2022.09.13 12:55',
+      reviewImage: List<ReviewImage>.generate(imageList.length, (index) =>
+          ReviewImage(id: index+1, image: imageList[index])
+      ),
+      content: '강아지가 아플때마다 자주 가는데 항상 친절하고 과잉진료 없이 잘 치료했습니다. 앞으로도 자주 방문 어쩌구',
+      likes: 15,
+    )];
+
     return Scaffold(
         appBar: AppBar(),
         body: SafeArea(
@@ -162,10 +177,11 @@ class _HospitalDetailPageState extends State<HospitalDetailPage> {
                       padding: EdgeInsets.only(left: 24),
                       child: ListView.builder(
                           scrollDirection: Axis.vertical,
-                          itemCount: 5,
+                          itemCount: testReivew.length,
                           shrinkWrap: true,
                           physics: NeverScrollableScrollPhysics(),
                           itemBuilder: (context, index) {
+                            final review = testReivew[index];
                             return Column(children: [
                               Container(
                                   margin: EdgeInsets.only(
@@ -176,15 +192,21 @@ class _HospitalDetailPageState extends State<HospitalDetailPage> {
                                       ? Colors.white
                                       : Colors.black12),
                               ReviewTile(
-                                  name: '하이하이하이',
-                                  rate: 4.0,
-                                  diagnosis: '내시경',
-                                  date: '2022.09.13 12:55',
-                                  imageList: imageList,
-                                  content:
-                                      '강아지가 아플때마다 자주 가는데 항상 친절하고 과잉진료 없이 잘 치료했습니다. 앞으로도 자주 방문 어쩌구',
-                                  likes: 15,
-                                  isLike: true)
+                                  onTap: () => Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => ReviewDetailPage(review)
+                                      )
+                                  ),
+                                  name: review.nickname,
+                                  rate: review.rates,
+                                  diagnosis: review.diagnosis,
+                                  date: review.createdAt,
+                                  imageList: review.reviewImage?.map((e) => e.image).toList(),
+                                  content: review.content,
+                                  likes: review.likes,
+                                  isLike: true,
+                              )
                             ]);
                           })),
               ])
