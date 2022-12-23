@@ -12,58 +12,68 @@ import 'package:krrng_client/support/networks/network_exceptions.dart';
 part 'hospital_state.dart';
 
 class HospitalCubit extends Cubit<HospitalState> {
-  HospitalCubit(this._mapRepository, this._hospitalRepository) : super(const HospitalState());
+  HospitalCubit(this._mapRepository, this._hospitalRepository)
+      : super(const HospitalState());
 
   final MapRepository _mapRepository;
   final HospitalRepository _hospitalRepository;
 
   void selectedFilter(String filter) {
-    emit(state.copyWith(
-      selectedFilter: HospitalFilter.getFilter(filter)
-    ));
+    emit(state.copyWith(selectedFilter: HospitalFilter.getFilter(filter)));
 
     getHosipitals();
   }
 
   void selectedPart(String part) {
-    emit(state.copyWith(
-      selectedPart: HospitalPart.getPart(part)
-    ));
+    emit(state.copyWith(selectedPart: HospitalPart.getPart(part)));
 
     getHosipitals();
   }
 
   Future<void> currentPosition() async {
-    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
     var lat = position.latitude;
     var lon = position.longitude;
 
-    emit(state.copyWith(
-      location: LatLng(lat, lon)
-    ));
+    emit(state.copyWith(location: LatLng(lat, lon)));
     currentLocation(LatLng(lat, lon));
   }
 
   Future<void> updatePosition(LatLng latLng) async {
-    emit(state.copyWith(
-      location: latLng
-    ));
+    emit(state.copyWith(location: latLng));
     currentLocation(latLng);
+  }
+
+  Future<void> tempCurrentLocation(LatLng latLng) async {
+    var response = await _mapRepository.getCurruentLocation(state.location);
+
+    response.when(success: (MapData? mapResponse) {
+      final tepmCurrentPlace =
+          "${mapResponse?.region.area1.name} ${mapResponse?.region.area2.name} ${mapResponse?.region.area3.name} ${mapResponse?.land.name}";
+      final details = "${mapResponse?.land.name}";
+
+      emit(state.copyWith(
+          tempCurrentPlace: tepmCurrentPlace,
+          addressDetail: details,
+          isLoaded: true));
+    }, failure: (NetworkExceptions? error) {
+      emit(state.copyWith(
+          error: error,
+          errorMessage: NetworkExceptions.getErrorMessage(error!)));
+    });
   }
 
   Future<void> currentLocation(LatLng latLng) async {
     var response = await _mapRepository.getCurruentLocation(state.location);
 
     response.when(success: (MapData? mapResponse) {
-      final currentPlace = "${mapResponse?.region.area1.name} ${mapResponse?.region.area2.name} ${mapResponse?.region.area3.name} ${mapResponse?.land.name}";
+      final currentPlace =
+          "${mapResponse?.region.area1.name} ${mapResponse?.region.area2.name} ${mapResponse?.region.area3.name} ${mapResponse?.land.name}";
       final details = "${mapResponse?.land.name}";
 
       emit(state.copyWith(
-          currentPlace: currentPlace,
-          addressDetail: details,
-          isLoaded: true
-      ));
-
+          currentPlace: currentPlace, addressDetail: details, isLoaded: true));
     }, failure: (NetworkExceptions? error) {
       emit(state.copyWith(
           error: error,
@@ -73,29 +83,22 @@ class HospitalCubit extends Cubit<HospitalState> {
 
   Future<void> getHosipitals() async {
     final location = state.location;
-    final selectedPart = state.selectedPart ?? HospitalPart.allDay;
+    final selectedPart = state.selectedPart != null
+        ? HospitalPart.getIndex(state.selectedPart!)
+        : 0;
     final selectedFilter = state.selectedFilter ?? HospitalFilter.distance;
 
-    emit(state.copyWith(
-        selectedPart: selectedPart,
-        selectedFilter: selectedFilter
-    ));
-
     if (location != null) {
-      var response = await _hospitalRepository.getHospitals(location, selectedPart, selectedFilter);
+      var response = await _hospitalRepository.getHospitals(
+          location, selectedPart, selectedFilter);
 
       response.when(success: (List<Hospital>? hospitals) {
-        emit(state.copyWith(
-          hospitals: hospitals,
-          selectedPart: selectedPart,
-          selectedFilter: selectedFilter
-        ));
+        emit(state.copyWith(hospitals: hospitals));
       }, failure: (NetworkExceptions? error) {
         emit(state.copyWith(
             error: error,
             errorMessage: NetworkExceptions.getErrorMessage(error!)));
       });
     }
-
   }
 }

@@ -2,17 +2,26 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:krrng_client/modules/search/cubit/recent_search_cubit.dart';
+import 'package:krrng_client/modules/search_result/view/search_result_screen.dart';
+import 'package:krrng_client/repositories/search_repository/models/recent_search.dart';
 import 'package:vrouter/vrouter.dart';
 
-class SearchBar extends StatelessWidget {
-  SearchBar({this.textEditingController, this.isFirstPage = true});
+class SearchBarHospitalPrice extends StatelessWidget {
+  SearchBarHospitalPrice(
+      {this.textEditingController,
+      this.recentSearchCubit,
+      this.isFirstPage = true});
 
   final TextEditingController? textEditingController;
+  final RecentSearchCubit? recentSearchCubit;
+  // final FocusNode? node;
   final bool? isFirstPage;
 
   @override
   Widget build(BuildContext context) {
     return TextField(
+        // focusNode: node,
         textInputAction: TextInputAction.go,
         onSubmitted: (value) {
           if (value.trim() != '') {
@@ -20,10 +29,13 @@ class SearchBar extends StatelessWidget {
             var values = List<int>.generate(8, (i) => random.nextInt(255));
             var randomId = base64UrlEncode(values);
 
+            recentSearchCubit!.addRecentSearch(RecentSearch(randomId, value));
+            context.vRouter.toNamed(SearchResultScreen.routeName,
+                pathParameters: {'keyword': value});
             textEditingController!.clear();
           }
         },
-        autofocus: true,
+        autofocus: false,
         controller: textEditingController,
         textAlignVertical: TextAlignVertical.center,
         decoration: InputDecoration(
@@ -45,7 +57,7 @@ class SearchBar extends StatelessWidget {
                 borderSide: BorderSide(color: Color(0xFFDFE2E9))),
             fillColor: Colors.white,
             filled: true,
-            hintText: '검색어를 입력 하세요.',
+            hintText: '증상을 검색하세요.',
             suffixIcon: Container(
                 width: 66,
                 child: Row(children: [

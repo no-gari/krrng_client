@@ -1,20 +1,21 @@
 part of 'hospital_cubit.dart';
 
 class HospitalState extends Equatable {
-  const HospitalState({
-    this.location,
-    this.currentPlace,
-    this.addressDetail,
-    this.hospitals,
-    this.selectedPart,
-    this.selectedFilter,
-    this.isLoaded,
-    this.error,
-    this.errorMessage
-  });
+  const HospitalState(
+      {this.location,
+      this.currentPlace,
+      this.tempCurrentPlace,
+      this.addressDetail,
+      this.hospitals,
+      this.selectedPart,
+      this.selectedFilter,
+      this.isLoaded,
+      this.error,
+      this.errorMessage});
 
   final LatLng? location;
   final String? currentPlace;
+  final String? tempCurrentPlace;
   final String? addressDetail;
   final List<Hospital>? hospitals;
   final HospitalPart? selectedPart;
@@ -26,6 +27,7 @@ class HospitalState extends Equatable {
   HospitalState copyWith({
     LatLng? location,
     String? currentPlace,
+    String? tempCurrentPlace,
     String? addressDetail,
     List<Hospital>? hospitals,
     HospitalPart? selectedPart,
@@ -37,6 +39,7 @@ class HospitalState extends Equatable {
     return HospitalState(
         location: location ?? this.location,
         currentPlace: currentPlace ?? this.currentPlace,
+        tempCurrentPlace: tempCurrentPlace ?? this.tempCurrentPlace,
         addressDetail: addressDetail ?? this.addressDetail,
         hospitals: hospitals ?? this.hospitals,
         selectedPart: selectedPart ?? this.selectedPart,
@@ -48,6 +51,15 @@ class HospitalState extends Equatable {
 
   @override
   List<Object?> get props => [
-    location, currentPlace, addressDetail, hospitals, selectedPart, selectedFilter, isLoaded, error, errorMessage
-  ];
+        location,
+        currentPlace,
+        tempCurrentPlace,
+        addressDetail,
+        hospitals,
+        selectedPart,
+        selectedFilter,
+        isLoaded,
+        error,
+        errorMessage
+      ];
 }

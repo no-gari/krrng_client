@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:krrng_client/modules/hospital/cubit/hospital_cubit.dart';
 import 'package:krrng_client/repositories/hospital_repository/models/enums.dart';
 
 import 'search_filter_button.dart';
 
 class SearchFilter extends StatefulWidget {
-  const SearchFilter({Key? key}) : super(key: key);
+  SearchFilter({this.hospitalCubit});
+
+  final HospitalCubit? hospitalCubit;
 
   @override
   State<SearchFilter> createState() => _SearchFilterState();
@@ -13,6 +16,15 @@ class SearchFilter extends StatefulWidget {
 class _SearchFilterState extends State<SearchFilter> {
   int _selectedOrderIndex = 0;
   int _selectedHospitalIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedOrderIndex =
+        HospitalFilter.getIndex(widget.hospitalCubit!.state.selectedFilter!);
+    _selectedHospitalIndex =
+        HospitalPart.getIndex(widget.hospitalCubit!.state.selectedPart!);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,29 +77,26 @@ class _SearchFilterState extends State<SearchFilter> {
                               style: TextStyle(
                                   fontSize: 18, fontWeight: FontWeight.w900)),
                           Wrap(
-                              children: List.generate(HospitalFilter.values.length,
-                                      (index) => SearchFilterButton(
-                                          title: HospitalFilter.values[index].title,
-                                          isSelected: _selectedOrderIndex == index,
-                                          onTap: () => setState(() => _selectedOrderIndex = index))
-                              )
-                          ),
+                              children: List.generate(
+                                  HospitalFilter.values.length,
+                                  (index) => SearchFilterButton(
+                                      title: HospitalFilter.values[index].title,
+                                      isSelected: _selectedOrderIndex == index,
+                                      onTap: () => setState(
+                                          () => _selectedOrderIndex = index)))),
                           SizedBox(height: 60),
                           Text('특화 분야',
                               style: TextStyle(
                                   fontSize: 18, fontWeight: FontWeight.w900)),
-                          Wrap(children: List.generate(HospitalPart.values.length, (index) =>
-                              SearchFilterButton(
-                                  title: HospitalPart.values[index].title,
-                                  isSelected: _selectedHospitalIndex == index,
-                                  onTap: () =>
-                                      setState(() => _selectedHospitalIndex = index))
-                          ))
-                        ]
-                    )
-                )
-            )
-        )
-    );
+                          Wrap(
+                              children: List.generate(
+                                  HospitalPart.values.length,
+                                  (index) => SearchFilterButton(
+                                      title: HospitalPart.values[index].title,
+                                      isSelected:
+                                          _selectedHospitalIndex == index,
+                                      onTap: () => setState(() =>
+                                          _selectedHospitalIndex = index))))
+                        ])))));
   }
 }

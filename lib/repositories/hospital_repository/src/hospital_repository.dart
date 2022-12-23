@@ -10,20 +10,20 @@ class HospitalRepository {
   HospitalRepository(this._dioClient);
 
   Future<ApiResult<List<Hospital>>> getHospitals(
-      LatLng latLng, HospitalPart part, HospitalFilter filter
-      ) async {
-
+      LatLng latLng, int part, HospitalFilter filter) async {
     Map<String, dynamic> body = {
       "userLatitude": latLng.latitude,
       "userLongitude": latLng.longitude,
-      "bestPart": HospitalPart.getIndex(part),
-      "disease": 1,
-      "filter": filter.title.toString()
+      "bestPart": part,
+      "disease": 0,
+      "filter": filter.toString().split('.')[1]
     };
     try {
-      var response = await _dioClient.get('/dev/api/v1/hospital/list', queryParameters: body);
+      var response = await _dioClient.get('/dev/api/v1/hospital/list',
+          queryParameters: body);
       if (response is List<dynamic>) {
-        var hospitalResponse = response.map((e) => Hospital.fromJson(e)).toList();
+        var hospitalResponse =
+            response.map((e) => Hospital.fromJson(e)).toList();
         return ApiResult.success(data: hospitalResponse);
       } else {
         return ApiResult.success(data: []);

@@ -1,4 +1,6 @@
+import 'package:krrng_client/modules/search_result/view/hospital_search_result_screen.dart';
 import 'package:krrng_client/repositories/authentication_repository/src/authentication_repository.dart';
+import 'package:krrng_client/repositories/hospital_repository/models/enums.dart';
 import 'package:krrng_client/repositories/user_repository/src/user_repository.dart';
 import 'package:krrng_client/modules/authentication/bloc/authentication_bloc.dart';
 import 'package:krrng_client/modules/search_result/view/search_result_screen.dart';
@@ -306,18 +308,50 @@ class _HomePageState extends State<HomePage> {
                                               MainAxisAlignment.spaceBetween,
                                           children: [
                                             Menu(
+                                                onTap: () => Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            HospitalSearchResultScreen(
+                                                                hospitalPart:
+                                                                    HospitalPart
+                                                                        .allDay))),
                                                 iconPath:
                                                     'assets/icons/24hour.svg',
                                                 title: '24시 진료'),
                                             Menu(
+                                                onTap: () => Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            HospitalSearchResultScreen(
+                                                                hospitalPart:
+                                                                    HospitalPart
+                                                                        .ophthalmology))),
                                                 iconPath:
                                                     'assets/icons/eye.svg',
                                                 title: '안과 진료'),
                                             Menu(
+                                                onTap: () => Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            HospitalSearchResultScreen(
+                                                                hospitalPart:
+                                                                    HospitalPart
+                                                                        .dermatology))),
                                                 iconPath:
                                                     'assets/icons/skin.svg',
                                                 title: '피부진료'),
                                             Menu(
+                                                onTap: () => Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            HospitalSearchResultScreen(
+                                                                hospitalPart:
+                                                                    HospitalPart
+                                                                        .digestive))),
                                                 iconPath:
                                                     'assets/icons/stomache.svg',
                                                 title: '소화기관'),
@@ -331,18 +365,50 @@ class _HomePageState extends State<HomePage> {
                                               MainAxisAlignment.spaceBetween,
                                           children: [
                                             Menu(
+                                                onTap: () => Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            HospitalSearchResultScreen(
+                                                                hospitalPart:
+                                                                    HospitalPart
+                                                                        .respiratory))),
                                                 iconPath:
                                                     'assets/icons/lungs.svg',
                                                 title: '호흡기'),
                                             Menu(
+                                                onTap: () => Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            HospitalSearchResultScreen(
+                                                                hospitalPart:
+                                                                    HospitalPart
+                                                                        .dentist))),
                                                 iconPath:
                                                     'assets/icons/tooth.svg',
                                                 title: '치과 전문'),
                                             Menu(
+                                                onTap: () => Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            HospitalSearchResultScreen(
+                                                                hospitalPart:
+                                                                    HospitalPart
+                                                                        .psychiatry))),
                                                 iconPath:
                                                     'assets/icons/brain.svg',
                                                 title: '정신(뇌)'),
                                             Menu(
+                                                onTap: () => Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            HospitalSearchResultScreen(
+                                                                hospitalPart:
+                                                                    HospitalPart
+                                                                        .koreaMedicine))),
                                                 iconPath:
                                                     'assets/icons/korean_hospital.svg',
                                                 title: '한의원'),
