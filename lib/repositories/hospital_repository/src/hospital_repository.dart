@@ -10,12 +10,12 @@ class HospitalRepository {
   HospitalRepository(this._dioClient);
 
   Future<ApiResult<List<Hospital>>> getHospitals(
-      LatLng latLng, int part, HospitalFilter filter) async {
+      LatLng latLng, int part, HospitalFilter filter, int disease) async {
     Map<String, dynamic> body = {
       "userLatitude": latLng.latitude,
       "userLongitude": latLng.longitude,
       "bestPart": part,
-      "disease": 0,
+      "disease": disease,
       "filter": filter.toString().split('.')[1]
     };
     try {

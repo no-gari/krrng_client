@@ -1,4 +1,5 @@
 import 'package:krrng_client/repositories/authentication_repository/src/authentication_repository.dart';
+import 'package:krrng_client/repositories/disease_repository/src/disease_repository.dart';
 import 'package:krrng_client/repositories/hospital_repository/src/hospital_repository.dart';
 import 'package:krrng_client/repositories/notification_repository/src/notification_repository.dart';
 import 'package:krrng_client/repositories/search_repository/src/recent_search_repository.dart';
@@ -48,8 +49,10 @@ class MyApp extends StatelessWidget {
           RepositoryProvider(create: (context) => PointRepository(dioClient)),
           RepositoryProvider(create: (context) => MapRepository(mapClient)),
           RepositoryProvider(create: (context) => FAQRepository(dioClient)),
-          RepositoryProvider(create: (context) => HospitalRepository(dioClient)),
+          RepositoryProvider(
+              create: (context) => HospitalRepository(dioClient)),
           RepositoryProvider(create: (context) => RecentSearchRepository()),
+          RepositoryProvider(create: (context) => DiseaseRepository(dioClient)),
         ],
         child: MultiBlocProvider(providers: [
           BlocProvider<AuthenticationBloc>(

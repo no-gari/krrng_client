@@ -1,7 +1,10 @@
-import 'package:krrng_client/modules/search_result/components/search_bar_hospital_price.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:krrng_client/modules/disease/cubit/disease_cubit.dart';
+import 'package:krrng_client/modules/hospital_search/view/hostipal_search_page.dart';
 import 'package:krrng_client/modules/search/cubit/recent_search_cubit.dart';
 import 'package:krrng_client/modules/hospital/cubit/hospital_cubit.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
+import 'package:krrng_client/repositories/disease_repository/models/disease.dart';
 import 'package:widgets_to_image/widgets_to_image.dart';
 import 'package:krrng_client/support/style/theme.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,54 +19,40 @@ class HospitalPage extends StatefulWidget {
 
 class _HospitalPageState extends State<HospitalPage> {
   List<Marker> _markers = [];
+  List<Disease> _diseaseList = [];
   WidgetsToImageController imageController = WidgetsToImageController();
   NaverMapController? _naver;
   LatLng? latlng;
 
   final _textEditingController = TextEditingController();
+  bool _focused = false;
 
+  late FocusNode _focusNode;
   late HospitalCubit _hospitalCubit;
   late RecentSearchCubit _recentSearchCubit;
+  late DiseaseCubit _diseaseCubit;
 
   @override
   void initState() {
     super.initState();
+    _diseaseCubit = BlocProvider.of<DiseaseCubit>(context);
     _hospitalCubit = BlocProvider.of<HospitalCubit>(context);
     _recentSearchCubit = BlocProvider.of<RecentSearchCubit>(context);
     _hospitalCubit.currentPosition();
+    _focusNode = FocusNode();
   }
 
   @override
   void dispose() {
     _textEditingController.dispose();
+    _focusNode.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        bottomSheet: GestureDetector(
-            onTap: () {
-              _hospitalCubit.currentLocation(_hospitalCubit.state.location!);
-
-              // Navigator.push(
-              //     context,
-              //     MaterialPageRoute(
-              //         builder: (_) => BlocProvider.value(
-              //             value: _hospitalCubit, child: HospitalSearchPage())));
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                content: Text("현재 위치가 설정되었습니다."),
-              ));
-            },
-            child: Container(
-                height: 60,
-                width: MediaQuery.of(context).size.width,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(color: Colors.black12)),
-                child: Text("현재 위치 재 설정",
-                    style: font_17_w900.copyWith(color: primaryColor)))),
+        resizeToAvoidBottomInset: false,
         body: BlocConsumer<HospitalCubit, HospitalState>(
             listenWhen: ((previous, current) =>
                 previous.location != current.location),
@@ -98,13 +87,117 @@ class _HospitalPageState extends State<HospitalPage> {
                               .currentLocation(_hospitalCubit.state.location!);
                         }
                       },
-                      onMapTap: (latlng) => FocusScope.of(context).unfocus()),
+                      onMapTap: (latlng) => disableFocus()),
                   SafeArea(
                       child: Padding(
                           padding: EdgeInsets.symmetric(horizontal: 16),
-                          child: SearchBarHospitalPrice(
-                              recentSearchCubit: _recentSearchCubit,
-                              textEditingController: _textEditingController)))
+                          child: Column(children: [
+                            TextField(
+                                focusNode: _focusNode,
+                                textInputAction: TextInputAction.search,
+                                onChanged: (value) {
+                                  _diseaseCubit
+                                      .getDiseaseList(value)
+                                      .then((_) => setState(() {
+                                            _diseaseList =
+                                                _diseaseCubit.state.disease!;
+                                          }));
+                                },
+                                onSubmitted: (value) => disableFocus(),
+                                onTap: () => requestFocus(),
+                                autofocus: false,
+                                controller: _textEditingController,
+                                textAlignVertical: TextAlignVertical.center,
+                                decoration: InputDecoration(
+                                    icon: null,
+                                    isCollapsed: true,
+                                    contentPadding:
+                                        EdgeInsets.symmetric(horizontal: 15),
+                                    enabledBorder: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(15.0),
+                                        borderSide: BorderSide(
+                                            color: Color(0xFFDFE2E9))),
+                                    focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(15),
+                                        borderSide: BorderSide(
+                                            color: Color(0xFFDFE2E9))),
+                                    border: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(15.0),
+                                        borderSide: BorderSide(
+                                            color: Color(0xFFDFE2E9))),
+                                    fillColor: Colors.white,
+                                    filled: true,
+                                    hintText: '증상을 검색하세요.',
+                                    suffixIcon: Container(
+                                        width: 66,
+                                        child: Row(children: [
+                                          GestureDetector(
+                                              onTap: () =>
+                                                  _textEditingController
+                                                      .clear(),
+                                              child: CircleAvatar(
+                                                  radius: 9,
+                                                  backgroundColor:
+                                                      Colors.black12,
+                                                  child: Icon(Icons.close,
+                                                      color: Colors.white,
+                                                      size: 12))),
+                                          IconButton(
+                                              icon: SvgPicture.asset(
+                                                  'assets/icons/search_icon.svg',
+                                                  width: 20),
+                                              color: Colors.black,
+                                              onPressed: () =>
+                                                  _textEditingController
+                                                      .clear())
+                                        ])))),
+                            SizedBox(height: 10),
+                            if (_focused == true)
+                              Container(
+                                  constraints: BoxConstraints(maxHeight: 215),
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(20)),
+                                  child: SingleChildScrollView(
+                                      child: Column(children: [
+                                    for (var disease in _diseaseList)
+                                      ListTile(
+                                          title: Text(disease.name!),
+                                          dense: true,
+                                          onTap: () => Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (_) =>
+                                                      BlocProvider.value(
+                                                          value: _hospitalCubit,
+                                                          child:
+                                                              HospitalSearchPage()))))
+                                  ])))
+                          ]))),
+                  if (_focused == false)
+                    Positioned(
+                      bottom: 0,
+                      child: GestureDetector(
+                          onTap: () {
+                            _hospitalCubit.currentLocation(
+                                _hospitalCubit.state.location!);
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text("현재 위치가 설정되었습니다."),
+                            ));
+                          },
+                          child: Container(
+                              height: 60,
+                              width: MediaQuery.of(context).size.width,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  border: Border.all(color: Colors.black12)),
+                              child: Text("현재 위치 재 설정",
+                                  style: font_17_w900.copyWith(
+                                      color: primaryColor)))),
+                    )
                 ]);
               } else {
                 return Center(
@@ -132,5 +225,19 @@ class _HospitalPageState extends State<HospitalPage> {
         height: (place.length / 10).round() * 38));
 
     setState(() {});
+  }
+
+  void disableFocus() {
+    _focusNode.unfocus();
+    setState(() {
+      _focused = false;
+    });
+  }
+
+  void requestFocus() {
+    _focusNode.requestFocus();
+    setState(() {
+      _focused = true;
+    });
   }
 }

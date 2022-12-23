@@ -81,7 +81,7 @@ class HospitalCubit extends Cubit<HospitalState> {
     });
   }
 
-  Future<void> getHosipitals() async {
+  Future<void> getHosipitals(int disease) async {
     final location = state.location;
     final selectedPart = state.selectedPart != null
         ? HospitalPart.getIndex(state.selectedPart!)
@@ -90,7 +90,7 @@ class HospitalCubit extends Cubit<HospitalState> {
 
     if (location != null) {
       var response = await _hospitalRepository.getHospitals(
-          location, selectedPart, selectedFilter);
+          location, selectedPart, selectedFilter, disease);
 
       response.when(success: (List<Hospital>? hospitals) {
         emit(state.copyWith(hospitals: hospitals));
