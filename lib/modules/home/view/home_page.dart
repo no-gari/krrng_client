@@ -1,9 +1,14 @@
-import 'package:krrng_client/modules/search_result/view/hospital_search_result_screen.dart';
+import 'dart:convert';
+import 'dart:math';
+
+import 'package:krrng_client/modules/search/cubit/recent_search_cubit.dart';
+import 'package:krrng_client/modules/search_result_branch/view/search_result_branch_screen.dart';
 import 'package:krrng_client/repositories/authentication_repository/src/authentication_repository.dart';
-import 'package:krrng_client/repositories/hospital_repository/models/enums.dart';
+import 'package:krrng_client/modules/search_result/view/hospital_search_result_screen.dart';
+import 'package:krrng_client/repositories/search_repository/models/recent_search.dart';
 import 'package:krrng_client/repositories/user_repository/src/user_repository.dart';
 import 'package:krrng_client/modules/authentication/bloc/authentication_bloc.dart';
-import 'package:krrng_client/modules/search_result/view/search_result_screen.dart';
+import 'package:krrng_client/repositories/hospital_repository/models/enums.dart';
 import 'package:krrng_client/modules/notification/view/notification_screen.dart';
 import 'package:krrng_client/repositories/user_repository/models/user.dart';
 import 'package:krrng_client/support/networks/network_exceptions.dart';
@@ -27,12 +32,15 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late AuthenticationBloc _authenticationBloc;
+  late RecentSearchCubit _recentSearchCubit;
+
   final _textEditingController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     _authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
+    _recentSearchCubit = BlocProvider.of<RecentSearchCubit>(context);
     if (_authenticationBloc.state.status == AuthenticationStatus.authenticated)
       () => getUser();
   }
@@ -241,10 +249,30 @@ class _HomePageState extends State<HomePage> {
                                                       TextInputAction.go,
                                                   onSubmitted: (value) {
                                                     if (value.trim() != '') {
-                                                      // context.vRouter.toNamed('/search_result',
-                                                      //     pathParameters: {
-                                                      //       'keyword': _textEditingController.text
-                                                      //     });
+                                                      var random =
+                                                          Random.secure();
+                                                      var values =
+                                                          List<int>.generate(
+                                                              8,
+                                                              (i) => random
+                                                                  .nextInt(
+                                                                      255));
+                                                      var randomId =
+                                                          base64UrlEncode(
+                                                              values);
+                                                      _recentSearchCubit
+                                                          .addRecentSearch(
+                                                              RecentSearch(
+                                                                  randomId,
+                                                                  value));
+                                                      Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder: (_) =>
+                                                                  SearchResultBranchScreen(
+                                                                      keyword:
+                                                                          value)));
+
                                                       _textEditingController
                                                           .clear();
                                                     }
@@ -277,11 +305,17 @@ class _HomePageState extends State<HomePage> {
                                       SizedBox(width: 10),
                                       SizedBox(width: 10),
                                       GestureDetector(
-                                          onTap: () => Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      SearchResultScreen())),
+                                          onTap: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (_) =>
+                                                        SearchResultBranchScreen(
+                                                            keyword:
+                                                                _textEditingController
+                                                                    .text)));
+                                            print(_textEditingController.text);
+                                          },
                                           child: Container(
                                               alignment: Alignment.center,
                                               width: 93,

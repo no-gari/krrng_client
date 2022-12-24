@@ -17,6 +17,7 @@ import 'package:krrng_client/modules/point/page/point_screen.dart';
 import 'package:krrng_client/modules/profile_change/view/profile_change_screen.dart';
 import 'package:krrng_client/modules/search/view/search_screen.dart';
 import 'package:krrng_client/modules/search_result/view/search_result_screen.dart';
+import 'package:krrng_client/modules/search_result_branch/view/search_result_branch_screen.dart';
 import 'package:krrng_client/modules/settings/view/setting_screen.dart';
 import 'package:krrng_client/modules/splash/splash_screen.dart';
 import 'package:krrng_client/modules/store/view/store_screen.dart';
@@ -78,6 +79,9 @@ final routes = [
         ]),
   ]),
   VWidget(path: SplashScreen.routeName, widget: SplashScreen()),
+  VWidget(
+      path: SearchResultBranchScreen.routeName,
+      widget: SearchResultBranchScreen()),
   VWidget(
       path: HospitalDetailScreen.routeName,
       widget: HospitalDetailScreen(),

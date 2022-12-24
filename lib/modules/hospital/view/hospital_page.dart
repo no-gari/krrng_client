@@ -94,7 +94,8 @@ class _HospitalPageState extends State<HospitalPage> {
                           child: Column(children: [
                             buildMainTextField(),
                             SizedBox(height: 10),
-                            if (_focused == true) buildDiseaseList(context)
+                            if (_focused == true)
+                              buildDiseaseList(context, state)
                           ]))),
                   if (_focused == false) buildBottomBarWidget(context)
                 ]);
@@ -127,7 +128,7 @@ class _HospitalPageState extends State<HospitalPage> {
     );
   }
 
-  Container buildDiseaseList(BuildContext context) {
+  Container buildDiseaseList(BuildContext context, HospitalState state) {
     return Container(
         constraints: BoxConstraints(maxHeight: 215),
         decoration: BoxDecoration(
@@ -143,7 +144,7 @@ class _HospitalPageState extends State<HospitalPage> {
                     MaterialPageRoute(
                         builder: (_) => BlocProvider.value(
                             value: _hospitalCubit,
-                            child: HospitalSearchPage(disease: 0)))))
+                            child: HospitalSearchPage(disease: disease.id)))))
         ])));
   }
 

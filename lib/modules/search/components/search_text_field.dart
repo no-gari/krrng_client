@@ -1,3 +1,4 @@
+import 'package:krrng_client/modules/search_result_branch/view/search_result_branch_screen.dart';
 import 'package:krrng_client/repositories/search_repository/models/recent_search.dart';
 import 'package:krrng_client/modules/search_result/view/search_result_screen.dart';
 import 'package:krrng_client/modules/search/cubit/recent_search_cubit.dart';
@@ -27,8 +28,11 @@ class SearchTextField extends StatelessWidget {
             var randomId = base64UrlEncode(values);
 
             recentSearchCubit!.addRecentSearch(RecentSearch(randomId, value));
-            context.vRouter.toNamed(SearchResultScreen.routeName,
-                pathParameters: {'keyword': value});
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (_) => SearchResultBranchScreen(keyword: value)));
+
             textEditingController!.clear();
           }
         },

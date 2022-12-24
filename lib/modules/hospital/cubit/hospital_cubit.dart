@@ -108,6 +108,26 @@ class HospitalCubit extends Cubit<HospitalState> {
     }
   }
 
+  Future<void> hospitalSearch(String keyword) async {
+    final location = state.location;
+    final selectedPart = HospitalPart.getIndex(state.selectedPart!);
+    final selectedFilter = state.selectedFilter!;
+
+    emit(state.copyWith(isLoaded: false));
+
+    if (location != null) {
+      var response = await _hospitalRepository.hospitalSearch(
+          location, selectedPart, selectedFilter, keyword);
+      response.when(success: (List<Hospital>? hospitals) {
+        emit(state.copyWith(isLoaded: true, hospitals: hospitals));
+      }, failure: (NetworkExceptions? error) {
+        emit(state.copyWith(
+            error: error,
+            errorMessage: NetworkExceptions.getErrorMessage(error!)));
+      });
+    }
+  }
+
   Future<void> getHospitalDetail(int id) async {
     final location = state.location;
 
