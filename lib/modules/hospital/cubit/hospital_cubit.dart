@@ -1,33 +1,35 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:equatable/equatable.dart';
-import 'package:flutter_naver_map/flutter_naver_map.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:krrng_client/repositories/hospital_repository/models/models.dart';
 import 'package:krrng_client/repositories/hospital_repository/src/hospital_repository.dart';
+import 'package:krrng_client/repositories/hospital_repository/models/hospital_detail.dart';
+import 'package:krrng_client/repositories/hospital_repository/models/models.dart';
 import 'package:krrng_client/repositories/map_repository/map_repository.dart';
 import 'package:krrng_client/repositories/map_repository/models/mapData.dart';
 import 'package:krrng_client/repositories/map_repository/models/models.dart';
 import 'package:krrng_client/support/networks/network_exceptions.dart';
+import 'package:flutter_naver_map/flutter_naver_map.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:equatable/equatable.dart';
 
 part 'hospital_state.dart';
 
 class HospitalCubit extends Cubit<HospitalState> {
   HospitalCubit(this._mapRepository, this._hospitalRepository)
-      : super(const HospitalState());
+      : super(const HospitalState(
+            selectedPart: HospitalPart.everything,
+            selectedFilter: HospitalFilter.distance,
+            location: LatLng(37.490903970499, 127.03837557412),
+            currentPlace: '강남구청역',
+            addressDetail: '2번 출구'));
 
   final MapRepository _mapRepository;
   final HospitalRepository _hospitalRepository;
 
   void selectedFilter(String filter) {
     emit(state.copyWith(selectedFilter: HospitalFilter.getFilter(filter)));
-
-    getHosipitals();
   }
 
   void selectedPart(String part) {
     emit(state.copyWith(selectedPart: HospitalPart.getPart(part)));
-
-    getHosipitals();
   }
 
   Future<void> currentPosition() async {
@@ -73,9 +75,14 @@ class HospitalCubit extends Cubit<HospitalState> {
       final details = "${mapResponse?.land.name}";
 
       emit(state.copyWith(
-          currentPlace: currentPlace, addressDetail: details, isLoaded: true));
+          location: latLng,
+          currentPlace: currentPlace,
+          addressDetail: details,
+          isLoaded: true));
     }, failure: (NetworkExceptions? error) {
       emit(state.copyWith(
+          location: latLng,
+          isLoaded: true,
           error: error,
           errorMessage: NetworkExceptions.getErrorMessage(error!)));
     });
@@ -83,17 +90,34 @@ class HospitalCubit extends Cubit<HospitalState> {
 
   Future<void> getHosipitals(int disease) async {
     final location = state.location;
-    final selectedPart = state.selectedPart != null
-        ? HospitalPart.getIndex(state.selectedPart!)
-        : 0;
-    final selectedFilter = state.selectedFilter ?? HospitalFilter.distance;
+    final selectedPart = HospitalPart.getIndex(state.selectedPart!);
+    final selectedFilter = state.selectedFilter!;
+
+    emit(state.copyWith(isLoaded: false));
 
     if (location != null) {
       var response = await _hospitalRepository.getHospitals(
           location, selectedPart, selectedFilter, disease);
-
       response.when(success: (List<Hospital>? hospitals) {
-        emit(state.copyWith(hospitals: hospitals));
+        emit(state.copyWith(isLoaded: true, hospitals: hospitals));
+      }, failure: (NetworkExceptions? error) {
+        emit(state.copyWith(
+            error: error,
+            errorMessage: NetworkExceptions.getErrorMessage(error!)));
+      });
+    }
+  }
+
+  Future<void> getHospitalDetail(int id) async {
+    final location = state.location;
+
+    emit(state.copyWith(isLoaded: false));
+
+    if (location != null) {
+      var response = await _hospitalRepository.getHospitalDetail(location, id);
+      response.when(success: (dynamic? hospital) {
+        emit(state.copyWith(
+            isLoaded: true, hospitalDetail: HospitalDetail.fromJson(hospital)));
       }, failure: (NetworkExceptions? error) {
         emit(state.copyWith(
             error: error,

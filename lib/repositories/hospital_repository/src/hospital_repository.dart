@@ -1,4 +1,5 @@
 import 'package:flutter_naver_map/flutter_naver_map.dart';
+import 'package:krrng_client/repositories/hospital_repository/models/hospital_detail.dart';
 import 'package:krrng_client/repositories/hospital_repository/models/models.dart';
 import 'package:krrng_client/support/networks/api_result.dart';
 import 'package:krrng_client/support/networks/dio_client.dart';
@@ -28,6 +29,20 @@ class HospitalRepository {
       } else {
         return ApiResult.success(data: []);
       }
+    } catch (e) {
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e));
+    }
+  }
+
+  Future<ApiResult<dynamic>> getHospitalDetail(LatLng latLng, int id) async {
+    Map<String, dynamic> body = {
+      "userLatitude": latLng.latitude,
+      "userLongitude": latLng.longitude
+    };
+    try {
+      var response = await _dioClient.get('/dev/api/v1/hospital/detail/${id}/',
+          queryParameters: body);
+      return ApiResult.success(data: response);
     } catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }

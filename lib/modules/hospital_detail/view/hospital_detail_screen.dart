@@ -1,11 +1,19 @@
+import 'package:krrng_client/modules/hospital/cubit/hospital_cubit.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'hospital_detail_page.dart';
 
 class HospitalDetailScreen extends StatelessWidget {
-  static const String routeName = '/hosiptal-detail';
+  HospitalDetailScreen({this.id});
+
+  final int? id;
+
+  static const String routeName = '/hospital-detail';
 
   @override
   Widget build(BuildContext context) {
-    return HospitalDetailPage();
+    return BlocProvider.value(
+        value: BlocProvider.of<HospitalCubit>(context),
+        child: HospitalDetailPage(id: id));
   }
 }

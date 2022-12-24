@@ -1,16 +1,15 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_naver_map/flutter_naver_map.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:krrng_client/modules/hospital/cubit/hospital_cubit.dart';
 import 'package:krrng_client/modules/hospital_search/hospital_marker_widget.dart';
 import 'package:krrng_client/modules/search_result/components/hospital_tile.dart';
-import 'package:krrng_client/modules/search_result/components/search_bar.dart';
-import 'package:krrng_client/modules/search_result/components/search_filter_button.dart';
 import 'package:krrng_client/repositories/hospital_repository/models/models.dart';
-import 'package:krrng_client/support/style/theme.dart';
+import 'package:krrng_client/modules/search_result/components/search_bar.dart';
+import 'package:krrng_client/modules/hospital/cubit/hospital_cubit.dart';
+import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:widgets_to_image/widgets_to_image.dart';
+import 'package:krrng_client/support/style/theme.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 class HospitalSearchPage extends StatefulWidget {
   HospitalSearchPage({this.disease});
@@ -67,30 +66,25 @@ class _HospitalSearchPageState extends State<HospitalSearchPage> {
             "(_markers.isEmpty ${_markers.isEmpty} hospital ${hospitals.isEmpty}");
         return Column(children: [
           Container(
-            height: height / 2,
-            child: Stack(
-              children: [
+              height: height / 2,
+              child: Stack(children: [
                 NaverMap(
-                  markers: _markers,
-                  locationButtonEnable: false,
-                  onMapCreated: (controller) {
-                    this._naver = controller;
-                  },
-                  onCameraChange: (latLng, reason, isAnimated) {
-                    print("${latLng} ${reason} ${isAnimated}");
-                  },
-                ),
+                    markers: _markers,
+                    locationButtonEnable: false,
+                    onMapCreated: (controller) {
+                      this._naver = controller;
+                    },
+                    onCameraChange: (latLng, reason, isAnimated) {
+                      print("${latLng} ${reason} ${isAnimated}");
+                    }),
                 SafeArea(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 18),
-                    child: Container(
-                        child: SearchBar(
-                            textEditingController: _textEditingController)),
-                  ),
-                )
-              ],
-            ),
-          ),
+                    child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 18),
+                        child: Container(
+                            child: SearchBar(
+                                textEditingController:
+                                    _textEditingController))))
+              ])),
           Container(
               height: height / 2,
               padding: EdgeInsets.fromLTRB(20, 18, 20, 24),
@@ -108,12 +102,11 @@ class _HospitalSearchPageState extends State<HospitalSearchPage> {
                             SizedBox(width: 4),
                             Text("${state.addressDetail}", style: font_16_w700)
                           ]),
-                          Text("${hospitals.length + 1}개 검색 결과",
+                          Text("${hospitals.length}개 검색 결과",
                               style: font_16_w700)
                         ])),
                 Container(
                     padding: EdgeInsets.only(top: 20),
-                    // color: Colors.red,
                     child: Row(children: [
                       Container(
                           margin: EdgeInsets.only(right: 7, top: 10),
@@ -127,10 +120,13 @@ class _HospitalSearchPageState extends State<HospitalSearchPage> {
                           child: DropdownButton<String>(
                               borderRadius: BorderRadius.circular(18.0),
                               dropdownColor: Colors.white,
+                              icon: Icon(Icons.keyboard_arrow_down_outlined,
+                                  size: 14, color: Colors.black12),
                               value: state.selectedFilter?.title,
                               elevation: 8,
                               underline: SizedBox.shrink(),
-                              style: TextStyle(color: Colors.black),
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 16),
                               items: HospitalFilter.values
                                   .map((e) => e.title)
                                   .toList()
@@ -160,8 +156,11 @@ class _HospitalSearchPageState extends State<HospitalSearchPage> {
                               dropdownColor: Colors.white,
                               value: state.selectedPart?.title,
                               elevation: 8,
+                              icon: Icon(Icons.keyboard_arrow_down_outlined,
+                                  size: 14, color: Colors.black12),
                               underline: SizedBox.shrink(),
-                              style: TextStyle(color: Colors.black),
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 16),
                               items: HospitalPart.values
                                   .map((e) => e.title)
                                   .toList()

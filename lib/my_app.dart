@@ -1,8 +1,8 @@
 import 'package:krrng_client/repositories/authentication_repository/src/authentication_repository.dart';
-import 'package:krrng_client/repositories/disease_repository/src/disease_repository.dart';
-import 'package:krrng_client/repositories/hospital_repository/src/hospital_repository.dart';
 import 'package:krrng_client/repositories/notification_repository/src/notification_repository.dart';
 import 'package:krrng_client/repositories/search_repository/src/recent_search_repository.dart';
+import 'package:krrng_client/repositories/hospital_repository/src/hospital_repository.dart';
+import 'package:krrng_client/repositories/disease_repository/src/disease_repository.dart';
 import 'package:krrng_client/repositories/notice_repository/src/notice_repository.dart';
 import 'package:krrng_client/repositories/search_repository/src/search_repository.dart';
 import 'package:krrng_client/repositories/point_repository/src/point_repository.dart';
@@ -10,6 +10,7 @@ import 'package:krrng_client/repositories/user_repository/src/user_repository.da
 import 'package:krrng_client/repositories/animal_repository/animal_repository.dart';
 import 'package:krrng_client/repositories/faq_repository/src/faq_repository.dart';
 import 'package:krrng_client/repositories/map_repository/map_repository.dart';
+import 'package:krrng_client/modules/hospital/cubit/hospital_cubit.dart';
 import 'package:krrng_client/support/networks/map_client.dart';
 import 'modules/authentication/bloc/authentication_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -38,29 +39,31 @@ class MyApp extends StatelessWidget {
 
     return MultiRepositoryProvider(
         providers: [
-          RepositoryProvider.value(value: authenticationRepository),
           RepositoryProvider.value(value: userRepository),
           RepositoryProvider.value(value: animalRepository),
+          RepositoryProvider.value(value: authenticationRepository),
+          RepositoryProvider(
+              create: (context) => HospitalRepository(dioClient)),
           RepositoryProvider(
               create: (context) => NotificationRepository(dioClient)),
+          RepositoryProvider(create: (context) => RecentSearchRepository()),
+          RepositoryProvider(create: (context) => MapRepository(mapClient)),
+          RepositoryProvider(create: (context) => FAQRepository(dioClient)),
+          RepositoryProvider(create: (context) => PointRepository(dioClient)),
           RepositoryProvider(create: (context) => SearchRepository(dioClient)),
           RepositoryProvider(create: (context) => SearchRepository(dioClient)),
           RepositoryProvider(create: (context) => NoticeRepository(dioClient)),
-          RepositoryProvider(create: (context) => PointRepository(dioClient)),
-          RepositoryProvider(create: (context) => MapRepository(mapClient)),
-          RepositoryProvider(create: (context) => FAQRepository(dioClient)),
-          RepositoryProvider(
-              create: (context) => HospitalRepository(dioClient)),
-          RepositoryProvider(create: (context) => RecentSearchRepository()),
           RepositoryProvider(create: (context) => DiseaseRepository(dioClient)),
         ],
         child: MultiBlocProvider(providers: [
           BlocProvider<AuthenticationBloc>(
               create: (context) => AuthenticationBloc(
-                    authenticationRepository: authenticationRepository,
-                    userRepository: userRepository,
-                    // animalRepository: animalRepository
-                  ))
+                  authenticationRepository: authenticationRepository,
+                  userRepository: userRepository)),
+          BlocProvider(
+              create: (context) => HospitalCubit(
+                  RepositoryProvider.of<MapRepository>(context),
+                  RepositoryProvider.of<HospitalRepository>(context)))
         ], child: AppView(isFirstRun: this.isFirstRun)));
   }
 }

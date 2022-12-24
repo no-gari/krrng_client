@@ -7,6 +7,7 @@ class HospitalState extends Equatable {
       this.tempCurrentPlace,
       this.addressDetail,
       this.hospitals,
+      this.hospitalDetail,
       this.selectedPart,
       this.selectedFilter,
       this.isLoaded,
@@ -18,6 +19,7 @@ class HospitalState extends Equatable {
   final String? tempCurrentPlace;
   final String? addressDetail;
   final List<Hospital>? hospitals;
+  final HospitalDetail? hospitalDetail;
   final HospitalPart? selectedPart;
   final HospitalFilter? selectedFilter;
   final bool? isLoaded;
@@ -30,6 +32,7 @@ class HospitalState extends Equatable {
     String? tempCurrentPlace,
     String? addressDetail,
     List<Hospital>? hospitals,
+    HospitalDetail? hospitalDetail,
     HospitalPart? selectedPart,
     HospitalFilter? selectedFilter,
     bool? isLoaded,
@@ -42,6 +45,7 @@ class HospitalState extends Equatable {
         tempCurrentPlace: tempCurrentPlace ?? this.tempCurrentPlace,
         addressDetail: addressDetail ?? this.addressDetail,
         hospitals: hospitals ?? this.hospitals,
+        hospitalDetail: hospitalDetail ?? this.hospitalDetail,
         selectedPart: selectedPart ?? this.selectedPart,
         selectedFilter: selectedFilter ?? this.selectedFilter,
         isLoaded: isLoaded ?? this.isLoaded,
@@ -56,6 +60,7 @@ class HospitalState extends Equatable {
         tempCurrentPlace,
         addressDetail,
         hospitals,
+        hospitalDetail,
         selectedPart,
         selectedFilter,
         isLoaded,

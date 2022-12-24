@@ -92,112 +92,11 @@ class _HospitalPageState extends State<HospitalPage> {
                       child: Padding(
                           padding: EdgeInsets.symmetric(horizontal: 16),
                           child: Column(children: [
-                            TextField(
-                                focusNode: _focusNode,
-                                textInputAction: TextInputAction.search,
-                                onChanged: (value) {
-                                  _diseaseCubit
-                                      .getDiseaseList(value)
-                                      .then((_) => setState(() {
-                                            _diseaseList =
-                                                _diseaseCubit.state.disease!;
-                                          }));
-                                },
-                                onSubmitted: (value) => disableFocus(),
-                                onTap: () => requestFocus(),
-                                autofocus: false,
-                                controller: _textEditingController,
-                                textAlignVertical: TextAlignVertical.center,
-                                decoration: InputDecoration(
-                                    icon: null,
-                                    isCollapsed: true,
-                                    contentPadding:
-                                        EdgeInsets.symmetric(horizontal: 15),
-                                    enabledBorder: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(15.0),
-                                        borderSide: BorderSide(
-                                            color: Color(0xFFDFE2E9))),
-                                    focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(15),
-                                        borderSide: BorderSide(
-                                            color: Color(0xFFDFE2E9))),
-                                    border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(15.0),
-                                        borderSide: BorderSide(
-                                            color: Color(0xFFDFE2E9))),
-                                    fillColor: Colors.white,
-                                    filled: true,
-                                    hintText: '증상을 검색하세요.',
-                                    suffixIcon: Container(
-                                        width: 66,
-                                        child: Row(children: [
-                                          GestureDetector(
-                                              onTap: () =>
-                                                  _textEditingController
-                                                      .clear(),
-                                              child: CircleAvatar(
-                                                  radius: 9,
-                                                  backgroundColor:
-                                                      Colors.black12,
-                                                  child: Icon(Icons.close,
-                                                      color: Colors.white,
-                                                      size: 12))),
-                                          IconButton(
-                                              icon: SvgPicture.asset(
-                                                  'assets/icons/search_icon.svg',
-                                                  width: 20),
-                                              color: Colors.black,
-                                              onPressed: () =>
-                                                  _textEditingController
-                                                      .clear())
-                                        ])))),
+                            buildMainTextField(),
                             SizedBox(height: 10),
-                            if (_focused == true)
-                              Container(
-                                  constraints: BoxConstraints(maxHeight: 215),
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(20)),
-                                  child: SingleChildScrollView(
-                                      child: Column(children: [
-                                    for (var disease in _diseaseList)
-                                      ListTile(
-                                          title: Text(disease.name!),
-                                          dense: true,
-                                          onTap: () => Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (_) =>
-                                                      BlocProvider.value(
-                                                          value: _hospitalCubit,
-                                                          child:
-                                                              HospitalSearchPage()))))
-                                  ])))
+                            if (_focused == true) buildDiseaseList(context)
                           ]))),
-                  if (_focused == false)
-                    Positioned(
-                      bottom: 0,
-                      child: GestureDetector(
-                          onTap: () {
-                            _hospitalCubit.currentLocation(
-                                _hospitalCubit.state.location!);
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text("현재 위치가 설정되었습니다."),
-                            ));
-                          },
-                          child: Container(
-                              height: 60,
-                              width: MediaQuery.of(context).size.width,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  border: Border.all(color: Colors.black12)),
-                              child: Text("현재 위치 재 설정",
-                                  style: font_17_w900.copyWith(
-                                      color: primaryColor)))),
-                    )
+                  if (_focused == false) buildBottomBarWidget(context)
                 ]);
               } else {
                 return Center(
@@ -205,6 +104,102 @@ class _HospitalPageState extends State<HospitalPage> {
                         Image.asset('assets/images/indicator.gif', width: 120));
               }
             }));
+  }
+
+  Positioned buildBottomBarWidget(BuildContext context) {
+    return Positioned(
+      bottom: 0,
+      child: GestureDetector(
+          onTap: () {
+            _hospitalCubit.currentLocation(_hospitalCubit.state.location!);
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text("현재 위치가 설정되었습니다.")));
+          },
+          child: Container(
+              height: 60,
+              width: MediaQuery.of(context).size.width,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(color: Colors.black12)),
+              child: Text("현재 위치 재 설정",
+                  style: font_17_w900.copyWith(color: primaryColor)))),
+    );
+  }
+
+  Container buildDiseaseList(BuildContext context) {
+    return Container(
+        constraints: BoxConstraints(maxHeight: 215),
+        decoration: BoxDecoration(
+            color: Colors.white, borderRadius: BorderRadius.circular(20)),
+        child: SingleChildScrollView(
+            child: Column(children: [
+          for (var disease in _diseaseList)
+            ListTile(
+                title: Text(disease.name!),
+                dense: true,
+                onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => BlocProvider.value(
+                            value: _hospitalCubit,
+                            child: HospitalSearchPage(disease: 0)))))
+        ])));
+  }
+
+  TextField buildMainTextField() {
+    return TextField(
+        focusNode: _focusNode,
+        textInputAction: TextInputAction.search,
+        onChanged: (value) {
+          _diseaseCubit.getDiseaseList(value).then((_) => setState(() {
+                _diseaseList = _diseaseCubit.state.disease!;
+              }));
+        },
+        onSubmitted: (value) => disableFocus(),
+        onTap: () => requestFocus(),
+        autofocus: false,
+        controller: _textEditingController,
+        textAlignVertical: TextAlignVertical.center,
+        decoration: InputDecoration(
+            icon: null,
+            isCollapsed: true,
+            contentPadding: EdgeInsets.symmetric(horizontal: 15),
+            enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(15.0),
+                borderSide: BorderSide(color: Color(0xFFDFE2E9))),
+            focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(15),
+                borderSide: BorderSide(color: Color(0xFFDFE2E9))),
+            border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(15.0),
+                borderSide: BorderSide(color: Color(0xFFDFE2E9))),
+            fillColor: Colors.white,
+            filled: true,
+            hintText: '증상을 검색하세요.',
+            suffixIcon: Container(
+                width: 66,
+                child: Row(children: [
+                  GestureDetector(
+                      onTap: () => _textEditingController.clear(),
+                      child: CircleAvatar(
+                          radius: 9,
+                          backgroundColor: Colors.black12,
+                          child: Icon(Icons.close,
+                              color: Colors.white, size: 12))),
+                  IconButton(
+                      icon: SvgPicture.asset('assets/icons/search_icon.svg',
+                          width: 20),
+                      color: Colors.black,
+                      onPressed: () {
+                        requestFocus();
+                        _diseaseCubit
+                            .getDiseaseList(_textEditingController.text)
+                            .then((_) => setState(() {
+                                  _diseaseList = _diseaseCubit.state.disease!;
+                                }));
+                      })
+                ]))));
   }
 
   Future<void> _onDrawMarket(LatLng latLng) async {

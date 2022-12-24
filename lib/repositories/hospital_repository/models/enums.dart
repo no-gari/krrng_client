@@ -21,6 +21,7 @@ enum HospitalFilter {
 }
 
 enum HospitalPart {
+  everything('전체 보기'),
   allDay('24시 진료'),
   ophthalmology('안과 진료'),
   dermatology('피부 진료'),
@@ -34,8 +35,7 @@ enum HospitalPart {
   final String title;
 
   static int getIndex(HospitalPart part) {
-    return HospitalPart.values.firstWhere((element) => element == part).index +
-        1;
+    return HospitalPart.values.firstWhere((element) => element == part).index;
   }
 
   static HospitalPart getPart(String value) {

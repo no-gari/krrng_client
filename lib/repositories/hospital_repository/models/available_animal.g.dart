@@ -1,17 +1,19 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'disease.dart';
+part of 'available_animal.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-Disease _$DiseaseFromJson(Map<String, dynamic> json) => Disease(
-      json['name'] as String?,
-      json['id'] as int?,
+AvailableAnimal _$AvailableAnimalFromJson(Map<String, dynamic> json) =>
+    AvailableAnimal(
+      id: json['id'] as int?,
+      name: json['name'] as String?,
     );
 
-Map<String, dynamic> _$DiseaseToJson(Disease instance) => <String, dynamic>{
+Map<String, dynamic> _$AvailableAnimalToJson(AvailableAnimal instance) =>
+    <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
     };

@@ -1,11 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import '../../../repositories/hospital_repository/models/image.dart'
+    as LocalImage;
 import 'package:flutter_swiper_plus/flutter_swiper_plus.dart';
 
 class HospitalSwiper extends StatefulWidget {
   HospitalSwiper({this.imageList});
 
-  final List<String>? imageList;
+  final List<LocalImage.Image>? imageList;
 
   @override
   State<HospitalSwiper> createState() => _HospitalSwiperState();
@@ -30,7 +32,8 @@ class _HospitalSwiperState extends State<HospitalSwiper> {
             onTap: (int index) {},
             itemBuilder: (BuildContext context, int index) =>
                 CachedNetworkImage(
-                    imageUrl: widget.imageList![index], fit: BoxFit.cover),
+                    imageUrl: widget.imageList![index].image ?? '',
+                    fit: BoxFit.cover),
             itemCount: widget.imageList!.length));
   }
 }
