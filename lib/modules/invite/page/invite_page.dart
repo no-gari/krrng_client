@@ -79,9 +79,9 @@ class _InvitePageState extends State<InvitePage> {
                     onTap: () async {
                       smsUri = Platform.isIOS
                           ? Uri.encodeFull(
-                              "sms:''&body=반려동물 진료비 고민 될 땐? 크르릉! https://onelink.to/82ttrz")
+                              "sms:''&body=미리 알려주는 동물병원 진료비! 크르릉. https://onelink.to/82ttrz")
                           : Uri.encodeFull(
-                              "sms:''?body=반려동물 진료비 고민 될 땐? 크르릉! https://onelink.to/82ttrz");
+                              "sms:''?body=미리 알려주는 동물병원 진료비! 크르릉. https://onelink.to/82ttrz");
                       launch(smsUri!);
                     },
                     child: SvgPicture.asset('assets/icons/sms.svg')),
@@ -89,7 +89,7 @@ class _InvitePageState extends State<InvitePage> {
                 GestureDetector(
                     onTap: () async {
                       emailUri = Uri.encodeFull(
-                          "mailto:''?subject=크르릉 앱 다운로드 받으세요!&body=반려동물 진료비 고민 될 땐? 크르릉! https://onelink.to/82ttrz");
+                          "mailto:''?subject=크르릉 앱 다운로드 받으세요!&body=미리 알려주는 동물병원 진료비! 크르릉. https://onelink.to/82ttrz");
                       launch(emailUri!);
                     },
                     child: SvgPicture.asset('assets/icons/mail.svg')),
@@ -107,8 +107,8 @@ class _InvitePageState extends State<InvitePage> {
 
   final defaultFeed = FeedTemplate(
       content: Content(
-          title: "반려동물 진료비 고민 될 때에는? 크르릉!",
-          description: "#반려동물 #동물병원 #진료비",
+          title: '“그래서.. 진료비는 얼마에요..?” 미리 알려주는 동물병원 진료비! 크르릉.',
+          description: "#동물병원 #강아지 #고양이 #진료비 ",
           imageUrl: Uri.parse(
               "https://t1.daumcdn.net/cfile/tistory/24283C3858F778CA2E"),
           link: Link(
