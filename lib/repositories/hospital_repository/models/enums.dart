@@ -9,9 +9,8 @@ enum HospitalFilter {
 
   static int getIndex(HospitalFilter? filter) {
     return HospitalFilter.values
-            .firstWhere((element) => element == filter)
-            .index +
-        1;
+        .firstWhere((element) => element == filter)
+        .index;
   }
 
   static HospitalFilter getFilter(String value) {

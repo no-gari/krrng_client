@@ -168,8 +168,10 @@ class _HospitalDetailPageState extends State<HospitalDetailPage> {
                             ]),
                             SizedBox(height: 20),
                             GestureDetector(
-                                onTap: () => context.vRouter
-                                    .to(WritingReviewScreen.routeName),
+                                onTap: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (_) => WritingReviewScreen())),
                                 child: Container(
                                     alignment: Alignment.center,
                                     width: double.maxFinite,

@@ -82,8 +82,15 @@ class _SearchFilterState extends State<SearchFilter> {
                                   (index) => SearchFilterButton(
                                       title: HospitalFilter.values[index].title,
                                       isSelected: _selectedOrderIndex == index,
-                                      onTap: () => setState(
-                                          () => _selectedOrderIndex = index)))),
+                                      onTap: () {
+                                        setState(
+                                            () => _selectedOrderIndex = index);
+                                        widget.hospitalCubit!.emit(widget
+                                            .hospitalCubit!.state
+                                            .copyWith(
+                                                selectedFilter: HospitalFilter
+                                                    .values[index]));
+                                      }))),
                           SizedBox(height: 60),
                           Text('특화 분야',
                               style: TextStyle(
@@ -95,8 +102,15 @@ class _SearchFilterState extends State<SearchFilter> {
                                       title: HospitalPart.values[index].title,
                                       isSelected:
                                           _selectedHospitalIndex == index,
-                                      onTap: () => setState(() =>
-                                          _selectedHospitalIndex = index))))
+                                      onTap: () {
+                                        setState(() =>
+                                            _selectedHospitalIndex = index);
+                                        widget.hospitalCubit!.emit(widget
+                                            .hospitalCubit!.state
+                                            .copyWith(
+                                                selectedPart: HospitalPart
+                                                    .values[index]));
+                                      })))
                         ])))));
   }
 }

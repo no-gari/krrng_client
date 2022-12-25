@@ -77,7 +77,12 @@ class _SearchResultBranchPageState extends State<SearchResultBranchPage>
                               MaterialPageRoute(
                                   builder: (_) =>
                                       HospitalSearchPage(disease: item.id))),
-                          title: Text(item.name.toString()))
+                          title: Text(item.name.toString())),
+                    if (_diseaseCubit.state.disease!.isEmpty)
+                      Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Text('검색 결과가 없습니다.',
+                              style: TextStyle(fontSize: 14)))
                   ]))),
                   Container(
                       margin: EdgeInsets.symmetric(horizontal: 16),
@@ -99,7 +104,12 @@ class _SearchResultBranchPageState extends State<SearchResultBranchPage>
                                 temperature: item.recommend!.toDouble(),
                                 reviews: item.reviewCount,
                                 howFar: item.distance),
-                          )
+                          ),
+                        if (_hospitalCubit.state.hospitals!.isEmpty)
+                          Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Text('검색 결과가 없습니다.',
+                                  style: TextStyle(fontSize: 14)))
                       ])))
                 ]))
               ]));
