@@ -10,8 +10,6 @@ import 'package:krrng_client/support/style/theme.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 
-import '../widget_marker.dart';
-
 class HospitalPage extends StatefulWidget {
   @override
   _HospitalPageState createState() => _HospitalPageState();
@@ -23,6 +21,8 @@ class _HospitalPageState extends State<HospitalPage> {
   WidgetsToImageController imageController = WidgetsToImageController();
   NaverMapController? _naver;
   LatLng? latlng;
+
+  String? place;
 
   final _textEditingController = TextEditingController();
   bool _focused = false;
@@ -64,10 +64,54 @@ class _HospitalPageState extends State<HospitalPage> {
             },
             builder: (context, state) {
               if (state.isLoaded ?? false) {
+                place = state.currentPlace;
+
                 return Stack(children: [
                   WidgetsToImage(
                       controller: imageController,
-                      child: WidgetMarker(place: state.currentPlace!)),
+                      child: Container(
+                        height: (place!.length / 10).round() * 38,
+                        child: Column(
+                          children: [
+                            Container(
+                              width: 175,
+                              height: (place!.length / 10).round() * 38 - 24,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color: primaryColor,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 9, horizontal: 10),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  children: [
+                                    Container(
+                                        width: 13,
+                                        height: 13,
+                                        alignment: Alignment.topCenter,
+                                        child: SvgPicture.asset(
+                                            'assets/icons/positioning.svg')),
+                                    SizedBox(width: 6),
+                                    Expanded(
+                                      child: Text(
+                                        place!,
+                                        style: font_14_w700.copyWith(
+                                            color: Colors.white),
+                                        softWrap: true,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Icon(Icons.arrow_drop_down, color: primaryColor)
+                          ],
+                        ),
+                      )),
                   NaverMap(
                       markers: _markers,
                       initLocationTrackingMode: LocationTrackingMode.Follow,
@@ -85,6 +129,8 @@ class _HospitalPageState extends State<HospitalPage> {
                           _hospitalCubit.updatePosition(latlng!);
                           _hospitalCubit
                               .currentLocation(_hospitalCubit.state.location!);
+                          _onDrawMarket(latlng!);
+                          setState(() => place = state.currentPlace);
                         }
                       },
                       onMapTap: (latlng) => disableFocus()),
@@ -109,23 +155,22 @@ class _HospitalPageState extends State<HospitalPage> {
 
   Positioned buildBottomBarWidget(BuildContext context) {
     return Positioned(
-      bottom: 0,
-      child: GestureDetector(
-          onTap: () {
-            _hospitalCubit.currentLocation(_hospitalCubit.state.location!);
-            ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text("현재 위치가 설정되었습니다.")));
-          },
-          child: Container(
-              height: 60,
-              width: MediaQuery.of(context).size.width,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(color: Colors.black12)),
-              child: Text("현재 위치 재 설정",
-                  style: font_17_w900.copyWith(color: primaryColor)))),
-    );
+        bottom: 0,
+        child: GestureDetector(
+            onTap: () {
+              _hospitalCubit.currentLocation(_hospitalCubit.state.location!);
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(SnackBar(content: Text("현재 위치가 설정되었습니다.")));
+            },
+            child: Container(
+                height: 60,
+                width: MediaQuery.of(context).size.width,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(color: Colors.black12)),
+                child: Text("현재 위치 재 설정",
+                    style: font_17_w900.copyWith(color: primaryColor)))));
   }
 
   Container buildDiseaseList(BuildContext context, HospitalState state) {
