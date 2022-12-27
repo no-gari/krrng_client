@@ -1,8 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:krrng_client/modules/writing_review/cubit/writing_review_cubit.dart';
 import 'package:krrng_client/modules/writing_review/views/review_notice_page.dart';
+import 'package:krrng_client/repositories/hospital_repository/models/hospital_detail.dart';
 import 'package:krrng_client/support/style/theme.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:vrouter/vrouter.dart';
@@ -18,59 +21,85 @@ class _WritingReviewPageState extends State<WritingReviewPage> {
 
   List<Asset> _images = <Asset>[];
   List<Asset> _reviewImages = <Asset>[];
+  List<bool> terms = [false, false];
+  late WritingReviewCubit _writingReviewCubit;
 
-  // TODO: cubit
-  Future getImages() async {
-    List<Asset> resultList = <Asset>[];
-    resultList = await MultiImagePicker.pickImages(maxImages: 10, enableCamera: true, selectedAssets: _images);
-    setState(() {
-      _images = resultList;
-    });
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController diseaseController = TextEditingController();
+  final TextEditingController reviewController = TextEditingController();
+  var rates = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _writingReviewCubit = BlocProvider.of<WritingReviewCubit>(context);
   }
 
-  Future getReviewImages() async {
-    List<Asset> resultList = <Asset>[];
-    resultList = await MultiImagePicker.pickImages(maxImages: 10, enableCamera: true, selectedAssets: _reviewImages);
-    setState(() {
-      _reviewImages = resultList;
-    });
+  void dispose() {
+    super.dispose();
+    diseaseController.dispose();
+    reviewController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-
     // TODO: state 값 주입
-    return ListView(
-      children: <Widget>[
-        _HospitalProfileTile(),
-        _Divier,
-        _ReceivedMedical(),
-        _Receipt(),
-        _PostReview(),
-        GestureDetector(
-          onTap: () => {},
-          child: Container (
-              height: 105, width: MediaQuery.of(context).size.width,
-              margin: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-              decoration: BoxDecoration(
-                  image: DecorationImage(image: AssetImage("assets/images/mainbanner.png"), fit: BoxFit.cover),
-                  borderRadius: BorderRadius.circular(25)))
-        ),
-        _Information(),
-        const SizedBox(height: 30),
-        Container(
-          height: 60,
-          decoration: BoxDecoration(border: Border.all(color: dividerColor), color: Color(0xfffbfbfb)),
-          alignment: Alignment.center,
-          child: Text("병원 리뷰 등록하기", style: font_17_w900.copyWith(color: primaryColor),
+    return Form(
+      key: _formKey,
+      child: ListView(
+        children: <Widget>[
+          _HospitalProfileTile(),
+          _Divier,
+          _ReceivedMedical(),
+          _Receipt(),
+          _PostReview(),
+          GestureDetector(
+            onTap: () => {},
+            child: Container (
+                height: 105, width: MediaQuery.of(context).size.width,
+                margin: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+                decoration: BoxDecoration(
+                    image: DecorationImage(image: AssetImage("assets/images/mainbanner.png"), fit: BoxFit.cover),
+                    borderRadius: BorderRadius.circular(25)))
           ),
-        ),
+          _Information(),
+          const SizedBox(height: 30),
+          GestureDetector(
+            onTap: () {
+              final termsValidate = !terms.contains(false);
 
-      ],
+              if (_formKey.currentState!.validate()) {
+
+                _writingReviewCubit.emit(_writingReviewCubit.state.copyWith(
+                    rates: rates,
+                    reviewContent: reviewController.text,
+                    disease: diseaseController.text
+                ));
+                if (termsValidate == false) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("약관을 동의해주세요.")));
+                } else {
+
+
+                  _writingReviewCubit.createReview();
+                }
+              }
+            },
+            child: Container(
+              height: 60,
+              decoration: BoxDecoration(border: Border.all(color: dividerColor), color: Color(0xfffbfbfb)),
+              alignment: Alignment.center,
+              child: Text("병원 리뷰 등록하기", style: font_17_w900.copyWith(color: primaryColor),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
   Widget _HospitalProfileTile() {
+    final hospital = _writingReviewCubit.hospitalDetail;
+
     return Container(
       width: MediaQuery.of(context).size.width,
       height: 127,
@@ -84,8 +113,8 @@ class _WritingReviewPageState extends State<WritingReviewPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Text("하늘 동물병원", style: font_22_w900),
-              Text("서울 강남구 강남대로 117길 24 하늘빌딩 5층", style: font_15_w500),
+              Text("${hospital.name}", style: font_22_w900),
+              Text("${hospital.address} ${hospital.addressDetail}", style: font_15_w500),
             ],
           )),
           Flexible(child: Container(
@@ -95,10 +124,10 @@ class _WritingReviewPageState extends State<WritingReviewPage> {
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(18),
                   image: DecorationImage(
-                      image: CachedNetworkImageProvider(
-                          "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/640px-Image_created_with_a_mobile_phone.png"
-                      ),
-                      fit: BoxFit.cover))))
+                      image: CachedNetworkImageProvider(hospital.images!.first.image!),
+                      fit: BoxFit.cover))
+          )
+          )
         ],
       ),
     );
@@ -118,7 +147,8 @@ class _WritingReviewPageState extends State<WritingReviewPage> {
           Text("해당 병원에서 진료 받으신 항목명을 입력해 주세요.", style: font_14_w500.copyWith(height: 1.5)),
           const SizedBox(height: 14),
           TextFormField(
-              // controller: passwordController,
+              controller: diseaseController,
+              validator: (text) => (text ?? "").length == 0 ? '진료 항목을 입력해주세요.' : null,
               obscureText: false,
               keyboardType: TextInputType.text,
               textAlignVertical: TextAlignVertical.center,
@@ -155,7 +185,7 @@ class _WritingReviewPageState extends State<WritingReviewPage> {
                 return GestureDetector(
                   onTap: () {
                     if (index == 0) {
-                      getImages();
+                      _writingReviewCubit.getImages(_images);
                     }
                   },
                   child: Container(
@@ -198,15 +228,7 @@ class _WritingReviewPageState extends State<WritingReviewPage> {
                   )
                 ],
               ),
-              Wrap(
-                children: [
-                  IconButton(onPressed: () => {}, icon: SvgPicture.asset("assets/icons/reviewOn.svg"), padding: EdgeInsets.zero, constraints: BoxConstraints(), iconSize: 30),
-                  IconButton(onPressed: () => {}, icon: SvgPicture.asset("assets/icons/reviewOff.svg"), padding: EdgeInsets.zero, constraints: BoxConstraints(), iconSize: 30),
-                  IconButton(onPressed: () => {}, icon: SvgPicture.asset("assets/icons/reviewOff.svg"), padding: EdgeInsets.zero, constraints: BoxConstraints(), iconSize: 30),
-                  IconButton(onPressed: () => {}, icon: SvgPicture.asset("assets/icons/reviewOff.svg"), padding: EdgeInsets.zero, constraints: BoxConstraints(), iconSize: 30),
-                  IconButton(onPressed: () => {}, icon: SvgPicture.asset("assets/icons/reviewOff.svg"), padding: EdgeInsets.zero, constraints: BoxConstraints(), iconSize: 30),
-                ],
-              )
+              RatesWidgets()
             ],
           ),
           const SizedBox(height: 17),
@@ -214,6 +236,15 @@ class _WritingReviewPageState extends State<WritingReviewPage> {
             child: Stack(
               children: [
                 TextFormField(
+                  controller: reviewController,
+                  validator: (text) {
+                    final inputString = text ?? "";
+                    if (inputString.length < 10  || inputString.length > 500) {
+                      return '병원리뷰를 10자이상 입력해 주세요. (최대 500자)';
+                    } else {
+                      return null;
+                    }
+                  },
                   keyboardType: TextInputType.multiline,
                   maxLines: null,
                   decoration: baseInputDecoration("병원리뷰를 10자이상 입력해 주세요.\n(최대 500자)").copyWith(
@@ -232,7 +263,7 @@ class _WritingReviewPageState extends State<WritingReviewPage> {
                               return GestureDetector(
                                   onTap: () {
                                     if (index == 0) {
-                                      getReviewImages();
+                                      _writingReviewCubit.getReviewImages(_reviewImages);
                                     }
                                   },
                                   child: Container(
@@ -251,7 +282,9 @@ class _WritingReviewPageState extends State<WritingReviewPage> {
                           mainAxisSize: MainAxisSize.min,
                       children: [
                         IconButton(
-                            onPressed: () => getReviewImages(),
+                            onPressed: () {
+                              _writingReviewCubit.getReviewImages(_reviewImages);
+                            },
                             icon: SvgPicture.asset("assets/icons/photo.svg")),
                       ],
                     )
@@ -278,8 +311,8 @@ class _WritingReviewPageState extends State<WritingReviewPage> {
               Row(
                 children: [
                   IconButton(
-                      onPressed: () => { },
-                      icon: true
+                      onPressed: () => setState(() { terms[0] = !terms[0]; }),
+                      icon: terms[0]
                           ? SvgPicture.asset(
                           'assets/images/checkBox_on.svg')
                           : SvgPicture.asset(
@@ -298,8 +331,8 @@ class _WritingReviewPageState extends State<WritingReviewPage> {
               Row(
                 children: [
                   IconButton(
-                      onPressed: () => { },
-                      icon: false
+                      onPressed: () => setState(() { terms[1] = !terms[1]; }),
+                      icon: terms[1]
                           ? SvgPicture.asset(
                           'assets/images/checkBox_on.svg')
                           : SvgPicture.asset(
@@ -313,6 +346,43 @@ class _WritingReviewPageState extends State<WritingReviewPage> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget RatesWidgets() {
+    return Wrap(
+      children: [
+        IconButton(onPressed: () => setState(() { rates = 1; }),
+            icon: rates >= 1 ? SvgPicture.asset("assets/icons/reviewOn.svg") : SvgPicture.asset("assets/icons/reviewOff.svg"),
+            padding: EdgeInsets.zero,
+            constraints: BoxConstraints(),
+            iconSize: 30
+        ),
+        IconButton(onPressed: () => setState(() { rates = 2; }),
+            icon: rates >= 2 ? SvgPicture.asset("assets/icons/reviewOn.svg") : SvgPicture.asset("assets/icons/reviewOff.svg"),
+            padding: EdgeInsets.zero,
+            constraints: BoxConstraints(),
+            iconSize: 30
+        ),
+        IconButton(onPressed: () => setState(() { rates = 3; }),
+            icon: rates >= 3 ? SvgPicture.asset("assets/icons/reviewOn.svg") : SvgPicture.asset("assets/icons/reviewOff.svg"),
+            padding: EdgeInsets.zero,
+            constraints: BoxConstraints(),
+            iconSize: 30
+        ),
+        IconButton(onPressed: () => setState(() { rates = 4; }),
+            icon: rates >= 4 ? SvgPicture.asset("assets/icons/reviewOn.svg") : SvgPicture.asset("assets/icons/reviewOff.svg"),
+            padding: EdgeInsets.zero,
+            constraints: BoxConstraints(),
+            iconSize: 30
+        ),
+        IconButton(onPressed: () => setState(() { rates = 5; }),
+            icon: rates >= 5 ? SvgPicture.asset("assets/icons/reviewOn.svg") : SvgPicture.asset("assets/icons/reviewOff.svg"),
+            padding: EdgeInsets.zero,
+            constraints: BoxConstraints(),
+            iconSize: 30
+        ),
+      ],
     );
   }
 }

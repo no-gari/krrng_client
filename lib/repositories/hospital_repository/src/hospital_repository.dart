@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:krrng_client/repositories/hospital_repository/models/hospital_detail.dart';
 import 'package:krrng_client/repositories/hospital_repository/models/models.dart';
@@ -68,6 +69,17 @@ class HospitalRepository {
       var response = await _dioClient.get('/dev/api/v1/hospital/detail/${id}/',
           queryParameters: body);
       return ApiResult.success(data: response);
+    } catch (e) {
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e));
+    }
+  }
+
+  Future<ApiResult<Review>> createReview(Map<String, dynamic> body) async {
+    try {
+      var data = FormData.fromMap(body);
+      print(data);
+      var response = await _dioClient.postWithAuthForMultiPart('/dev/api/v1/review/create/', data: data);
+      return ApiResult.success(data: Review.fromJson(response));
     } catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }

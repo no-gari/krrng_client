@@ -82,17 +82,5 @@ final routes = [
   VWidget(
       path: SearchResultBranchScreen.routeName,
       widget: SearchResultBranchScreen()),
-  VWidget(
-      path: HospitalDetailScreen.routeName,
-      widget: HospitalDetailScreen(),
-      stackedRoutes: [
-        VWidget(
-            path: WritingReviewScreen.routeName,
-            widget: WritingReviewScreen(),
-            stackedRoutes: [
-              VWidget(
-                  path: ReviewNoticePage.routeName, widget: ReviewNoticePage())
-            ]),
-      ]),
   VWidget(path: '*', widget: MainScreen()),
 ];

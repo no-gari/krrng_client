@@ -168,10 +168,16 @@ class _HospitalDetailPageState extends State<HospitalDetailPage> {
                             ]),
                             SizedBox(height: 20),
                             GestureDetector(
-                                onTap: () => Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (_) => WritingReviewScreen())),
+                                onTap: () {
+                                  final hospitalDetail = _hospitalCubit.state.hospitalDetail;
+                                  if (hospitalDetail != null) {
+                                    Navigator.push(context,
+                                        MaterialPageRoute(
+                                            builder: (_) => WritingReviewScreen(hospitalDetail: hospitalDetail)
+                                        )
+                                    );
+                                  }
+                                },
                                 child: Container(
                                     alignment: Alignment.center,
                                     width: double.maxFinite,
