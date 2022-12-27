@@ -1,14 +1,15 @@
-import 'package:flutter_svg/svg.dart';
-import 'package:krrng_client/modules/disease/cubit/disease_cubit.dart';
 import 'package:krrng_client/modules/hospital_search/view/hostipal_search_page.dart';
+import 'package:krrng_client/repositories/disease_repository/models/disease.dart';
 import 'package:krrng_client/modules/search/cubit/recent_search_cubit.dart';
 import 'package:krrng_client/modules/hospital/cubit/hospital_cubit.dart';
+import 'package:krrng_client/modules/disease/cubit/disease_cubit.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
-import 'package:krrng_client/repositories/disease_repository/models/disease.dart';
 import 'package:widgets_to_image/widgets_to_image.dart';
 import 'package:krrng_client/support/style/theme.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:kpostal/kpostal.dart';
 
 class HospitalPage extends StatefulWidget {
   @override
@@ -53,6 +54,36 @@ class _HospitalPageState extends State<HospitalPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         resizeToAvoidBottomInset: false,
+        floatingActionButton: Padding(
+          padding: const EdgeInsets.only(bottom: 65),
+          child: FloatingActionButton(
+            onPressed: () async {
+              await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => KpostalView(
+                          useLocalServer: false,
+                          callback: (Kpostal result) {
+                            setState(() {
+                              Future.delayed(Duration(milliseconds: 500), () {
+                                _hospitalCubit.emit(_hospitalCubit.state
+                                    .copyWith(
+                                        currentPlace: result.address,
+                                        location: LatLng(result.latitude!,
+                                            result.longitude!)));
+                                _naver!.moveCamera(
+                                    CameraUpdate.toCameraPosition(
+                                        CameraPosition(
+                                            target: LatLng(result.latitude!,
+                                                result.longitude!))),
+                                    animationDuration: 1000);
+                              });
+                            });
+                          })));
+            },
+            child: Icon(Icons.location_on_sharp),
+          ),
+        ),
         body: BlocConsumer<HospitalCubit, HospitalState>(
             listenWhen: ((previous, current) =>
                 previous.location != current.location),
@@ -70,67 +101,57 @@ class _HospitalPageState extends State<HospitalPage> {
                   WidgetsToImage(
                       controller: imageController,
                       child: Container(
-                        height: (place!.length / 10).round() * 38,
-                        child: Column(
-                          children: [
+                          height: (place!.length / 10).round() * 38,
+                          child: Column(children: [
                             Container(
-                              width: 175,
-                              height: (place!.length / 10).round() * 38 - 24,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                color: primaryColor,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 9, horizontal: 10),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.stretch,
-                                  children: [
-                                    Container(
-                                        width: 13,
-                                        height: 13,
-                                        alignment: Alignment.topCenter,
-                                        child: SvgPicture.asset(
-                                            'assets/icons/positioning.svg')),
-                                    SizedBox(width: 6),
-                                    Expanded(
-                                      child: Text(
-                                        place!,
-                                        style: font_14_w700.copyWith(
-                                            color: Colors.white),
-                                        softWrap: true,
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
+                                width: 180,
+                                height: (place!.length / 10).round() * 38 - 62,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                    color: primaryColor,
+                                    borderRadius: BorderRadius.circular(8)),
+                                child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 8, horizontal: 10),
+                                    child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.stretch,
+                                        children: [
+                                          Container(
+                                              width: 13,
+                                              height: 13,
+                                              alignment: Alignment.topCenter,
+                                              child: SvgPicture.asset(
+                                                  'assets/icons/positioning.svg')),
+                                          SizedBox(width: 6),
+                                          Expanded(
+                                              child: Text(place!,
+                                                  style: font_14_w700.copyWith(
+                                                      color: Colors.white),
+                                                  softWrap: true))
+                                        ]))),
                             Icon(Icons.arrow_drop_down, color: primaryColor)
-                          ],
-                        ),
-                      )),
+                          ]))),
                   NaverMap(
                       markers: _markers,
                       initLocationTrackingMode: LocationTrackingMode.Follow,
-                      onMapCreated: (controller) {
-                        this._naver = controller;
-                      },
+                      onMapCreated: (controller) => this._naver = controller,
                       onCameraChange: (latLng, reason, isAnimated) {
                         if (latLng != null) {
                           latlng = latLng;
                         }
-                        print("${latLng} ${reason} ${isAnimated}");
                       },
                       onCameraIdle: () {
                         if (latlng != null) {
                           _hospitalCubit.updatePosition(latlng!);
                           _hospitalCubit
                               .currentLocation(_hospitalCubit.state.location!);
-                          _onDrawMarket(latlng!);
-                          setState(() => place = state.currentPlace);
+                          Future.delayed(Duration(milliseconds: 500), () {
+                            setState(() => place = state.currentPlace);
+                            _onDrawMarket(latlng!);
+                          });
                         }
                       },
                       onMapTap: (latlng) => disableFocus()),

@@ -1,4 +1,4 @@
-import 'package:krrng_client/modules/hospital_search/hospital_marker_widget.dart';
+import 'package:krrng_client/modules/hospital_detail/view/hospital_detail_screen.dart';
 import 'package:krrng_client/modules/search_result/components/hospital_tile.dart';
 import 'package:krrng_client/repositories/hospital_repository/models/models.dart';
 import 'package:krrng_client/modules/search_result/components/search_bar.dart';
@@ -61,9 +61,10 @@ class _HospitalSearchPageState extends State<HospitalSearchPage> {
             child: Image.asset('assets/images/indicator.gif',
                 width: 100, height: 100));
       } else {
-        test(hospitals);
-        print(
-            "(_markers.isEmpty ${_markers.isEmpty} hospital ${hospitals.isEmpty}");
+        for (var hospital in state.hospitals!) {
+          addMarker(hospital);
+        }
+
         return Column(children: [
           Container(
               height: height / 2,
@@ -72,10 +73,18 @@ class _HospitalSearchPageState extends State<HospitalSearchPage> {
                     markers: _markers,
                     locationButtonEnable: false,
                     onMapCreated: (controller) {
+                      var first_hospital = state.hospitals!.first;
+
                       this._naver = controller;
+                      _naver.moveCamera(
+                          CameraUpdate.toCameraPosition(CameraPosition(
+                              target: LatLng(
+                                  double.parse(first_hospital.latitude!),
+                                  double.parse(first_hospital.longitude!)))),
+                          animationDuration: 1000);
                     },
                     onCameraChange: (latLng, reason, isAnimated) {
-                      print("${latLng} ${reason} ${isAnimated}");
+                      // print("${latLng} ${reason} ${isAnimated}");
                     }),
                 SafeArea(
                     child: Padding(
@@ -103,7 +112,7 @@ class _HospitalSearchPageState extends State<HospitalSearchPage> {
                             Text("${state.addressDetail}", style: font_16_w700)
                           ]),
                           Text("${hospitals.length}개 검색 결과",
-                              style: font_16_w700)
+                              style: font_14_w500)
                         ])),
                 Container(
                     padding: EdgeInsets.only(top: 20),
@@ -183,28 +192,29 @@ class _HospitalSearchPageState extends State<HospitalSearchPage> {
                         itemCount: hospitals.length,
                         itemBuilder: (context, index) {
                           return GestureDetector(
-                            onTap: () {
-                              final latitude = double.parse(
-                                  hospitals[index].latitude ?? "0");
-                              final longitude = double.parse(
-                                  hospitals[index].longitude ?? "0");
+                              onTap: () {
+                                final latitude = double.parse(
+                                    hospitals[index].latitude ?? "0");
+                                final longitude = double.parse(
+                                    hospitals[index].longitude ?? "0");
 
-                              _naver.moveCamera(
-                                  CameraUpdate.toCameraPosition(CameraPosition(
-                                      target: LatLng(latitude, longitude))),
-                                  animationDuration: 1000);
-                            },
-                            child: HospitalTile(
-                                name: hospitals[index].name,
-                                location:
-                                    "${hospitals[index].address} ${hospitals[index].addressDetail}",
-                                price: hospitals[index].price,
-                                image: hospitals[index].image,
-                                temperature:
-                                    hospitals[index].recommend!.toDouble(),
-                                reviews: hospitals[index].reviewCount,
-                                howFar: hospitals[index].distance),
-                          );
+                                _naver.moveCamera(
+                                    CameraUpdate.toCameraPosition(
+                                        CameraPosition(
+                                            target:
+                                                LatLng(latitude, longitude))),
+                                    animationDuration: 1000);
+                              },
+                              child: HospitalTile(
+                                  name: hospitals[index].name,
+                                  location:
+                                      "${hospitals[index].address} ${hospitals[index].addressDetail}",
+                                  price: hospitals[index].price,
+                                  image: hospitals[index].image,
+                                  temperature:
+                                      hospitals[index].recommend!.toDouble(),
+                                  reviews: hospitals[index].reviewCount,
+                                  howFar: hospitals[index].distance));
                         },
                         separatorBuilder: (BuildContext ctx, int idx) =>
                             Divider(height: 15, color: dividerColor)))
@@ -214,38 +224,28 @@ class _HospitalSearchPageState extends State<HospitalSearchPage> {
     }));
   }
 
-  Future<void> test(List<Hospital> hospitals) async {
-    this._markersForByte = List.generate(
-        hospitals.length,
-        (index) => WidgetsToImage(
-              controller: imageController,
-              child: HospitalMarker(hospital: hospitals[index]),
-            )).toList();
+  void addMarker(Hospital hospital) async {
+    var overlayImage =
+        await OverlayImage.fromAssetImage(assetName: 'assets/images/head.png');
 
-    final bytes = await imageController.capture();
-    var overlayImage = OverlayImage.fromByteArray(bytes!);
-
-    final transform = hospitals.map((e) {
-      final latitude = double.parse(e.latitude ?? "0");
-      final longitude = double.parse(e.longitude ?? "0");
-
-      return Marker(
-        markerId: e.id.toString(),
-        position: LatLng(latitude, longitude),
-        icon: overlayImage,
-      );
-    }).toList();
-
-    setState(() {
-      _markers = transform;
-    });
-
-    print(transform);
-
-    print("_markers.isNotEmpty && _naver != null");
-    this._naver.moveCamera(
-        CameraUpdate.toCameraPosition(
-            CameraPosition(target: _markers.first.position!)),
-        animationDuration: 1000);
+    _markers.add(Marker(
+      onMarkerTab: (marker, value) => Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (_) => HospitalDetailScreen(id: hospital.id))),
+      markerId: DateTime.now().toIso8601String() + hospital.id.toString(),
+      position: LatLng(
+          double.parse(hospital.latitude!), double.parse(hospital.longitude!)),
+      captionText: hospital.name,
+      captionColor: Colors.indigo,
+      captionTextSize: 12.0,
+      alpha: 0.8,
+      captionOffset: -30,
+      icon: overlayImage,
+      anchor: AnchorPoint(0.5, 1),
+      width: 100,
+      height: 100,
+      // infoWindow: hospital.name,
+    ));
   }
 }

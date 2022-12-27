@@ -71,8 +71,8 @@ class HospitalCubit extends Cubit<HospitalState> {
 
     response.when(success: (MapData? mapResponse) {
       final currentPlace =
-          "${mapResponse?.region.area1.name} ${mapResponse?.region.area2.name} ${mapResponse?.region.area3.name} ${mapResponse?.land.name}";
-      final details = "${mapResponse?.land.name}";
+          "${mapResponse?.region.area1.name} ${mapResponse?.region.area2.name} ${mapResponse?.region.area3.name} ${mapResponse?.region.area4.name} ${mapResponse?.land.name} ${mapResponse?.land.number1}";
+      final details = "${mapResponse?.land.name} ${mapResponse?.land.number1}";
 
       emit(state.copyWith(
           location: latLng,
