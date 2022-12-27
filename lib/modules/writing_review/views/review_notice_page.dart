@@ -5,64 +5,39 @@ import 'package:krrng_client/support/style/theme.dart';
 import 'package:vrouter/vrouter.dart';
 
 enum ReviewNotice {
-  receipt('receipt', '영수증 첨부 안내'),
-  hospital('hospital', '병원 리뷰 등록 안내사항'),
-  none('', '');
+  receipt('영수증 첨부 안내'),
+  hospital('병원 리뷰 등록 안내사항');
 
-  const ReviewNotice(this.code, this.title);
-  final String code;
+  const ReviewNotice(this.title);
+
   final String title;
-
-  factory ReviewNotice.getByCode(String code) {
-    return ReviewNotice.values.firstWhere((value) => value.code == code,
-        orElse: () => ReviewNotice.none);
-  }
 }
 
-class ReviewNoticePage extends StatefulWidget {
-  static const String routeName = '/review/notice';
+class ReviewNoticePage extends StatelessWidget {
+  const ReviewNoticePage({super.key, required this.code});
 
-  const ReviewNoticePage({Key? key}) : super(key: key);
-
-  @override
-  State<ReviewNoticePage> createState() => _ReviewNoticePageState();
-}
-
-class _ReviewNoticePageState extends State<ReviewNoticePage> {
-  ReviewNotice? code;
-
-  @override
-  void initState() {
-    super.initState();
-  }
+  final ReviewNotice code;
 
   @override
   Widget build(BuildContext context) {
-    setState(() {
-      var value = context.vRouter.queryParameters["code"];
-
-      code = ReviewNotice.getByCode(value ?? "");
-    });
-
     return Scaffold(
         backgroundColor:
             code == ReviewNotice.hospital ? Colors.white : listViewDividerColor,
         appBar: AppBar(
-          title: Text(code?.title ?? "안내",
-              style: Theme.of(context).textTheme.headline2),
+          title: Text(code.title, style: Theme.of(context).textTheme.headline2),
           centerTitle: false,
         ),
         body: SafeArea(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 20),
             child: code == ReviewNotice.hospital
-                ? ReviewByHospital()
-                : ReceiptGuide(),
+                ? ReviewByHospital(context)
+                : ReceiptGuide(context),
           ),
         ));
   }
 
-  Widget ReviewByHospital() {
+  Widget ReviewByHospital(BuildContext context) {
     return Container(
       child: Column(
         children: [
@@ -90,7 +65,7 @@ class _ReviewNoticePageState extends State<ReviewNoticePage> {
     );
   }
 
-  Widget ReceiptGuide() {
+  Widget ReceiptGuide(BuildContext context) {
     return Container(
       height: MediaQuery.of(context).size.height,
       padding: EdgeInsets.only(top: 35),
