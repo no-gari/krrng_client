@@ -1,9 +1,5 @@
-import 'dart:convert';
-import 'dart:math';
-
-import 'package:krrng_client/modules/search/cubit/recent_search_cubit.dart';
-import 'package:krrng_client/modules/search_result_branch/view/search_result_branch_screen.dart';
 import 'package:krrng_client/repositories/authentication_repository/src/authentication_repository.dart';
+import 'package:krrng_client/modules/search_result_branch/view/search_result_branch_screen.dart';
 import 'package:krrng_client/modules/search_result/view/hospital_search_result_screen.dart';
 import 'package:krrng_client/repositories/search_repository/models/recent_search.dart';
 import 'package:krrng_client/repositories/user_repository/src/user_repository.dart';
@@ -11,6 +7,7 @@ import 'package:krrng_client/modules/authentication/bloc/authentication_bloc.dar
 import 'package:krrng_client/repositories/hospital_repository/models/enums.dart';
 import 'package:krrng_client/modules/notification/view/notification_screen.dart';
 import 'package:krrng_client/repositories/user_repository/models/user.dart';
+import 'package:krrng_client/modules/search/cubit/recent_search_cubit.dart';
 import 'package:krrng_client/support/networks/network_exceptions.dart';
 import 'package:krrng_client/modules/mypage/view/mypage_screen.dart';
 import 'package:krrng_client/modules/search/view/search_screen.dart';
@@ -22,6 +19,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:vrouter/vrouter.dart';
 import '../components/menus.dart';
+import 'dart:convert';
+import 'dart:math';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);

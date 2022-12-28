@@ -1,3 +1,4 @@
+import 'package:krrng_client/modules/hospital_search/view/hospital_search_screen.dart';
 import 'package:krrng_client/modules/hospital_search/view/hostipal_search_page.dart';
 import 'package:krrng_client/repositories/disease_repository/models/disease.dart';
 import 'package:krrng_client/modules/search/cubit/recent_search_cubit.dart';
@@ -152,7 +153,7 @@ class _HospitalPageState extends State<HospitalPage> {
                           _hospitalCubit.updatePosition(latlng!);
                           _hospitalCubit
                               .currentLocation(_hospitalCubit.state.location!);
-                          Future.delayed(Duration(milliseconds: 600), () {
+                          Future.delayed(Duration(milliseconds: 500), () {
                             setState(() => place = state.currentPlace);
                             _onDrawMarket(latlng!);
                           });
@@ -213,9 +214,8 @@ class _HospitalPageState extends State<HospitalPage> {
                 onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (_) => BlocProvider.value(
-                            value: _hospitalCubit,
-                            child: HospitalSearchPage(disease: disease.id)))))
+                        builder: (_) =>
+                            HospitalSearchScreen(disease: disease.id))))
         ])));
   }
 

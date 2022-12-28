@@ -3,6 +3,7 @@ import 'package:krrng_client/modules/disease/cubit/disease_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:krrng_client/modules/hospital_detail/view/hospital_detail_screen.dart';
+import 'package:krrng_client/modules/hospital_search/view/hospital_search_screen.dart';
 import 'package:krrng_client/modules/hospital_search/view/hostipal_search_page.dart';
 import 'package:krrng_client/modules/search_result/components/hospital_tile.dart';
 
@@ -76,7 +77,7 @@ class _SearchResultBranchPageState extends State<SearchResultBranchPage>
                               context,
                               MaterialPageRoute(
                                   builder: (_) =>
-                                      HospitalSearchPage(disease: item.id))),
+                                      HospitalSearchScreen(disease: item.id))),
                           title: Text(item.name.toString())),
                     if (_diseaseCubit.state.disease!.isEmpty)
                       Padding(
