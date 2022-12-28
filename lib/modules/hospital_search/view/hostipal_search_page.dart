@@ -4,6 +4,7 @@ import 'package:krrng_client/repositories/hospital_repository/models/models.dart
 import 'package:krrng_client/modules/search_result/components/search_bar.dart';
 import 'package:krrng_client/modules/hospital/cubit/hospital_cubit.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
+import 'package:krrng_client/support/style/format_unit.dart';
 import 'package:widgets_to_image/widgets_to_image.dart';
 import 'package:krrng_client/support/style/theme.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -225,27 +226,28 @@ class _HospitalSearchPageState extends State<HospitalSearchPage> {
   }
 
   void addMarker(Hospital hospital) async {
-    var overlayImage =
-        await OverlayImage.fromAssetImage(assetName: 'assets/images/head.png');
+    var overlayImage = await OverlayImage.fromAssetImage(
+        assetName: 'assets/images/group-marker.png');
 
     _markers.add(Marker(
-      onMarkerTab: (marker, value) => Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (_) => HospitalDetailScreen(id: hospital.id))),
-      markerId: DateTime.now().toIso8601String() + hospital.id.toString(),
-      position: LatLng(
-          double.parse(hospital.latitude!), double.parse(hospital.longitude!)),
-      captionText: hospital.name,
-      captionColor: Colors.indigo,
-      captionTextSize: 12.0,
-      alpha: 0.8,
-      captionOffset: -30,
-      icon: overlayImage,
-      anchor: AnchorPoint(0.5, 1),
-      width: 100,
-      height: 100,
-      // infoWindow: hospital.name,
-    ));
+        onMarkerTab: (marker, value) => Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (_) => HospitalDetailScreen(id: hospital.id))),
+        markerId: DateTime.now().toIso8601String() + hospital.id.toString(),
+        position: LatLng(double.parse(hospital.latitude!),
+            double.parse(hospital.longitude!)),
+        captionText: '    ' + hospital.name!,
+        captionColor: Colors.black,
+        captionTextSize: 13.0,
+        subCaptionText: currencyFromStringWon(hospital.price.toString()),
+        subCaptionColor: Theme.of(context).primaryColor,
+        subCaptionTextSize: 13.0,
+        alpha: 0.8,
+        captionOffset: -70,
+        icon: overlayImage,
+        anchor: AnchorPoint(0.5, 1),
+        width: 190,
+        height: 82));
   }
 }
