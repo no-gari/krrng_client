@@ -3,9 +3,11 @@ part of 'hospital_cubit.dart';
 class HospitalState extends Equatable {
   const HospitalState(
       {this.location,
+      this.realLocation,
       this.currentPlace,
-      this.tempCurrentPlace,
+      this.realCurrentPlace,
       this.addressDetail,
+      this.realAddressDetail,
       this.hospitals,
       this.hospitalDetail,
       this.selectedPart,
@@ -15,9 +17,11 @@ class HospitalState extends Equatable {
       this.errorMessage});
 
   final LatLng? location;
+  final LatLng? realLocation;
   final String? currentPlace;
-  final String? tempCurrentPlace;
+  final String? realCurrentPlace;
   final String? addressDetail;
+  final String? realAddressDetail;
   final List<Hospital>? hospitals;
   final HospitalDetail? hospitalDetail;
   final HospitalPart? selectedPart;
@@ -28,9 +32,11 @@ class HospitalState extends Equatable {
 
   HospitalState copyWith({
     LatLng? location,
+    LatLng? realLocation,
     String? currentPlace,
-    String? tempCurrentPlace,
+    String? realCurrentPlace,
     String? addressDetail,
+    String? realAddressDetail,
     List<Hospital>? hospitals,
     HospitalDetail? hospitalDetail,
     HospitalPart? selectedPart,
@@ -41,9 +47,11 @@ class HospitalState extends Equatable {
   }) {
     return HospitalState(
         location: location ?? this.location,
+        realLocation: realLocation ?? this.realLocation,
         currentPlace: currentPlace ?? this.currentPlace,
-        tempCurrentPlace: tempCurrentPlace ?? this.tempCurrentPlace,
+        realCurrentPlace: realCurrentPlace ?? this.realCurrentPlace,
         addressDetail: addressDetail ?? this.addressDetail,
+        realAddressDetail: realAddressDetail ?? this.realAddressDetail,
         hospitals: hospitals ?? this.hospitals,
         hospitalDetail: hospitalDetail ?? this.hospitalDetail,
         selectedPart: selectedPart ?? this.selectedPart,
@@ -56,9 +64,11 @@ class HospitalState extends Equatable {
   @override
   List<Object?> get props => [
         location,
+        realLocation,
         currentPlace,
-        tempCurrentPlace,
+        realCurrentPlace,
         addressDetail,
+        realAddressDetail,
         hospitals,
         hospitalDetail,
         selectedPart,

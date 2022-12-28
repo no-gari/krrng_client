@@ -101,11 +101,13 @@ class _HospitalPageState extends State<HospitalPage> {
                   WidgetsToImage(
                       controller: imageController,
                       child: Container(
-                          height: (place!.length / 10).round() * 38,
+                          // height: (place!.length / 10).round() * 38,
+                          height: 100,
                           child: Column(children: [
                             Container(
-                                width: 180,
-                                height: (place!.length / 10).round() * 38 - 62,
+                                width: 190,
+                                // height: (place!.length / 10).round() * 38 - 62,
+                                height: 60,
                                 alignment: Alignment.center,
                                 decoration: BoxDecoration(
                                     color: primaryColor,
@@ -137,7 +139,9 @@ class _HospitalPageState extends State<HospitalPage> {
                   NaverMap(
                       markers: _markers,
                       initLocationTrackingMode: LocationTrackingMode.Follow,
-                      onMapCreated: (controller) => this._naver = controller,
+                      onMapCreated: (controller) {
+                        this._naver = controller;
+                      },
                       onCameraChange: (latLng, reason, isAnimated) {
                         if (latLng != null) {
                           latlng = latLng;
@@ -148,7 +152,7 @@ class _HospitalPageState extends State<HospitalPage> {
                           _hospitalCubit.updatePosition(latlng!);
                           _hospitalCubit
                               .currentLocation(_hospitalCubit.state.location!);
-                          Future.delayed(Duration(milliseconds: 500), () {
+                          Future.delayed(Duration(milliseconds: 600), () {
                             setState(() => place = state.currentPlace);
                             _onDrawMarket(latlng!);
                           });
@@ -179,7 +183,8 @@ class _HospitalPageState extends State<HospitalPage> {
         bottom: 0,
         child: GestureDetector(
             onTap: () {
-              _hospitalCubit.currentLocation(_hospitalCubit.state.location!);
+              _hospitalCubit
+                  .realCurrentLocation(_hospitalCubit.state.location!);
               ScaffoldMessenger.of(context)
                   .showSnackBar(SnackBar(content: Text("현재 위치가 설정되었습니다.")));
             },
@@ -283,10 +288,8 @@ class _HospitalPageState extends State<HospitalPage> {
         position: latLng,
         icon: overlayImage,
         anchor: AnchorPoint(0.5, 1),
-        width: 175,
-        height: (place.length / 10).round() * 38));
-
-    setState(() {});
+        width: 185,
+        height: 100));
   }
 
   void disableFocus() {
