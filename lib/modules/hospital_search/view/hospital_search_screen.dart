@@ -10,9 +10,10 @@ import 'package:krrng_client/repositories/search_repository/src/recent_search_re
 class HospitalSearchScreen extends StatelessWidget {
   static const String routeName = '/hospital-search-screen';
 
-  HospitalSearchScreen({this.disease});
+  HospitalSearchScreen({this.disease, this.fromMap = false});
 
   final int? disease;
+  final bool? fromMap;
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +26,6 @@ class HospitalSearchScreen extends StatelessWidget {
           BlocProvider(
               create: (context) => DiseaseCubit(
                   RepositoryProvider.of<DiseaseRepository>(context))),
-        ], child: HospitalSearchPage(disease: disease)));
+        ], child: HospitalSearchPage(disease: disease, fromMap: fromMap)));
   }
 }

@@ -207,8 +207,8 @@ class _HospitalPageState extends State<HospitalPage> {
                 onTap: () async => await Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (_) =>
-                            HospitalSearchScreen(disease: disease.id))))
+                        builder: (_) => HospitalSearchScreen(
+                            disease: disease.id, fromMap: true))))
         ])));
   }
 

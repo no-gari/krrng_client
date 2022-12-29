@@ -17,9 +17,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class HospitalSearchPage extends StatefulWidget {
-  HospitalSearchPage({this.disease});
+  HospitalSearchPage({this.disease, this.fromMap});
 
   final int? disease;
+  final bool? fromMap;
 
   static const String routeName = "/hospital/search";
 
@@ -124,10 +125,12 @@ class _HospitalSearchPageState extends State<HospitalSearchPage> {
                                     fillColor: Colors.white,
                                     filled: true,
                                     icon: GestureDetector(
-                                        onTap: () async {
-                                          _hospitalCubit.emit(_hospitalCubit
-                                              .state
-                                              .copyWith(isMap: true));
+                                        onTap: () {
+                                          if (widget.fromMap == true) {
+                                            _hospitalCubit.emit(_hospitalCubit
+                                                .state
+                                                .copyWith(isMap: true));
+                                          }
                                           Navigator.of(context).pop();
                                         },
                                         child: Icon(Icons.arrow_back_ios,
