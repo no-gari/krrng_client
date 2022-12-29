@@ -22,6 +22,7 @@ class HospitalCubit extends Cubit<HospitalState> {
             addressDetail: '2번 출구',
             realLocation: LatLng(37.490903970499, 127.03837557412),
             realCurrentPlace: '강남구청역',
+            isMap: false,
             realAddressDetail: '2번 출구'));
 
   final MapRepository _mapRepository;

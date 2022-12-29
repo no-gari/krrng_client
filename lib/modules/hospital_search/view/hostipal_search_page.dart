@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:krrng_client/modules/hospital_detail/view/hospital_detail_screen.dart';
 import 'package:krrng_client/modules/hospital_search/view/hospital_search_screen.dart';
 import 'package:krrng_client/modules/search_result/components/hospital_tile.dart';
@@ -47,6 +49,7 @@ class _HospitalSearchPageState extends State<HospitalSearchPage> {
     _hospitalCubit = BlocProvider.of<HospitalCubit>(context);
     _diseaseCubit = BlocProvider.of<DiseaseCubit>(context);
     _hospitalCubit.getHosipitals(widget.disease!);
+    _hospitalCubit.emit(_hospitalCubit.state.copyWith(isMap: false));
     _focusNode = FocusNode();
   }
 
@@ -54,6 +57,9 @@ class _HospitalSearchPageState extends State<HospitalSearchPage> {
   void dispose() {
     _textEditingController.dispose();
     _focusNode.dispose();
+    if (Platform.isIOS) {
+      _naver.clearMapView();
+    }
     super.dispose();
   }
 
@@ -118,8 +124,12 @@ class _HospitalSearchPageState extends State<HospitalSearchPage> {
                                     fillColor: Colors.white,
                                     filled: true,
                                     icon: GestureDetector(
-                                        onTap: () =>
-                                            Navigator.of(context).pop(),
+                                        onTap: () async {
+                                          _hospitalCubit.emit(_hospitalCubit
+                                              .state
+                                              .copyWith(isMap: true));
+                                          Navigator.of(context).pop();
+                                        },
                                         child: Icon(Icons.arrow_back_ios,
                                             color: Colors.black)),
                                     isCollapsed: true,

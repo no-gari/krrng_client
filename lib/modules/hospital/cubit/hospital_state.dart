@@ -13,6 +13,7 @@ class HospitalState extends Equatable {
       this.selectedPart,
       this.selectedFilter,
       this.isLoaded,
+      this.isMap,
       this.error,
       this.errorMessage});
 
@@ -27,6 +28,7 @@ class HospitalState extends Equatable {
   final HospitalPart? selectedPart;
   final HospitalFilter? selectedFilter;
   final bool? isLoaded;
+  final bool? isMap;
   final NetworkExceptions? error;
   final String? errorMessage;
 
@@ -42,6 +44,7 @@ class HospitalState extends Equatable {
     HospitalPart? selectedPart,
     HospitalFilter? selectedFilter,
     bool? isLoaded,
+    bool? isMap,
     NetworkExceptions? error,
     String? errorMessage,
   }) {
@@ -57,6 +60,7 @@ class HospitalState extends Equatable {
         selectedPart: selectedPart ?? this.selectedPart,
         selectedFilter: selectedFilter ?? this.selectedFilter,
         isLoaded: isLoaded ?? this.isLoaded,
+        isMap: isMap ?? this.isMap,
         error: error ?? this.error,
         errorMessage: errorMessage ?? this.errorMessage);
   }
@@ -74,6 +78,7 @@ class HospitalState extends Equatable {
         selectedPart,
         selectedFilter,
         isLoaded,
+        isMap,
         error,
         errorMessage
       ];
