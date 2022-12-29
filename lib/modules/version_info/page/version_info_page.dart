@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:krrng_client/modules/version_info/cubit/version_info_cubit.dart';
 
 class VersionInfoPage extends StatefulWidget {
   const VersionInfoPage({Key? key}) : super(key: key);
@@ -8,6 +10,14 @@ class VersionInfoPage extends StatefulWidget {
 }
 
 class _VersionInfoPageState extends State<VersionInfoPage> {
+  late VersionInfoCubit _versionInfoCubit;
+
+  @override
+  void initState() {
+    super.initState();
+    _versionInfoCubit = BlocProvider.of<VersionInfoCubit>(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

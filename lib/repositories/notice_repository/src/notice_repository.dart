@@ -14,4 +14,13 @@ class NoticeRepository {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
   }
+
+  Future<ApiResult<dynamic>> getAppVersion() async {
+    try {
+      var response = await _dioClient.get('/dev/api/v1/cs/app-version/');
+      return ApiResult.success(data: response);
+    } catch (e) {
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e));
+    }
+  }
 }

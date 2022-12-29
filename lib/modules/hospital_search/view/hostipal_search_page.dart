@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:krrng_client/modules/hospital_detail/view/hospital_detail_screen.dart';
 import 'package:krrng_client/modules/hospital_search/view/hospital_search_screen.dart';
 import 'package:krrng_client/modules/search_result/components/hospital_tile.dart';
@@ -15,6 +13,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'dart:io';
 
 class HospitalSearchPage extends StatefulWidget {
   HospitalSearchPage({this.disease, this.fromMap});
