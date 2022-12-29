@@ -250,6 +250,7 @@ class _HospitalSearchPageState extends State<HospitalSearchPage> {
                               onChanged: (value) {
                                 if (value != null) {
                                   _hospitalCubit.selectedFilter(value);
+                                  _hospitalCubit.getHosipitals(widget.disease!);
                                 }
                               })),
                       Container(
@@ -284,6 +285,7 @@ class _HospitalSearchPageState extends State<HospitalSearchPage> {
                               onChanged: (value) {
                                 if (value != null) {
                                   _hospitalCubit.selectedPart(value);
+                                  _hospitalCubit.getHosipitals(widget.disease!);
                                 }
                               }))
                     ])),

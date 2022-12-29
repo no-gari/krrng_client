@@ -6,6 +6,8 @@ import 'package:krrng_client/modules/hospital_detail/view/hospital_detail_screen
 import 'package:krrng_client/modules/hospital_search/view/hospital_search_screen.dart';
 import 'package:krrng_client/modules/hospital_search/view/hostipal_search_page.dart';
 import 'package:krrng_client/modules/search_result/components/hospital_tile.dart';
+import 'package:krrng_client/modules/search_result/components/search_filter.dart';
+import 'package:krrng_client/repositories/hospital_repository/models/enums.dart';
 
 class SearchResultBranchPage extends StatefulWidget {
   SearchResultBranchPage({this.keyword});
@@ -30,6 +32,8 @@ class _SearchResultBranchPageState extends State<SearchResultBranchPage>
     _tabController = TabController(length: 2, vsync: this);
     _hospitalCubit = BlocProvider.of<HospitalCubit>(context);
     _diseaseCubit = BlocProvider.of<DiseaseCubit>(context);
+    _hospitalCubit.emit(
+        _hospitalCubit.state.copyWith(selectedPart: HospitalPart.everything));
     _hospitalCubit.hospitalSearch(widget.keyword!);
     _diseaseCubit.getDiseaseList(widget.keyword!);
   }
@@ -43,7 +47,22 @@ class _SearchResultBranchPageState extends State<SearchResultBranchPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(automaticallyImplyLeading: true),
+        appBar: AppBar(
+          automaticallyImplyLeading: true,
+          title: Text('검색 결과'),
+          actions: [
+            IconButton(
+                onPressed: () => showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    builder: (BuildContext context) {
+                      return SearchFilter(
+                          hospitalCubit: _hospitalCubit,
+                          keyword: widget.keyword);
+                    }),
+                icon: Icon(Icons.filter_alt_outlined, size: 24))
+          ],
+        ),
         body: BlocBuilder<DiseaseCubit, DiseaseState>(
             builder: (context, diseaseState) {
           return BlocBuilder<HospitalCubit, HospitalState>(

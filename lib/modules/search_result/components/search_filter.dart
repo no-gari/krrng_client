@@ -5,9 +5,10 @@ import 'package:krrng_client/repositories/hospital_repository/models/enums.dart'
 import 'search_filter_button.dart';
 
 class SearchFilter extends StatefulWidget {
-  SearchFilter({this.hospitalCubit});
+  SearchFilter({this.hospitalCubit, this.keyword});
 
   final HospitalCubit? hospitalCubit;
+  final String? keyword;
 
   @override
   State<SearchFilter> createState() => _SearchFilterState();
@@ -90,6 +91,13 @@ class _SearchFilterState extends State<SearchFilter> {
                                             .copyWith(
                                                 selectedFilter: HospitalFilter
                                                     .values[index]));
+                                        if (widget.keyword != null) {
+                                          widget.hospitalCubit!
+                                              .hospitalSearch(widget.keyword!);
+                                        } else {
+                                          widget.hospitalCubit!
+                                              .getHosipitals(0);
+                                        }
                                       }))),
                           SizedBox(height: 60),
                           Text('특화 분야',
@@ -110,6 +118,13 @@ class _SearchFilterState extends State<SearchFilter> {
                                             .copyWith(
                                                 selectedPart: HospitalPart
                                                     .values[index]));
+                                        if (widget.keyword != null) {
+                                          widget.hospitalCubit!
+                                              .hospitalSearch(widget.keyword!);
+                                        } else {
+                                          widget.hospitalCubit!
+                                              .getHosipitals(0);
+                                        }
                                       })))
                         ])))));
   }
