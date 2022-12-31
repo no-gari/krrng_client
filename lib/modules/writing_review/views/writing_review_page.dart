@@ -41,6 +41,23 @@ class _WritingReviewPageState extends State<WritingReviewPage> {
     reviewController.dispose();
   }
 
+  Future getImages() async {
+    List<Asset> resultList = <Asset>[];
+    resultList = await MultiImagePicker.pickImages(
+        maxImages: 10, enableCamera: true, selectedAssets: _images);
+    setState(() {
+      _images = resultList;
+    });
+  }
+
+  Future getReviewImages() async {
+    List<Asset> resultList = <Asset>[];
+    resultList = await MultiImagePicker.pickImages(maxImages: 10, enableCamera: true, selectedAssets: _reviewImages);
+    setState(() {
+      _reviewImages = resultList;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // TODO: state 값 주입
@@ -69,17 +86,17 @@ class _WritingReviewPageState extends State<WritingReviewPage> {
               final termsValidate = !terms.contains(false);
 
               if (_formKey.currentState!.validate()) {
-
                 _writingReviewCubit.emit(_writingReviewCubit.state.copyWith(
                     rates: rates,
                     reviewContent: reviewController.text,
-                    disease: diseaseController.text
+                    disease: diseaseController.text,
+                    receiptImages: _reviewImages,
+                    writingImages: _images
                 ));
+
                 if (termsValidate == false) {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("약관을 동의해주세요.")));
                 } else {
-
-
                   _writingReviewCubit.createReview();
                 }
               }
@@ -185,7 +202,7 @@ class _WritingReviewPageState extends State<WritingReviewPage> {
                 return GestureDetector(
                   onTap: () {
                     if (index == 0) {
-                      _writingReviewCubit.getImages(_images);
+                      getImages();
                     }
                   },
                   child: Container(
@@ -263,7 +280,7 @@ class _WritingReviewPageState extends State<WritingReviewPage> {
                               return GestureDetector(
                                   onTap: () {
                                     if (index == 0) {
-                                      _writingReviewCubit.getReviewImages(_reviewImages);
+                                      getReviewImages();
                                     }
                                   },
                                   child: Container(
@@ -282,9 +299,7 @@ class _WritingReviewPageState extends State<WritingReviewPage> {
                           mainAxisSize: MainAxisSize.min,
                       children: [
                         IconButton(
-                            onPressed: () {
-                              _writingReviewCubit.getReviewImages(_reviewImages);
-                            },
+                            onPressed: () => getReviewImages(),
                             icon: SvgPicture.asset("assets/icons/photo.svg")),
                       ],
                     )

@@ -74,10 +74,8 @@ class HospitalRepository {
     }
   }
 
-  Future<ApiResult<Review>> createReview(Map<String, dynamic> body) async {
+  Future<ApiResult<Review>> createReview(FormData data) async {
     try {
-      var data = FormData.fromMap(body);
-      print(data);
       var response = await _dioClient.postWithAuthForMultiPart('/dev/api/v1/review/create/', data: data);
       return ApiResult.success(data: Review.fromJson(response));
     } catch (e) {

@@ -4,6 +4,7 @@ class WritingReviewState extends Equatable {
   const WritingReviewState({
     this.disease,
     this.receiptImages,
+    this.writingImages,
     this.reviewContent,
     this.rates,
     this.error,
@@ -12,6 +13,7 @@ class WritingReviewState extends Equatable {
 
   final String? disease;
   final List<Asset>? receiptImages;
+  final List<Asset>? writingImages;
   final String? reviewContent;
   final int? rates;
   final NetworkExceptions? error;
@@ -20,6 +22,7 @@ class WritingReviewState extends Equatable {
   WritingReviewState copyWith({
     String? disease,
     List<Asset>? receiptImages,
+    List<Asset>? writingImages,
     String? reviewContent,
     int? rates,
     NetworkExceptions? error,
@@ -28,6 +31,7 @@ class WritingReviewState extends Equatable {
     return WritingReviewState(
       disease: disease ?? this.disease,
       receiptImages: receiptImages ?? this.receiptImages,
+      writingImages: writingImages ?? this.writingImages,
       reviewContent: reviewContent ?? this.reviewContent,
       rates: rates ?? this.rates,
       error: error ?? this.error,
@@ -36,6 +40,6 @@ class WritingReviewState extends Equatable {
 
   @override
   List<Object?> get props => [
-    disease, receiptImages, reviewContent, rates
+    disease, receiptImages, writingImages, reviewContent, rates
   ];
 }

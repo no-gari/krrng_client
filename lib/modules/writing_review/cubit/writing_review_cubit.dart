@@ -33,18 +33,31 @@ class WritingReviewCubit extends Cubit<WritingReviewState> {
   }
 
   Future<void> createReview() async {
-    // MultipartFile? recieptImage = state.receiptImages == null ? null : state.receiptImages!.map((e) => await MultipartFile.fromFile(e!));
+    final writingImages = state.writingImages ?? [];
+    final recieptImage = state.receiptImages ?? [];
 
-    Map<String, dynamic> body = {
+    List<MultipartFile> multipart_writingImages = [];
+    for (int i = 0; i < writingImages.length; i++) {
+      final bytes = await writingImages[i].getByteData();
+      multipart_writingImages.add(MultipartFile.fromBytes(bytes.buffer.asUint8ClampedList()));
+    }
+
+    List<MultipartFile> multipart_recieptImage = [];
+    for (int i = 0; i < recieptImage.length; i++) {
+      final bytes = await recieptImage[i].getByteData();
+      multipart_recieptImage.add(MultipartFile.fromBytes(bytes.buffer.asUint8ClampedList()));
+    }
+
+    var data = FormData.fromMap({
       "hospital": hospitalDetail.id!,
       "diagnosis": state.disease,
       "content": state.reviewContent,
       "rates": state.rates,
-      "reviewContent": [],
-      "recieptImage": []
-    };
+      "reviewImage": multipart_writingImages,
+      "recieptImage": multipart_recieptImage
+    });
 
-    var response = await _hospitalRepository.createReview(body);
+    var response = await _hospitalRepository.createReview(data);
     response.when(success: (Review? review) {
       print(review);
 
