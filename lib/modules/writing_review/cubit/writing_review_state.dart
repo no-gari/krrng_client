@@ -2,6 +2,7 @@ part of 'writing_review_cubit.dart';
 
 class WritingReviewState extends Equatable {
   const WritingReviewState({
+    this.isComplete,
     this.disease,
     this.receiptImages,
     this.writingImages,
@@ -11,6 +12,7 @@ class WritingReviewState extends Equatable {
     this.errorMessage
   });
 
+  final bool? isComplete;
   final String? disease;
   final List<Asset>? receiptImages;
   final List<Asset>? writingImages;
@@ -20,6 +22,7 @@ class WritingReviewState extends Equatable {
   final String? errorMessage;
 
   WritingReviewState copyWith({
+    bool? isComplete,
     String? disease,
     List<Asset>? receiptImages,
     List<Asset>? writingImages,
@@ -29,6 +32,7 @@ class WritingReviewState extends Equatable {
     String? errorMessage,
   }) {
     return WritingReviewState(
+      isComplete: isComplete ?? this.isComplete,
       disease: disease ?? this.disease,
       receiptImages: receiptImages ?? this.receiptImages,
       writingImages: writingImages ?? this.writingImages,
@@ -40,6 +44,6 @@ class WritingReviewState extends Equatable {
 
   @override
   List<Object?> get props => [
-    disease, receiptImages, writingImages, reviewContent, rates
+    isComplete, disease, receiptImages, writingImages, reviewContent, rates
   ];
 }

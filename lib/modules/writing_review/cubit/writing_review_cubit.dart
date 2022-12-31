@@ -61,19 +61,14 @@ class WritingReviewCubit extends Cubit<WritingReviewState> {
     response.when(success: (Review? review) {
       print(review);
 
+      emit(state.copyWith(
+        isComplete: true,
+      ));
+
     }, failure: (NetworkExceptions? error) {
       emit(state.copyWith(
           error: error,
           errorMessage: NetworkExceptions.getErrorMessage(error!)));
     });
   }
-
-  /*
-  hospital
-    diagnosis
-    content
-    rates
-    reviewImage
-
-  * */
 }

@@ -60,57 +60,79 @@ class _WritingReviewPageState extends State<WritingReviewPage> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: state 값 주입
-    return Form(
-      key: _formKey,
-      child: ListView(
-        children: <Widget>[
-          _HospitalProfileTile(),
-          _Divier,
-          _ReceivedMedical(),
-          _Receipt(),
-          _PostReview(),
-          GestureDetector(
-            onTap: () => {},
-            child: Container (
-                height: 105, width: MediaQuery.of(context).size.width,
-                margin: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-                decoration: BoxDecoration(
-                    image: DecorationImage(image: AssetImage("assets/images/mainbanner.png"), fit: BoxFit.cover),
-                    borderRadius: BorderRadius.circular(25)))
-          ),
-          _Information(),
-          const SizedBox(height: 30),
-          GestureDetector(
-            onTap: () {
-              final termsValidate = !terms.contains(false);
-
-              if (_formKey.currentState!.validate()) {
-                _writingReviewCubit.emit(_writingReviewCubit.state.copyWith(
-                    rates: rates,
-                    reviewContent: reviewController.text,
-                    disease: diseaseController.text,
-                    receiptImages: _reviewImages,
-                    writingImages: _images
-                ));
-
-                if (termsValidate == false) {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("약관을 동의해주세요.")));
-                } else {
-                  _writingReviewCubit.createReview();
-                }
-              }
-            },
-            child: Container(
-              height: 60,
-              decoration: BoxDecoration(border: Border.all(color: dividerColor), color: Color(0xfffbfbfb)),
-              alignment: Alignment.center,
-              child: Text("병원 리뷰 등록하기", style: font_17_w900.copyWith(color: primaryColor),
+    return BlocConsumer<WritingReviewCubit, WritingReviewState>(
+        listener: (context, state) {
+          if (state.isComplete ?? false) {
+            showDialog(
+                context: context,
+                barrierDismissible: true, // 바깥 영역 터치시 닫을지 여부
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                      content: Text("등록이 완료되었습니다."),
+                      insetPadding:
+                      const EdgeInsets.fromLTRB(0, 80, 0, 80),
+                      actions: [
+                        TextButton(
+                            child: const Text('확인'),
+                            onPressed: () {
+                              context.vRouter.pop();
+                              context.vRouter.pop();
+                            })
+                      ]);
+                });
+          }
+        },
+        builder: (context, state)  => Form(
+          key: _formKey,
+          child: ListView(
+            children: <Widget>[
+              _HospitalProfileTile(),
+              _Divier,
+              _ReceivedMedical(),
+              _Receipt(),
+              _PostReview(),
+              GestureDetector(
+                  onTap: () => {},
+                  child: Container (
+                      height: 105, width: MediaQuery.of(context).size.width,
+                      margin: EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+                      decoration: BoxDecoration(
+                          image: DecorationImage(image: AssetImage("assets/images/mainbanner.png"), fit: BoxFit.cover),
+                          borderRadius: BorderRadius.circular(25)))
               ),
-            ),
+              _Information(),
+              const SizedBox(height: 30),
+              GestureDetector(
+                onTap: () {
+                  final termsValidate = !terms.contains(false);
+
+                  if (_formKey.currentState!.validate()) {
+                    _writingReviewCubit.emit(_writingReviewCubit.state.copyWith(
+                        rates: rates,
+                        reviewContent: reviewController.text,
+                        disease: diseaseController.text,
+                        receiptImages: _reviewImages,
+                        writingImages: _images
+                    ));
+
+                    if (termsValidate == false) {
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("약관을 동의해주세요.")));
+                    } else {
+                      _writingReviewCubit.createReview();
+                    }
+                  }
+                },
+                child: Container(
+                  height: 60,
+                  decoration: BoxDecoration(border: Border.all(color: dividerColor), color: Color(0xfffbfbfb)),
+                  alignment: Alignment.center,
+                  child: Text("병원 리뷰 등록하기", style: font_17_w900.copyWith(color: primaryColor),
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        )
     );
   }
 
