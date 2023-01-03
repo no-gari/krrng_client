@@ -43,10 +43,8 @@ class AnimalRepository {
     }
   }
 
-  Future<ApiResult<Animal>> createAnimal(Map<String, dynamic> body) async {
+  Future<ApiResult<Animal>> createAnimal(FormData data) async {
     try {
-      var data = FormData.fromMap(body);
-      print("createAnimal request:: ${data.fields}");
       var response = await _dioClient
           .postWithAuthForMultiPart('/dev/api/v1/animal/create/', data: data);
 

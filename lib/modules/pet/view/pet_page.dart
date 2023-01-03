@@ -106,22 +106,24 @@ class _PetPageState extends State<PetPage> {
                     }
 
                     if (state.id != null) {
-                      petIsSelectedIndex =
-                          PetSort.getValueByEnum(state.sort!).index;
-                      _nameController.text = state.name ?? "";
-                      _addressController.text = state.hospitalAddress ?? "";
-                      _kopoController.text = state.hospitalAddressDetail ?? "";
-                      _neutralizeChoice = NeutralizeChoice.getValueByEnum(
-                          state.neutralizeChoice!);
-                      _weightController.text = state.weight ?? "";
-                      _kindController.text = state.kind ?? "";
-                      _interestController.text = state.interestedDisease ?? "";
-                      _pickedPetDate =
-                          DateFormat('yyyy-MM-dd').parse(state.birthday!);
-                      _birthdayController.text = DateFormat('yyyy-MM-dd')
-                          .format(_pickedPetDate!)
-                          .trim();
-                      _choice = SexChoice.getValueByEnum(state.sex!);
+                      setState(() {
+                        petIsSelectedIndex =
+                            PetSort.getValueByEnum(state.sort!).index;
+                        _nameController.text = state.name ?? "";
+                        _addressController.text = state.hospitalAddress ?? "";
+                        _kopoController.text = state.hospitalAddressDetail ?? "";
+                        _neutralizeChoice = NeutralizeChoice.getValueByEnum(
+                            state.neutralizeChoice!);
+                        _weightController.text = state.weight ?? "";
+                        _kindController.text = state.kind ?? "";
+                        _interestController.text = state.interestedDisease ?? "";
+                        _pickedPetDate =
+                            DateFormat('yyyy-MM-dd').parse(state.birthday!);
+                        _birthdayController.text = DateFormat('yyyy-MM-dd')
+                            .format(_pickedPetDate!)
+                            .trim();
+                        _choice = SexChoice.getValueByEnum(state.sex!);
+                      });
                     }
                   }, builder: (context, state) {
                     return Form(
@@ -222,7 +224,6 @@ class _PetPageState extends State<PetPage> {
                                 hintText: '생년월일을 입력하세요.',
                                 readOnly: true,
                                 onTap: () {
-                                  print("tap");
                                   showDatePicker(
                                           context: context,
                                           initialDate: DateTime.now(),
@@ -567,7 +568,7 @@ class _PetPageState extends State<PetPage> {
                   }))),
         ),
         bottomNavigationBar: GestureDetector(
-            onTap: () {
+            onTap: () async {
               final validate = _formKey.currentState?.validate();
 
               if (validate ?? false) {
@@ -596,7 +597,9 @@ class _PetPageState extends State<PetPage> {
 
                       var animals =
                           _authenticationBloc.state.user.animals ?? [];
-                      animals.add(animal);
+                      final index = animals.indexWhere((element) => element.id == animal.id);
+
+                      animals[index] = animal;
                       user.copyWith(animals: animals);
                       _authenticationBloc.add(AuthenticationUserChanged(user));
                     }

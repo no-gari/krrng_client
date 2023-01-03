@@ -115,10 +115,14 @@ class _WritingReviewPageState extends State<WritingReviewPage> {
                         writingImages: _images
                     ));
 
-                    if (termsValidate == false) {
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("약관을 동의해주세요.")));
+                    if (_reviewImages.length > 0) {
+                      if (termsValidate == false) {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("약관을 동의해주세요.")));
+                      } else {
+                        _writingReviewCubit.createReview();
+                      }
                     } else {
-                      _writingReviewCubit.createReview();
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("영수증을 첨부해주세요.")));
                     }
                   }
                 },
@@ -187,6 +191,7 @@ class _WritingReviewPageState extends State<WritingReviewPage> {
           const SizedBox(height: 14),
           TextFormField(
               controller: diseaseController,
+              initialValue: _writingReviewCubit.state.disease,
               validator: (text) => (text ?? "").length == 0 ? '진료 항목을 입력해주세요.' : null,
               obscureText: false,
               keyboardType: TextInputType.text,

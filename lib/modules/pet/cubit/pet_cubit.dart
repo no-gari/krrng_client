@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:async';
+import 'package:http_parser/http_parser.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -44,7 +47,14 @@ class PetCubit extends Cubit<PetState> {
   }
 
   Future<Animal?> registerPet() async {
-    MultipartFile? image = state.image == null ? null : await MultipartFile.fromFile(state.image!);
+
+    MultipartFile? image = null;
+
+    if (state.image != null) {
+      final bytes = File(state.image!).readAsBytesSync();
+      image = await MultipartFile.fromBytes(bytes, contentType: MediaType("image", "jpeg"));
+    }
+
     Map<String, dynamic> body = {
       "image": image,
       "sort": PetSort.getValueByEnum(state.sort!).value,
@@ -60,8 +70,9 @@ class PetCubit extends Cubit<PetState> {
       "sexChoices": state.sex
     };
 
-    print(body);
-    var response = await _animalRepository.createAnimal(body);
+    final data = FormData.fromMap(body);
+
+    var response = await _animalRepository.createAnimal(data);
     response.when(success: (Animal? response) {
       if (response != null) {
         return response;
