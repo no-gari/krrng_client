@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -165,23 +166,15 @@ class _PetPageState extends State<PetPage> {
                                     child: CircleAvatar(
                                         radius: 40,
                                         backgroundColor: Colors.black12,
-                                        child: state.image == null
+                                        child: state.id == null
                                             ? (_image == null
-                                                ? Icon(Icons.add,
-                                                    size: 32,
-                                                    color: Colors.grey)
-                                                : ClipOval(
-                                                    child: Image.file(
-                                                        File(_image!.path),
-                                                        width: 80,
-                                                        height: 80,
-                                                        fit: BoxFit.cover)))
-                                            : ClipOval(
-                                                child: Image.network(
-                                                    state.image!,
-                                                    width: 80,
-                                                    height: 80,
-                                                    fit: BoxFit.cover)))),
+                                                ? Icon(Icons.add, size: 32, color: Colors.grey)
+                                                : ClipOval(child: Image.file(File(_image!.path), width: 80, height: 80, fit: BoxFit.cover)))
+                                            : state.image == null ?
+                                        Icon(Icons.add, size: 32, color: Colors.grey) :
+                                        ClipOval(child: CachedNetworkImage(imageUrl: state.image!, width: 80, height: 80,fit: BoxFit.cover))
+                                    )
+                                ),
                               ),
                               PetFormHeader('종류'),
                               SizedBox(height: 10),
