@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:krrng_client/modules/authentication/bloc/authentication_bloc.dart';
 import 'package:krrng_client/modules/pet/cubit/kind_cubit.dart';
 import 'package:krrng_client/modules/pet/cubit/pet_cubit.dart';
 import 'package:krrng_client/modules/pet/view/pet_page.dart';
@@ -18,6 +19,7 @@ class PetScreen extends StatelessWidget {
       BlocProvider(
           create: (context) => PetCubit(
               RepositoryProvider.of<AnimalRepository>(context),
+              BlocProvider.of<AuthenticationBloc>(context),
               (editValue ?? "false") == "true" ? true : false,
               id)),
       BlocProvider(

@@ -51,8 +51,6 @@ class _PetPageState extends State<PetPage> {
     super.initState();
     _kindCubit = BlocProvider.of<KindCubit>(context);
     _petCubit = BlocProvider.of<PetCubit>(context);
-    _authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
-
     _kindCubit.getKindList();
     if (_petCubit.isEdit && _petCubit.id != null) {
       _petCubit.getPetById(_petCubit.id!);
@@ -583,33 +581,9 @@ class _PetPageState extends State<PetPage> {
                 );
 
                 if (_petCubit.isEdit) {
-                  // 수정하기
-                  _petCubit.updatePet().then((animal) {
-                    if (animal != null) {
-                      var user = _authenticationBloc.state.user;
-
-                      var animals =
-                          _authenticationBloc.state.user.animals ?? [];
-                      final index = animals.indexWhere((element) => element.id == animal.id);
-
-                      animals[index] = animal;
-                      user.copyWith(animals: animals);
-                      _authenticationBloc.add(AuthenticationUserChanged(user));
-                    }
-                  });
+                  _petCubit.updatePet();
                 } else {
-                  // 등록하기
-                  _petCubit.registerPet().then((animal) {
-                    if (animal != null) {
-                      var user = _authenticationBloc.state.user;
-
-                      var animals =
-                          _authenticationBloc.state.user.animals ?? [];
-                      animals.add(animal);
-                      user.copyWith(animals: animals);
-                      _authenticationBloc.add(AuthenticationUserChanged(user));
-                    }
-                  });
+                  _petCubit.registerPet();
                 }
               }
             },
