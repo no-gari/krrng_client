@@ -2,23 +2,26 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:krrng_client/modules/search/cubit/recent_search_cubit.dart';
 import 'package:vrouter/vrouter.dart';
 
 class SearchBar extends StatelessWidget {
-  SearchBar({this.textEditingController, this.isFirstPage = true});
+  SearchBar({this.focusNode, this.textEditingController});
 
   final TextEditingController? textEditingController;
-  final bool? isFirstPage;
+  final FocusNode? focusNode;
 
   @override
   Widget build(BuildContext context) {
     return TextField(
+        focusNode: focusNode,
         textInputAction: TextInputAction.go,
         onSubmitted: (value) {
           if (value.trim() != '') {
-            var random = Random.secure();
-            var values = List<int>.generate(8, (i) => random.nextInt(255));
-            var randomId = base64UrlEncode(values);
+            // Navigator.push(
+            //     context,
+            //     MaterialPageRoute(
+            //         builder: (_) => HospitalSearch(keyword: value)));
 
             textEditingController!.clear();
           }
@@ -27,11 +30,11 @@ class SearchBar extends StatelessWidget {
         controller: textEditingController,
         textAlignVertical: TextAlignVertical.center,
         decoration: InputDecoration(
-            icon: isFirstPage == true
-                ? null
-                : GestureDetector(
-                    onTap: () => context.vRouter.pop(),
-                    child: Icon(Icons.arrow_back_ios, color: Colors.black)),
+            fillColor: Colors.white,
+            filled: true,
+            icon: GestureDetector(
+                onTap: () => context.vRouter.pop(),
+                child: Icon(Icons.arrow_back_ios, color: Colors.black)),
             isCollapsed: true,
             contentPadding: EdgeInsets.symmetric(horizontal: 15),
             enabledBorder: OutlineInputBorder(
@@ -43,24 +46,11 @@ class SearchBar extends StatelessWidget {
             border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(15.0),
                 borderSide: BorderSide(color: Color(0xFFDFE2E9))),
-            fillColor: Colors.white,
-            filled: true,
-            hintText: '검색어를 입력 하세요.',
-            suffixIcon: Container(
-                width: 66,
-                child: Row(children: [
-                  GestureDetector(
-                      onTap: () => textEditingController!.clear(),
-                      child: CircleAvatar(
-                          radius: 9,
-                          backgroundColor: Colors.black12,
-                          child: Icon(Icons.close,
-                              color: Colors.white, size: 12))),
-                  IconButton(
-                      icon: SvgPicture.asset('assets/icons/search_icon.svg',
-                          width: 20),
-                      color: Colors.black,
-                      onPressed: () => textEditingController!.clear())
-                ]))));
+            hintText: '검색어를 입력하세요.',
+            suffixIcon: IconButton(
+                icon:
+                    SvgPicture.asset('assets/icons/search_icon.svg', width: 20),
+                color: Colors.black,
+                onPressed: () {})));
   }
 }

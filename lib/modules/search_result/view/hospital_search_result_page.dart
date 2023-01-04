@@ -27,7 +27,9 @@ class _HospitalSearchResultPageState extends State<HospitalSearchResultPage> {
   void initState() {
     super.initState();
     _hospitalCubit = BlocProvider.of<HospitalCubit>(context);
-    _hospitalCubit.getHosipitals(_hospitalCubit.state.selectedPart!.index);
+    _hospitalCubit
+        .emit(_hospitalCubit.state.copyWith(selectedPart: widget.hospitalPart));
+    _hospitalCubit.getHosipitals(0);
   }
 
   @override

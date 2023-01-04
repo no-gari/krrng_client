@@ -19,7 +19,11 @@ class HospitalCubit extends Cubit<HospitalState> {
             selectedFilter: HospitalFilter.distance,
             location: LatLng(37.490903970499, 127.03837557412),
             currentPlace: '강남구청역',
-            addressDetail: '2번 출구'));
+            addressDetail: '2번 출구',
+            realLocation: LatLng(37.490903970499, 127.03837557412),
+            realCurrentPlace: '강남구청역',
+            isMap: false,
+            realAddressDetail: '2번 출구'));
 
   final MapRepository _mapRepository;
   final HospitalRepository _hospitalRepository;
@@ -47,17 +51,18 @@ class HospitalCubit extends Cubit<HospitalState> {
     currentLocation(latLng);
   }
 
-  Future<void> tempCurrentLocation(LatLng latLng) async {
+  Future<void> realCurrentLocation(LatLng latLng) async {
     var response = await _mapRepository.getCurruentLocation(state.location);
 
     response.when(success: (MapData? mapResponse) {
-      final tepmCurrentPlace =
-          "${mapResponse?.region.area1.name} ${mapResponse?.region.area2.name} ${mapResponse?.region.area3.name} ${mapResponse?.land.name}";
-      final details = "${mapResponse?.land.name}";
+      final realCurrentPlace =
+          "${mapResponse?.region.area1.name} ${mapResponse?.region.area2.name} ${mapResponse?.region.area3.name} ${mapResponse?.region.area4.name} ${mapResponse?.land.name} ${mapResponse?.land.number1}";
+      final details = "${mapResponse?.land.name} ${mapResponse?.land.number1}";
 
       emit(state.copyWith(
-          tempCurrentPlace: tepmCurrentPlace,
-          addressDetail: details,
+          realLocation: latLng,
+          realCurrentPlace: realCurrentPlace,
+          realAddressDetail: details,
           isLoaded: true));
     }, failure: (NetworkExceptions? error) {
       emit(state.copyWith(
@@ -71,8 +76,8 @@ class HospitalCubit extends Cubit<HospitalState> {
 
     response.when(success: (MapData? mapResponse) {
       final currentPlace =
-          "${mapResponse?.region.area1.name} ${mapResponse?.region.area2.name} ${mapResponse?.region.area3.name} ${mapResponse?.land.name}";
-      final details = "${mapResponse?.land.name}";
+          "${mapResponse?.region.area1.name} ${mapResponse?.region.area2.name} ${mapResponse?.region.area3.name} ${mapResponse?.region.area4.name} ${mapResponse?.land.name} ${mapResponse?.land.number1}";
+      final details = "${mapResponse?.land.name} ${mapResponse?.land.number1}";
 
       emit(state.copyWith(
           location: latLng,
@@ -89,7 +94,7 @@ class HospitalCubit extends Cubit<HospitalState> {
   }
 
   Future<void> getHosipitals(int disease) async {
-    final location = state.location;
+    final location = state.realLocation;
     final selectedPart = HospitalPart.getIndex(state.selectedPart!);
     final selectedFilter = state.selectedFilter!;
 

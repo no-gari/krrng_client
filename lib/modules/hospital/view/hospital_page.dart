@@ -1,14 +1,16 @@
-import 'package:flutter_svg/svg.dart';
-import 'package:krrng_client/modules/disease/cubit/disease_cubit.dart';
-import 'package:krrng_client/modules/hospital_search/view/hostipal_search_page.dart';
+import 'package:krrng_client/modules/hospital_search/view/hospital_search_screen.dart';
+import 'package:krrng_client/repositories/disease_repository/models/disease.dart';
 import 'package:krrng_client/modules/search/cubit/recent_search_cubit.dart';
 import 'package:krrng_client/modules/hospital/cubit/hospital_cubit.dart';
+import 'package:krrng_client/modules/disease/cubit/disease_cubit.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
-import 'package:krrng_client/repositories/disease_repository/models/disease.dart';
 import 'package:widgets_to_image/widgets_to_image.dart';
 import 'package:krrng_client/support/style/theme.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:kpostal/kpostal.dart';
+import 'dart:io';
 
 class HospitalPage extends StatefulWidget {
   @override
@@ -39,6 +41,7 @@ class _HospitalPageState extends State<HospitalPage> {
     _hospitalCubit = BlocProvider.of<HospitalCubit>(context);
     _recentSearchCubit = BlocProvider.of<RecentSearchCubit>(context);
     _hospitalCubit.currentPosition();
+    _hospitalCubit.emit(_hospitalCubit.state.copyWith(isMap: true));
     _focusNode = FocusNode();
   }
 
@@ -46,6 +49,9 @@ class _HospitalPageState extends State<HospitalPage> {
   void dispose() {
     _textEditingController.dispose();
     _focusNode.dispose();
+    if (Platform.isIOS) {
+      _naver!.clearMapView();
+    }
     super.dispose();
   }
 
@@ -53,113 +59,127 @@ class _HospitalPageState extends State<HospitalPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         resizeToAvoidBottomInset: false,
-        body: BlocConsumer<HospitalCubit, HospitalState>(
-            listenWhen: ((previous, current) =>
-                previous.location != current.location),
-            listener: (context, state) {
-              final location = state.location;
-              if (location != null) {
-                _onDrawMarket(location);
-              }
+        floatingActionButton: Padding(
+          padding: const EdgeInsets.only(bottom: 65),
+          child: FloatingActionButton(
+            onPressed: () async {
+              await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => KpostalView(
+                          useLocalServer: false,
+                          callback: (Kpostal result) {
+                            setState(() {
+                              Future.delayed(Duration(milliseconds: 500), () {
+                                _hospitalCubit.emit(_hospitalCubit.state
+                                    .copyWith(
+                                        currentPlace: result.address,
+                                        location: LatLng(result.latitude!,
+                                            result.longitude!)));
+                                _naver!.moveCamera(
+                                    CameraUpdate.toCameraPosition(
+                                        CameraPosition(
+                                            target: LatLng(result.latitude!,
+                                                result.longitude!))),
+                                    animationDuration: 1000);
+                              });
+                            });
+                          })));
             },
+            child: Icon(Icons.location_on_sharp),
+          ),
+        ),
+        body: BlocBuilder<HospitalCubit, HospitalState>(
             builder: (context, state) {
-              if (state.isLoaded ?? false) {
-                place = state.currentPlace;
+          if (state.isLoaded ?? false) {
+            place = state.currentPlace;
 
-                return Stack(children: [
-                  WidgetsToImage(
-                      controller: imageController,
-                      child: Container(
-                        height: (place!.length / 10).round() * 38,
-                        child: Column(
-                          children: [
-                            Container(
-                              width: 175,
-                              height: (place!.length / 10).round() * 38 - 24,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
+            return Stack(children: [
+              WidgetsToImage(
+                  controller: imageController,
+                  child: Container(
+                      // height: (place!.length / 10).round() * 38,
+                      height: 100,
+                      child: Column(children: [
+                        Container(
+                            width: 190,
+                            // height: (place!.length / 10).round() * 38 - 62,
+                            height: 60,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
                                 color: primaryColor,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Padding(
+                                borderRadius: BorderRadius.circular(8)),
+                            child: Padding(
                                 padding: const EdgeInsets.symmetric(
-                                    vertical: 9, horizontal: 10),
+                                    vertical: 8, horizontal: 10),
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.stretch,
-                                  children: [
-                                    Container(
-                                        width: 13,
-                                        height: 13,
-                                        alignment: Alignment.topCenter,
-                                        child: SvgPicture.asset(
-                                            'assets/icons/positioning.svg')),
-                                    SizedBox(width: 6),
-                                    Expanded(
-                                      child: Text(
-                                        place!,
-                                        style: font_14_w700.copyWith(
-                                            color: Colors.white),
-                                        softWrap: true,
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                            Icon(Icons.arrow_drop_down, color: primaryColor)
-                          ],
-                        ),
-                      )),
-                  NaverMap(
-                      markers: _markers,
-                      initLocationTrackingMode: LocationTrackingMode.Follow,
-                      onMapCreated: (controller) {
-                        this._naver = controller;
-                      },
-                      onCameraChange: (latLng, reason, isAnimated) {
-                        if (latLng != null) {
-                          latlng = latLng;
-                        }
-                        print("${latLng} ${reason} ${isAnimated}");
-                      },
-                      onCameraIdle: () {
-                        if (latlng != null) {
-                          _hospitalCubit.updatePosition(latlng!);
-                          _hospitalCubit
-                              .currentLocation(_hospitalCubit.state.location!);
-                          _onDrawMarket(latlng!);
-                          setState(() => place = state.currentPlace);
-                        }
-                      },
-                      onMapTap: (latlng) => disableFocus()),
-                  SafeArea(
-                      child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 16),
-                          child: Column(children: [
-                            buildMainTextField(),
-                            SizedBox(height: 10),
-                            if (_focused == true)
-                              buildDiseaseList(context, state)
-                          ]))),
-                  if (_focused == false) buildBottomBarWidget(context)
-                ]);
-              } else {
-                return Center(
-                    child:
-                        Image.asset('assets/images/indicator.gif', width: 120));
-              }
-            }));
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.stretch,
+                                    children: [
+                                      Container(
+                                          width: 13,
+                                          height: 13,
+                                          alignment: Alignment.topCenter,
+                                          child: SvgPicture.asset(
+                                              'assets/icons/positioning.svg')),
+                                      SizedBox(width: 6),
+                                      Expanded(
+                                          child: Text(place!,
+                                              style: font_14_w700.copyWith(
+                                                  color: Colors.white),
+                                              softWrap: true))
+                                    ]))),
+                        Icon(Icons.arrow_drop_down, color: primaryColor)
+                      ]))),
+              NaverMap(
+                  markers: _markers,
+                  initLocationTrackingMode: LocationTrackingMode.Follow,
+                  onMapCreated: (controller) {
+                    this._naver = controller;
+                  },
+                  onCameraChange: (latLng, reason, isAnimated) {
+                    if (latLng != null && state.isMap == true) {
+                      latlng = latLng;
+                    }
+                  },
+                  onCameraIdle: () {
+                    if (latlng != null && state.isMap == true) {
+                      _hospitalCubit.updatePosition(latlng!);
+                      _hospitalCubit
+                          .currentLocation(_hospitalCubit.state.location!);
+                      Future.delayed(Duration(milliseconds: 500), () {
+                        setState(() => place = state.currentPlace);
+                        _onDrawMarket(latlng!);
+                      });
+                    }
+                  },
+                  onMapTap: (latlng) => disableFocus()),
+              SafeArea(
+                  child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      child: Column(children: [
+                        buildMainTextField(),
+                        SizedBox(height: 10),
+                        if (_focused == true) buildDiseaseList(context, state)
+                      ]))),
+              if (_focused == false) buildBottomBarWidget(context)
+            ]);
+          } else {
+            return Center(
+                child: Image.asset('assets/images/indicator.gif', width: 120));
+          }
+        }));
   }
 
   Positioned buildBottomBarWidget(BuildContext context) {
     return Positioned(
         bottom: 0,
         child: GestureDetector(
-            onTap: () {
-              _hospitalCubit.currentLocation(_hospitalCubit.state.location!);
-              ScaffoldMessenger.of(context)
+            onTap: () async {
+              await _hospitalCubit
+                  .realCurrentLocation(_hospitalCubit.state.location!);
+              await ScaffoldMessenger.of(context)
                   .showSnackBar(SnackBar(content: Text("현재 위치가 설정되었습니다.")));
             },
             child: Container(
@@ -184,12 +204,11 @@ class _HospitalPageState extends State<HospitalPage> {
             ListTile(
                 title: Text(disease.name!),
                 dense: true,
-                onTap: () => Navigator.push(
+                onTap: () async => await Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (_) => BlocProvider.value(
-                            value: _hospitalCubit,
-                            child: HospitalSearchPage(disease: disease.id)))))
+                        builder: (_) => HospitalSearchScreen(
+                            disease: disease.id, fromMap: true))))
         ])));
   }
 
@@ -262,10 +281,8 @@ class _HospitalPageState extends State<HospitalPage> {
         position: latLng,
         icon: overlayImage,
         anchor: AnchorPoint(0.5, 1),
-        width: 175,
-        height: (place.length / 10).round() * 38));
-
-    setState(() {});
+        width: 185,
+        height: 100));
   }
 
   void disableFocus() {
