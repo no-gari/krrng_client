@@ -110,7 +110,7 @@ class _InvitePageState extends State<InvitePage> {
           title: '“그래서.. 진료비는 얼마에요..?” 미리 알려주는 동물병원 진료비! 크르릉.',
           description: "#동물병원 #강아지 #고양이 #진료비 ",
           imageUrl: Uri.parse(
-              "https://t1.daumcdn.net/cfile/tistory/24283C3858F778CA2E"),
+              "https://krrng.s3.ap-northeast-2.amazonaws.com/Group2.png"),
           link: Link(
               webUrl: Uri.parse(
                   'https://6vvpl67pw2.execute-api.ap-northeast-2.amazonaws.com/dev'),
