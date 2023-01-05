@@ -36,6 +36,8 @@ class _ProfileChangePageState extends State<ProfileChangePage> {
   DateTime? _pickedBirthday;
   SexChoice? _choice;
 
+  bool changed = false;
+
   @override
   void initState() {
     super.initState();
@@ -92,8 +94,29 @@ class _ProfileChangePageState extends State<ProfileChangePage> {
                               .emit(AuthenticationState.authenticated(user!));
                         },
                         failure: (NetworkExceptions? error) {});
+                    setState(() {
+                      changed = true;
+                    });
                   });
-                  context.vRouter.to(MyPageScreen.routeName);
+                  if (changed == true) {
+                    showDialog(
+                        context: context,
+                        barrierDismissible: true, // 바깥 영역 터치시 닫을지 여부
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                              content: Text("완료되었습니다."),
+                              insetPadding:
+                                  const EdgeInsets.fromLTRB(0, 80, 0, 80),
+                              actions: [
+                                TextButton(
+                                    child: const Text('확인'),
+                                    onPressed: () {
+                                      context.vRouter
+                                          .to(MyPageScreen.routeName);
+                                    })
+                              ]);
+                        });
+                  }
                 }
               });
         }),

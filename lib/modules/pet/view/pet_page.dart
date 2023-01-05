@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -83,26 +82,7 @@ class _PetPageState extends State<PetPage> {
                   padding: EdgeInsets.symmetric(horizontal: 16),
                   child: BlocConsumer<PetCubit, PetState>(
                       listener: (context, state) {
-                    if (state.isComplete ?? false) {
-                      showDialog(
-                          context: context,
-                          barrierDismissible: true, // 바깥 영역 터치시 닫을지 여부
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                                content: Text(
-                                    "${_petCubit.isEdit ? "완료되었습니다." : "등록이 완료되었습니다."}"),
-                                insetPadding:
-                                    const EdgeInsets.fromLTRB(0, 80, 0, 80),
-                                actions: [
-                                  TextButton(
-                                      child: const Text('확인'),
-                                      onPressed: () {
-                                        context.vRouter.pop();
-                                        context.vRouter.pop();
-                                      })
-                                ]);
-                          });
-                    }
+                    if (state.isComplete ?? false) {}
 
                     if (state.id != null) {
                       setState(() {
@@ -110,12 +90,14 @@ class _PetPageState extends State<PetPage> {
                             PetSort.getValueByEnum(state.sort!).index;
                         _nameController.text = state.name ?? "";
                         _addressController.text = state.hospitalAddress ?? "";
-                        _kopoController.text = state.hospitalAddressDetail ?? "";
+                        _kopoController.text =
+                            state.hospitalAddressDetail ?? "";
                         _neutralizeChoice = NeutralizeChoice.getValueByEnum(
                             state.neutralizeChoice!);
                         _weightController.text = state.weight ?? "";
                         _kindController.text = state.kind ?? "";
-                        _interestController.text = state.interestedDisease ?? "";
+                        _interestController.text =
+                            state.interestedDisease ?? "";
                         _pickedPetDate =
                             DateFormat('yyyy-MM-dd').parse(state.birthday!);
                         _birthdayController.text = DateFormat('yyyy-MM-dd')
@@ -165,14 +147,37 @@ class _PetPageState extends State<PetPage> {
                                         radius: 40,
                                         backgroundColor: Colors.black12,
                                         child: state.id == null
-                                            ? (_image == null
-                                                ? Icon(Icons.add, size: 32, color: Colors.grey)
-                                                : ClipOval(child: Image.file(File(_image!.path), width: 80, height: 80, fit: BoxFit.cover)))
-                                            : state.image == null ?
-                                        Icon(Icons.add, size: 32, color: Colors.grey) :
-                                        ClipOval(child: CachedNetworkImage(imageUrl: state.image!, width: 80, height: 80,fit: BoxFit.cover))
-                                    )
-                                ),
+                                            ? _image == null
+                                                ? Icon(Icons.add,
+                                                    size: 32,
+                                                    color: Colors.grey)
+                                                : ClipOval(
+                                                    child: Image.file(
+                                                        File(_image!.path),
+                                                        width: 80,
+                                                        height: 80,
+                                                        fit: BoxFit.cover))
+                                            : state.image == null
+                                                ? Icon(Icons.add,
+                                                    size: 32,
+                                                    color: Colors.grey)
+                                                : _image == null
+                                                    ? ClipOval(
+                                                        child:
+                                                            CachedNetworkImage(
+                                                                imageUrl: state
+                                                                    .image!,
+                                                                width: 80,
+                                                                height: 80,
+                                                                fit: BoxFit
+                                                                    .cover))
+                                                    : ClipOval(
+                                                        child: Image.file(
+                                                            File(_image!.path),
+                                                            width: 80,
+                                                            height: 80,
+                                                            fit: BoxFit
+                                                                .cover)))),
                               ),
                               PetFormHeader('종류'),
                               SizedBox(height: 10),
