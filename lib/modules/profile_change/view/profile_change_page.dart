@@ -9,6 +9,10 @@ import 'package:krrng_client/modules/mypage/view/mypage_screen.dart';
 import 'package:krrng_client/modules/pet/components/pet_textfield.dart';
 import 'package:krrng_client/modules/pet/enums.dart';
 import 'package:krrng_client/repositories/authentication_repository/authentication_repository.dart';
+import 'package:krrng_client/repositories/user_repository/models/user.dart';
+import 'package:krrng_client/repositories/user_repository/src/user_repository.dart';
+import 'package:krrng_client/support/networks/api_result.dart';
+import 'package:krrng_client/support/networks/network_exceptions.dart';
 import 'package:krrng_client/support/style/theme.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:vrouter/vrouter.dart';
@@ -69,22 +73,28 @@ class _ProfileChangePageState extends State<ProfileChangePage> {
                   child: Text('변경하기',
                       style: font_17_w900.copyWith(color: primaryColor))),
               onPressed: () async {
-                await _signInCubit.updateProfile(
-                    profileImage: _image?.path,
-                    birthday: DateFormat('yyyy-MM-dd')
-                        .format(_pickedBirthday!)
-                        .trim(),
-                    nickname: _nameEditingController.text,
-                    sexChoices: _choice?.value);
-                _authenticationBloc.emit(AuthenticationState.authenticated(
-                    _authenticationBloc.state.user.copyWith(
-                        profileImage: _image?.path,
-                        birthday: DateFormat('yyyy-MM-dd')
-                            .format(_pickedBirthday!)
-                            .trim(),
-                        nickname: _nameEditingController.text,
-                        sexChoices: _choice?.value)));
-                context.vRouter.to(MyPageScreen.routeName);
+                if (_image?.path != null) {
+                  await _signInCubit
+                      .updateProfile(
+                          profileImage: _image!.path,
+                          birthday: DateFormat('yyyy-MM-dd')
+                              .format(_pickedBirthday!)
+                              .trim(),
+                          nickname: _nameEditingController.text,
+                          sexChoices: _choice?.value)
+                      .then((_) async {
+                    ApiResult<User> apiResult =
+                        await RepositoryProvider.of<UserRepository>(context)
+                            .getUser();
+                    apiResult.when(
+                        success: (User? user) {
+                          _authenticationBloc
+                              .emit(AuthenticationState.authenticated(user!));
+                        },
+                        failure: (NetworkExceptions? error) {});
+                  });
+                  context.vRouter.to(MyPageScreen.routeName);
+                }
               });
         }),
         body: SafeArea(
@@ -139,24 +149,32 @@ class _ProfileChangePageState extends State<ProfileChangePage> {
                                   padding: EdgeInsets.only(top: 30, bottom: 50),
                                   alignment: Alignment.center,
                                   child: CircleAvatar(
-                                      radius: 40,
-                                      backgroundColor: Colors.black12,
-                                      child: state.user.profileImage == null
-                                          ? (_image == null
-                                              ? Icon(Icons.add,
-                                                  size: 32, color: Colors.grey)
-                                              : ClipOval(
-                                                  child: Image.file(
-                                                      File(_image!.path),
-                                                      width: 80,
-                                                      height: 80,
-                                                      fit: BoxFit.cover)))
-                                          : ClipOval(
-                                              child: Image.network(
-                                                  state.user.profileImage!,
-                                                  width: 80,
-                                                  height: 80,
-                                                  fit: BoxFit.cover))))),
+                                    radius: 40,
+                                    backgroundColor: Colors.black12,
+                                    child: state.user.profileImage == null
+                                        ? _image == null
+                                            ? Icon(Icons.add,
+                                                size: 32, color: Colors.grey)
+                                            : Image.file(File(_image!.path),
+                                                fit: BoxFit.cover)
+                                        : _image == null
+                                            ? Container(
+                                                decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    image: DecorationImage(
+                                                        image: NetworkImage(
+                                                            state.user
+                                                                .profileImage!),
+                                                        fit: BoxFit.cover)),
+                                              )
+                                            : ClipOval(
+                                                child: Image.file(
+                                                    File(_image!.path),
+                                                    width: 80,
+                                                    height: 80,
+                                                    fit: BoxFit.cover),
+                                              ),
+                                  ))),
                           Text('닉네임',
                               style: Theme.of(context).textTheme.headline3),
                           SizedBox(height: 10),
