@@ -7,7 +7,9 @@ import 'package:krrng_client/modules/delete_account/delete_account_screen.dart';
 import 'package:krrng_client/modules/faq/page/faq_screen.dart';
 import 'package:krrng_client/modules/hospital/view/hospital_screen.dart';
 import 'package:krrng_client/modules/hospital_detail/view/hospital_detail_screen.dart';
+import 'package:krrng_client/modules/hospital_search/view/hospital_search_screen.dart';
 import 'package:krrng_client/modules/invite/page/invite_screen.dart';
+import 'package:krrng_client/modules/my_reviews/view/my_review_screen.dart';
 import 'package:krrng_client/modules/mypage/view/mypage_screen.dart';
 import 'package:krrng_client/modules/main/main_screen.dart';
 import 'package:krrng_client/modules/notice/view/notice_screen.dart';
@@ -32,8 +34,22 @@ import 'modules/authentication/finding/views/views.dart';
 final routes = [
   VWidget(path: MainScreen.routeName, widget: MainScreen(), stackedRoutes: [
     VWidget(path: MyPageScreen.routeName, widget: MyPageScreen()),
-    VWidget(path: HospitalScreen.routeName, widget: HospitalScreen()),
-    VWidget(path: PetScreen.routeName, widget: PetScreen()),
+    VWidget(
+        path: HospitalSearchScreen.routeName + '/:disease' + '/:fromMap',
+        widget: HospitalSearchScreen(),
+        name: HospitalSearchScreen.routeName),
+    VWidget(
+        path: HospitalScreen.routeName,
+        widget: HospitalScreen(),
+        stackedRoutes: []),
+    VWidget(
+        path: MyReviewScreen.routeName,
+        widget: MyReviewScreen(),
+        stackedRoutes: []),
+    VWidget(
+        path: PetScreen.routeName + '/:editValue' + '/:id',
+        widget: PetScreen(),
+        name: PetScreen.routeName),
     VWidget(path: StoreScreen.routeName, widget: StoreScreen()),
     VWidget(
         path: SearchScreen.routeName,

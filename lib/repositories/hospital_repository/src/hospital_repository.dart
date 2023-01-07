@@ -74,10 +74,21 @@ class HospitalRepository {
     }
   }
 
-  Future<ApiResult<Review>> createReview(FormData data) async {
+  Future<ApiResult<List<dynamic>>> getMyReviews() async {
     try {
-      var response = await _dioClient.postWithAuthForMultiPart('/dev/api/v1/review/create/', data: data);
-      return ApiResult.success(data: Review.fromJson(response));
+      var response =
+          await _dioClient.getWithAuth('/dev/api/v1/review/my-list/');
+      return ApiResult.success(data: response);
+    } catch (e) {
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e));
+    }
+  }
+
+  Future<ApiResult<Map>> createReview(FormData data) async {
+    try {
+      var response = await _dioClient
+          .postWithAuthForMultiPart('/dev/api/v1/review/create/', data: data);
+      return ApiResult.success(data: response);
     } catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }

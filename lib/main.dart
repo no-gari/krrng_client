@@ -22,14 +22,6 @@ void main() async {
   OneSignal.shared
       .promptUserForPushNotificationPermission()
       .then((accepted) => print("Accepted permission: $accepted"));
-  // OneSignal.shared
-  //     .setNotificationOpenedHandler((OSNotificationOpenedResult result) async {
-  //   try {
-  //     var path = await result.notification.additionalData!["path"];
-  //     var id = await result.notification.additionalData!["id"];
-  //     vRouterKey.currentState!.toNamed(path, pathParameters: {'id': id});
-  //   } catch (e, stacktrace) {}
-  // });
 
   setPathUrlStrategy();
   Bloc.observer = MyBlocObserver();

@@ -12,20 +12,19 @@ class PetScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final editValue = context.vRouter.queryParameters["edit"];
-    final id = context.vRouter.queryParameters["id"] as String?;
+    final editValue = context.vRouter.pathParameters["editValue"];
+    final id = context.vRouter.pathParameters["id"];
 
     return MultiBlocProvider(providers: [
       BlocProvider(
           create: (context) => PetCubit(
               RepositoryProvider.of<AnimalRepository>(context),
               BlocProvider.of<AuthenticationBloc>(context),
-              (editValue ?? "false") == "true" ? true : false,
+              editValue != 'false',
               id)),
       BlocProvider(
-          create: (context) => KindCubit(
-                RepositoryProvider.of<AnimalRepository>(context),
-              )),
+          create: (context) =>
+              KindCubit(RepositoryProvider.of<AnimalRepository>(context))),
     ], child: PetPage());
   }
 }

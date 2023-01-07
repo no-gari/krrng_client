@@ -22,6 +22,14 @@ PODS:
     - Flutter
   - geolocator_apple (1.2.0):
     - Flutter
+  - google_maps_flutter_ios (0.0.1):
+    - Flutter
+    - GoogleMaps
+  - GoogleMaps (6.2.1):
+    - GoogleMaps/Maps (= 6.2.1)
+  - GoogleMaps/Base (6.2.1)
+  - GoogleMaps/Maps (6.2.1):
+    - GoogleMaps/Base
   - heic_to_jpg (0.0.1):
     - Flutter
   - image_picker_ios (0.0.1):
@@ -78,6 +86,7 @@ DEPENDENCIES:
   - flutter_naver_map (from `.symlinks/plugins/flutter_naver_map/ios`)
   - geocoding (from `.symlinks/plugins/geocoding/ios`)
   - geolocator_apple (from `.symlinks/plugins/geolocator_apple/ios`)
+  - google_maps_flutter_ios (from `.symlinks/plugins/google_maps_flutter_ios/ios`)
   - heic_to_jpg (from `.symlinks/plugins/heic_to_jpg/ios`)
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
   - kakao_flutter_sdk_common (from `.symlinks/plugins/kakao_flutter_sdk_common/ios`)
@@ -103,6 +112,7 @@ SPEC REPOS:
     - BSImagePicker
     - BSImageView
     - FMDB
+    - GoogleMaps
     - NMapsMap
     - OneSignalXCFramework
     - OrderedSet
@@ -118,6 +128,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/geocoding/ios"
   geolocator_apple:
     :path: ".symlinks/plugins/geolocator_apple/ios"
+  google_maps_flutter_ios:
+    :path: ".symlinks/plugins/google_maps_flutter_ios/ios"
   heic_to_jpg:
     :path: ".symlinks/plugins/heic_to_jpg/ios"
   image_picker_ios:
@@ -163,6 +175,8 @@ SPEC CHECKSUMS:
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   geocoding: 32cfcdb16d38d907caaba65e2e42ad10d38bee58
   geolocator_apple: cc556e6844d508c95df1e87e3ea6fa4e58c50401
+  google_maps_flutter_ios: 66201f392bf62d500f07670a30488a247b9bb5b9
+  GoogleMaps: 20d7b12be49a14287f797e88e0e31bc4156aaeb4
   heic_to_jpg: cce9d6463ab11852a7393daa61be23f98a951c64
   image_picker_ios: b786a5dcf033a8336a657191401bfdf12017dabb
   kakao_flutter_sdk_common: 99744198582dc78bd1153713bdf444eaaf5fc107

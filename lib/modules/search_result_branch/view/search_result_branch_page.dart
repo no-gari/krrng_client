@@ -8,6 +8,7 @@ import 'package:krrng_client/modules/hospital_search/view/hostipal_search_page.d
 import 'package:krrng_client/modules/search_result/components/hospital_tile.dart';
 import 'package:krrng_client/modules/search_result/components/search_filter.dart';
 import 'package:krrng_client/repositories/hospital_repository/models/enums.dart';
+import 'package:vrouter/vrouter.dart';
 
 class SearchResultBranchPage extends StatefulWidget {
   SearchResultBranchPage({this.keyword});
@@ -92,11 +93,12 @@ class _SearchResultBranchPageState extends State<SearchResultBranchPage>
                           child: Column(children: [
                     for (var item in _diseaseCubit.state.disease!)
                       ListTile(
-                          onTap: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (_) =>
-                                      HospitalSearchScreen(disease: item.id))),
+                          onTap: () => context.vRouter.toNamed(
+                                  HospitalSearchScreen.routeName,
+                                  pathParameters: {
+                                    'disease': item.id.toString(),
+                                    'fromMap': 'false'
+                                  }),
                           title: Text(item.name.toString())),
                     if (_diseaseCubit.state.disease!.isEmpty)
                       Padding(

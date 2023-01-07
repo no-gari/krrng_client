@@ -62,7 +62,7 @@ class SignInCubit extends Cubit<SignInState> {
   }
 
   Future<bool?> updateProfile(
-      {required String? profileImage,
+      {String? profileImage,
       required String? birthday,
       required String? nickname,
       required String? sexChoices}) async {

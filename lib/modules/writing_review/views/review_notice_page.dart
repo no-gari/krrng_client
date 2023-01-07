@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:krrng_client/app_view.dart';
 import 'package:krrng_client/support/style/theme.dart';
-import 'package:vrouter/vrouter.dart';
 
 enum ReviewNotice {
   receipt('영수증 첨부 안내'),

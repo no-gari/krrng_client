@@ -45,12 +45,29 @@ class _ProfileChangePageState extends State<ProfileChangePage> {
     _signInCubit = BlocProvider.of<SignInCubit>(context);
     _choice =
         SexChoice.getValueByEnum(_authenticationBloc.state.user.sexChoices!);
+    getUserInfo();
   }
 
   @override
   void dispose() {
     _nameEditingController.dispose();
+    _birthdayController.dispose();
     super.dispose();
+  }
+
+  void getUserInfo() {
+    if (_authenticationBloc.state.user.birthday != null) {
+      setState(() {
+        _birthdayController.text = _authenticationBloc.state.user.birthday!;
+        _pickedBirthday = DateFormat('yyyy-MM-dd')
+            .parse(_authenticationBloc.state.user.birthday ?? "");
+      });
+    }
+    if (_authenticationBloc.state.user.nickname != null) {
+      setState(() {
+        _nameEditingController.text = _authenticationBloc.state.user.nickname!;
+      });
+    }
   }
 
   @override
@@ -94,48 +111,83 @@ class _ProfileChangePageState extends State<ProfileChangePage> {
                               .emit(AuthenticationState.authenticated(user!));
                         },
                         failure: (NetworkExceptions? error) {});
-                    setState(() {
-                      changed = true;
-                    });
                   });
-                  if (changed == true) {
-                    showDialog(
-                        context: context,
-                        barrierDismissible: true, // 바깥 영역 터치시 닫을지 여부
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                              content: Text("완료되었습니다."),
-                              insetPadding:
-                                  const EdgeInsets.fromLTRB(0, 80, 0, 80),
-                              actions: [
-                                TextButton(
-                                    child: const Text('확인'),
-                                    onPressed: () {
-                                      context.vRouter
-                                          .to(MyPageScreen.routeName);
-                                    })
-                              ]);
-                        });
-                  }
+                  showDialog(
+                      context: context,
+                      barrierDismissible: true,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                            content: Text("완료되었습니다."),
+                            insetPadding:
+                                const EdgeInsets.fromLTRB(0, 80, 0, 80),
+                            actions: [
+                              TextButton(
+                                  child: const Text('확인'),
+                                  onPressed: () {
+                                    context.vRouter.to(MyPageScreen.routeName);
+                                  })
+                            ]);
+                      });
+                } else {
+                  // await _signInCubit
+                  //     .updateProfile(
+                  //     birthday: DateFormat('yyyy-MM-dd')
+                  //         .format(_pickedBirthday!)
+                  //         .trim(),
+                  //     nickname: _nameEditingController.text,
+                  //     sexChoices: _choice?.value)
+                  //     .then((_) async {
+                  //   ApiResult<User> apiResult =
+                  //   await RepositoryProvider.of<UserRepository>(context)
+                  //       .getUser();
+                  //   apiResult.when(
+                  //       success: (User? user) {
+                  //         _authenticationBloc
+                  //             .emit(AuthenticationState.authenticated(user!));
+                  //       },
+                  //       failure: (NetworkExceptions? error) {});
+                  // });
+                  // showDialog(
+                  //     context: context,
+                  //     barrierDismissible: true,
+                  //     builder: (BuildContext context) {
+                  //       return AlertDialog(
+                  //           content: Text("완료되었습니다."),
+                  //           insetPadding:
+                  //           const EdgeInsets.fromLTRB(0, 80, 0, 80),
+                  //           actions: [
+                  //             TextButton(
+                  //                 child: const Text('확인'),
+                  //                 onPressed: () {
+                  //                   context.vRouter.to(MyPageScreen.routeName);
+                  //                 })
+                  //           ]);
+                  //     });
+                  print(_pickedBirthday);
+                  print(_birthdayController.text);
                 }
               });
         }),
         body: SafeArea(
             child: SingleChildScrollView(
                 padding: EdgeInsets.symmetric(horizontal: 16),
-                child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
-                    builder: (context, state) {
-                  print(state.user.sexChoices);
-                  if (state.status == AuthenticationStatus.authenticated) {
-                    if (state.user.birthday != null) {
+                child: BlocConsumer<AuthenticationBloc, AuthenticationState>(
+                    listener: (context, state) {
+                  if (state.user.birthday != null) {
+                    setState(() {
+                      print('');
                       _birthdayController.text = state.user.birthday!;
                       _pickedBirthday = DateFormat('yyyy-MM-dd')
                           .parse(state.user.birthday ?? "");
-                    }
-                    if (state.user.nickname != null) {
+                    });
+                  }
+                  if (state.user.nickname != null) {
+                    setState(() {
                       _nameEditingController.text = state.user.nickname!;
-                    }
-
+                    });
+                  }
+                }, builder: (context, state) {
+                  if (state.status == AuthenticationStatus.authenticated) {
                     return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -225,33 +277,44 @@ class _ProfileChangePageState extends State<ProfileChangePage> {
                           Text('생년월일',
                               style: Theme.of(context).textTheme.headline3),
                           SizedBox(height: 10),
-                          PetTextField(
-                            controller: _birthdayController,
-                            hintText: '생년월일을 입력하세요',
-                            readOnly: true,
-                            onTap: () {
-                              print("tap");
-                              showDatePicker(
-                                      context: context,
-                                      initialDate: DateTime.now(),
-                                      firstDate: DateTime(1960),
-                                      lastDate: DateTime.now())
-                                  .then((pickedDate) {
-                                if (pickedDate == null) {
-                                  return;
+                          TextFormField(
+                              controller: _birthdayController,
+                              readOnly: true,
+                              onTap: () async {
+                                DateTime? pickedDate = await showDatePicker(
+                                    confirmText: '확인',
+                                    cancelText: '취소',
+                                    context: context,
+                                    initialDate: DateTime.now(),
+                                    firstDate: DateTime(1960),
+                                    lastDate: DateTime.now());
+                                if (pickedDate != null) {
+                                  setState(() {
+                                    _pickedBirthday = pickedDate;
+                                    _birthdayController.text =
+                                        DateFormat('yyyy-MM-dd')
+                                            .format(pickedDate)
+                                            .toString();
+                                    print(_pickedBirthday);
+                                    print(_birthdayController.text);
+                                  });
                                 }
-                                setState(() {
-                                  _pickedBirthday = pickedDate;
-                                  _birthdayController.text =
-                                      DateFormat('yyyy년 MM월 dd일')
-                                          .format(pickedDate);
-                                });
-                              });
-                            },
-                            validator: (text) => (text ?? "").length == 0
-                                ? '생년월일을 입력해주세요.'
-                                : null,
-                          ),
+                              },
+                              decoration: InputDecoration(
+                                  contentPadding:
+                                      EdgeInsets.symmetric(horizontal: 15),
+                                  enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(15.0),
+                                      borderSide:
+                                          BorderSide(color: Color(0xFFDFE2E9))),
+                                  focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(15),
+                                      borderSide:
+                                          BorderSide(color: Color(0xFFDFE2E9))),
+                                  border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(15.0),
+                                      borderSide: BorderSide(
+                                          color: Color(0xFFDFE2E9))))),
                           SizedBox(height: 25),
                           Text('성별',
                               style: Theme.of(context).textTheme.headline3),
@@ -287,31 +350,7 @@ class _ProfileChangePageState extends State<ProfileChangePage> {
                                   SizedBox(width: 5),
                                   Text('여자', style: font_16_w900)
                                 ]))
-                          ]),
-
-                          // SizedBox(height: 25),
-                          // Text('이메일',
-                          //     style: Theme.of(context).textTheme.headline3),
-                          // SizedBox(height: 10),
-                          // TextField(
-                          //     controller: _emailEditingController,
-                          //     textAlignVertical: TextAlignVertical.center,
-                          //     decoration: InputDecoration(
-                          //         contentPadding:
-                          //             EdgeInsets.symmetric(horizontal: 15),
-                          //         enabledBorder: OutlineInputBorder(
-                          //             borderRadius: BorderRadius.circular(15.0),
-                          //             borderSide:
-                          //                 BorderSide(color: Color(0xFFDFE2E9))),
-                          //         focusedBorder: OutlineInputBorder(
-                          //             borderRadius: BorderRadius.circular(15),
-                          //             borderSide:
-                          //                 BorderSide(color: Color(0xFFDFE2E9))),
-                          //         border: OutlineInputBorder(
-                          //             borderRadius: BorderRadius.circular(15.0),
-                          //             borderSide:
-                          //                 BorderSide(color: Color(0xFFDFE2E9))),
-                          //         hintText: '이메일을 입력 하세요.'))
+                          ])
                         ]);
                   }
                   return Center(

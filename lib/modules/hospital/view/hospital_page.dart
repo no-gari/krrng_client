@@ -4,6 +4,7 @@ import 'package:krrng_client/modules/search/cubit/recent_search_cubit.dart';
 import 'package:krrng_client/modules/hospital/cubit/hospital_cubit.dart';
 import 'package:krrng_client/modules/disease/cubit/disease_cubit.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
+import 'package:vrouter/vrouter.dart';
 import 'package:widgets_to_image/widgets_to_image.dart';
 import 'package:krrng_client/support/style/theme.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -204,11 +205,12 @@ class _HospitalPageState extends State<HospitalPage> {
             ListTile(
                 title: Text(disease.name!),
                 dense: true,
-                onTap: () async => await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (_) => HospitalSearchScreen(
-                            disease: disease.id, fromMap: true))))
+                onTap: () async => context.vRouter.toNamed(
+                        HospitalSearchScreen.routeName,
+                        pathParameters: {
+                          'disease': disease.id.toString(),
+                          'fromMap': 'true'
+                        }))
         ])));
   }
 

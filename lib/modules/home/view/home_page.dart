@@ -156,7 +156,11 @@ class _HomePageState extends State<HomePage> {
                                                   })),
                                           InkWell(
                                             onTap: () => context.vRouter
-                                                .to(PetScreen.routeName),
+                                                .toNamed(PetScreen.routeName,
+                                                    pathParameters: {
+                                                  'editValue': 'false',
+                                                  'id': 'new'
+                                                }),
                                             child: Container(
                                                 child: Row(
                                                     mainAxisAlignment:
@@ -214,8 +218,12 @@ class _HomePageState extends State<HomePage> {
                                     onTap: () => _authenticationBloc
                                                 .state.status ==
                                             AuthenticationStatus.authenticated
-                                        ? context.vRouter
-                                            .to(PetScreen.routeName)
+                                        ? context.vRouter.toNamed(
+                                            PetScreen.routeName,
+                                            pathParameters: {
+                                                'editValue': 'false',
+                                                'id': 'new'
+                                              })
                                         : showLoginNeededDialog(context),
                                     child: Image.asset(
                                         "assets/images/mainbanner.png")),
@@ -477,10 +485,11 @@ class _HomePageState extends State<HomePage> {
   GestureDetector buildAnimalTile(AuthenticationState authState, int index,
       String age, BuildContext context) {
     return GestureDetector(
-        onTap: () => context.vRouter.to(PetScreen.routeName, queryParameters: {
-              "edit": "true",
-              "id": "${authState.user.animals![index].id!}"
-            }),
+        onTap: () => context.vRouter.toNamed(PetScreen.routeName,
+                pathParameters: {
+                  "editValue": "true",
+                  "id": "${authState.user.animals![index].id!}"
+                }),
         child: Container(
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

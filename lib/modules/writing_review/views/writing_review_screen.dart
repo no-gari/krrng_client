@@ -21,10 +21,9 @@ class WritingReviewScreen extends StatelessWidget {
         ),
         body: BlocProvider(
             create: (context) => WritingReviewCubit(
-                RepositoryProvider.of<HospitalRepository>(context),
-                this.hospitalDetail
-            ),
-            child: WritingReviewPage())
-    );
+                hospitalRepository:
+                    RepositoryProvider.of<HospitalRepository>(context),
+                hospitalDetail: this.hospitalDetail),
+            child: WritingReviewPage()));
   }
 }

@@ -1,3 +1,4 @@
+import 'package:krrng_client/modules/my_reviews/view/my_review_screen.dart';
 import 'package:krrng_client/repositories/authentication_repository/authentication_repository.dart';
 import 'package:krrng_client/modules/profile_change/view/profile_change_screen.dart';
 import 'package:krrng_client/modules/authentication/signin/view/signin_screen.dart';
@@ -124,8 +125,12 @@ class _MyPagePageState extends State<MyPagePage> {
                                           authState, index, age, context);
                                     })),
                             InkWell(
-                              onTap: () =>
-                                  context.vRouter.to(PetScreen.routeName),
+                              onTap: () => context.vRouter.toNamed(
+                                  PetScreen.routeName,
+                                  pathParameters: {
+                                    'editValue': 'false',
+                                    'id': 'new'
+                                  }),
                               child: Container(
                                   child: Row(
                                       mainAxisAlignment:
@@ -162,8 +167,12 @@ class _MyPagePageState extends State<MyPagePage> {
                           padding: const EdgeInsets.symmetric(
                               vertical: 0, horizontal: 16),
                           child: InkWell(
-                              onTap: () =>
-                                  context.vRouter.to(PetScreen.routeName),
+                              onTap: () => context.vRouter.toNamed(
+                                      PetScreen.routeName,
+                                      pathParameters: {
+                                        'editValue': 'false',
+                                        'id': 'new'
+                                      }),
                               child: Container(
                                   child: Row(
                                       mainAxisAlignment:
@@ -193,49 +202,45 @@ class _MyPagePageState extends State<MyPagePage> {
                                           color: Color(0xFFDFE2E9))))))
                   ]);
                 }
-                return Column(
-                  children: [
-                    SizedBox(height: 30),
-                    Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 16),
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(children: [
-                                Image.asset('assets/images/default_image.png',
-                                    width: 44, height: 44),
-                                SizedBox(width: 10),
-                                GestureDetector(
-                                    onTap: () => context.vRouter
-                                        .to(SigninScreen.routeName),
-                                    child: Text('로그인',
-                                        style: TextStyle(
-                                            fontSize: 22,
-                                            fontWeight: FontWeight.w900,
-                                            color:
-                                                Theme.of(context).accentColor,
-                                            decoration:
-                                                TextDecoration.underline)))
-                              ]),
+                return Column(children: [
+                  SizedBox(height: 30),
+                  Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(children: [
+                              Image.asset('assets/images/default_image.png',
+                                  width: 44, height: 44),
+                              SizedBox(width: 10),
                               GestureDetector(
-                                  onTap: () {
-                                    showModalBottomSheet(
-                                        context: context,
-                                        isScrollControlled: true,
-                                        builder: (BuildContext context) {
-                                          return LevelInfo();
-                                        });
-                                  },
-                                  child: Row(children: [
-                                    Text('등급안내',
-                                        style: TextStyle(fontSize: 14)),
-                                    SizedBox(width: 6),
-                                    Icon(Icons.info_outline,
-                                        size: 20, color: Colors.grey)
-                                  ]))
-                            ])),
-                  ],
-                );
+                                  onTap: () => context.vRouter
+                                      .to(SigninScreen.routeName),
+                                  child: Text('로그인',
+                                      style: TextStyle(
+                                          fontSize: 22,
+                                          fontWeight: FontWeight.w900,
+                                          color: Theme.of(context).accentColor,
+                                          decoration:
+                                              TextDecoration.underline)))
+                            ]),
+                            GestureDetector(
+                                onTap: () {
+                                  showModalBottomSheet(
+                                      context: context,
+                                      isScrollControlled: true,
+                                      builder: (BuildContext context) {
+                                        return LevelInfo();
+                                      });
+                                },
+                                child: Row(children: [
+                                  Text('등급안내', style: TextStyle(fontSize: 14)),
+                                  SizedBox(width: 6),
+                                  Icon(Icons.info_outline,
+                                      size: 20, color: Colors.grey)
+                                ]))
+                          ]))
+                ]);
               }),
               Padding(
                   padding: EdgeInsets.symmetric(horizontal: 36, vertical: 30),
@@ -265,7 +270,10 @@ class _MyPagePageState extends State<MyPagePage> {
               SubMenu(
                   title: '친구초대',
                   onTap: () => context.vRouter.to(InviteScreen.routeName)),
-              SubMenu(title: '내가 쓴 리뷰'),
+              SubMenu(
+                title: '내가 쓴 리뷰',
+                onTap: () => context.vRouter.to(MyReviewScreen.routeName),
+              ),
               // SubMenu(title: '내가 즐겨찾는 상품'),
               SubMenu(
                   title: '자주 묻는 질문 (FAQ)',

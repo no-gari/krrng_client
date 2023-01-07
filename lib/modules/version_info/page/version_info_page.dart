@@ -49,7 +49,8 @@ class _VersionInfoPageState extends State<VersionInfoPage> {
                   SizedBox(height: MediaQuery.of(context).size.height * 0.2),
                   Center(child: Image.asset('assets/images/version_info.png')),
                   SizedBox(height: 60),
-                  if (state.version == num.parse(_packageInfo.version))
+                  if (state.version.toString() ==
+                      _packageInfo.version.toString())
                     Column(children: [
                       Center(
                           child: Text('현재 최신 버전을 사용 중입니다.',
@@ -74,18 +75,20 @@ class _VersionInfoPageState extends State<VersionInfoPage> {
                                   fontSize: 22, fontWeight: FontWeight.w900))),
                       SizedBox(height: 10),
                       InkWell(
-                        onTap: _launchURL,
-                        child: Container(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 18, vertical: 10),
-                            color: Theme.of(context).primaryColor,
-                            child: Text('버전 업데이트 하기',
-                                style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white)),
-                            alignment: Alignment.center),
-                      )
+                          onTap: _launchURL,
+                          child: Container(
+                              width: 161,
+                              decoration: BoxDecoration(
+                                  color: Theme.of(context).primaryColor,
+                                  borderRadius: BorderRadius.circular(10)),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 18, vertical: 10),
+                              child: Text('버전 업데이트 하기',
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white)),
+                              alignment: Alignment.center))
                     ])
                 ]));
           }
