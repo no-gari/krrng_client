@@ -129,42 +129,38 @@ class _ProfileChangePageState extends State<ProfileChangePage> {
                             ]);
                       });
                 } else {
-                  // await _signInCubit
-                  //     .updateProfile(
-                  //     birthday: DateFormat('yyyy-MM-dd')
-                  //         .format(_pickedBirthday!)
-                  //         .trim(),
-                  //     nickname: _nameEditingController.text,
-                  //     sexChoices: _choice?.value)
-                  //     .then((_) async {
-                  //   ApiResult<User> apiResult =
-                  //   await RepositoryProvider.of<UserRepository>(context)
-                  //       .getUser();
-                  //   apiResult.when(
-                  //       success: (User? user) {
-                  //         _authenticationBloc
-                  //             .emit(AuthenticationState.authenticated(user!));
-                  //       },
-                  //       failure: (NetworkExceptions? error) {});
-                  // });
-                  // showDialog(
-                  //     context: context,
-                  //     barrierDismissible: true,
-                  //     builder: (BuildContext context) {
-                  //       return AlertDialog(
-                  //           content: Text("완료되었습니다."),
-                  //           insetPadding:
-                  //           const EdgeInsets.fromLTRB(0, 80, 0, 80),
-                  //           actions: [
-                  //             TextButton(
-                  //                 child: const Text('확인'),
-                  //                 onPressed: () {
-                  //                   context.vRouter.to(MyPageScreen.routeName);
-                  //                 })
-                  //           ]);
-                  //     });
-                  print(_pickedBirthday);
-                  print(_birthdayController.text);
+                  await _signInCubit.updateProfile(
+                      birthday: DateFormat('yyyy-MM-dd')
+                          .format(_pickedBirthday!)
+                          .trim(),
+                      nickname: _nameEditingController.text,
+                      sexChoices: _choice?.value)
+                      .then((_) async {
+                    ApiResult<User> apiResult =
+                    await RepositoryProvider.of<UserRepository>(context)
+                        .getUser();
+                    apiResult.when(
+                        success: (User? user) {
+                          _authenticationBloc.emit(AuthenticationState.authenticated(user!));
+                        },
+                        failure: (NetworkExceptions? error) {});
+                  });
+                  showDialog(
+                      context: context,
+                      barrierDismissible: true,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                            content: Text("완료되었습니다."),
+                            insetPadding:
+                            const EdgeInsets.fromLTRB(0, 80, 0, 80),
+                            actions: [
+                              TextButton(
+                                  child: const Text('확인'),
+                                  onPressed: () {
+                                    context.vRouter.to(MyPageScreen.routeName);
+                                  })
+                            ]);
+                      });
                 }
               });
         }),
@@ -175,10 +171,8 @@ class _ProfileChangePageState extends State<ProfileChangePage> {
                     listener: (context, state) {
                   if (state.user.birthday != null) {
                     setState(() {
-                      print('');
                       _birthdayController.text = state.user.birthday!;
-                      _pickedBirthday = DateFormat('yyyy-MM-dd')
-                          .parse(state.user.birthday ?? "");
+                      _pickedBirthday = DateFormat('yyyy-MM-dd').parse(state.user.birthday ?? "");
                     });
                   }
                   if (state.user.nickname != null) {
@@ -237,9 +231,7 @@ class _ProfileChangePageState extends State<ProfileChangePage> {
                                                 decoration: BoxDecoration(
                                                     shape: BoxShape.circle,
                                                     image: DecorationImage(
-                                                        image: NetworkImage(
-                                                            state.user
-                                                                .profileImage!),
+                                                        image: NetworkImage(state.user.profileImage!),
                                                         fit: BoxFit.cover)),
                                               )
                                             : ClipOval(
