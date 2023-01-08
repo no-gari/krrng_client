@@ -87,7 +87,7 @@ class PetCubit extends Cubit<PetState> {
         animals.add(animal);
         user.copyWith(animals: animals);
         _authenticationBloc.add(AuthenticationUserChanged(user));
-        state.copyWith(isComplete: true);
+        emit(state.copyWith(isComplete: true));
       }
     }, failure: (NetworkExceptions? error) {
       emit(state.copyWith(
