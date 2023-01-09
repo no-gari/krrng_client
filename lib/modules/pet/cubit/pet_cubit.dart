@@ -190,6 +190,13 @@ class PetCubit extends Cubit<PetState> {
     var response = await _animalRepository.deleteAnimalWithId(id);
     response.when(success: (dynamic response) {
       emit(state.copyWith(isComplete: true, isLoaded: true));
+      var user = _authenticationBloc.state.user;
+
+      var animals = _authenticationBloc.state.user.animals ?? [];
+      final index =
+          animals.indexWhere((element) => element.id == int.parse(id));
+      var new_animals = animals..removeAt(index);
+      user.copyWith(animals: new_animals);
     }, failure: (NetworkExceptions? error) {
       emit(state.copyWith(
           error: error,
