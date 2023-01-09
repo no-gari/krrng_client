@@ -274,7 +274,7 @@ class _HospitalDetailPageState extends State<HospitalDetailPage> {
                                               .toList(),
                                           content: review.content,
                                           likes: review.likes,
-                                          isLike: true)
+                                          isLike: review.isLike)
                                     ]);
                                   }))
                       ])

@@ -65,7 +65,7 @@ class _MyReviewPageState extends State<MyReviewPage> {
                                 .toList(),
                             content: review.content,
                             likes: review.likes,
-                            isLike: true),
+                            isLike: review.isLike)
                       ],
                     )
                 ]));

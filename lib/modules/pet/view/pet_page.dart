@@ -1,4 +1,5 @@
 import 'package:krrng_client/modules/authentication/bloc/authentication_bloc.dart';
+import 'package:krrng_client/modules/main/main_screen.dart';
 import 'package:krrng_client/modules/pet/cubit/kind_cubit.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:krrng_client/modules/pet/cubit/pet_cubit.dart';
@@ -99,11 +100,9 @@ class _PetPageState extends State<PetPage> {
                                     const EdgeInsets.fromLTRB(0, 80, 0, 80),
                                 actions: [
                                   TextButton(
-                                      child: const Text('확인'),
-                                      onPressed: () {
-                                        context.vRouter.pop();
-                                        context.vRouter.pop();
-                                      })
+                                      child: Text('확인'),
+                                      onPressed: () => context.vRouter
+                                          .to(MainScreen.routeName))
                                 ]);
                           });
                     }

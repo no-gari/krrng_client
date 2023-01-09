@@ -11,7 +11,8 @@ class ReviewTile extends StatefulWidget {
       this.imageList,
       this.content,
       this.likes,
-      this.isLike, required this.onTap});
+      this.isLike,
+      required this.onTap});
 
   final String? name;
   final double? rate;
@@ -42,7 +43,8 @@ class _ReviewTileState extends State<ReviewTile> {
       onTap: widget.onTap,
       child: Container(
           padding: EdgeInsets.symmetric(vertical: 20),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(widget.name!,
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
             SizedBox(height: 10),
@@ -93,7 +95,7 @@ class _ReviewTileState extends State<ReviewTile> {
             Text(widget.content!, style: TextStyle(fontSize: 15)),
             SizedBox(height: 20),
             Row(children: [
-              SvgPicture.asset(widget.isLike! == true
+              SvgPicture.asset(widget.isLike == true
                   ? 'assets/icons/like_on.svg'
                   : 'assets/icons/like_off.svg'),
               SizedBox(width: 10),
