@@ -68,7 +68,7 @@ class HospitalTile extends StatelessWidget {
                                     fontWeight: FontWeight.bold)),
                             SizedBox(width: 20),
                             SvgPicture.asset('assets/icons/pin_s.svg'),
-                            Text(howFar!.toString() + 'm',
+                            Text(distanceFromString(howFar!.toString()),
                                 style: TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.bold,

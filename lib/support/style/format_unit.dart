@@ -10,6 +10,23 @@ String currencyFromStringWon(String value) {
   return toCurrencyString(value, mantissaLength: 0, leadingSymbol: "₩");
 }
 
+String distanceFromString(String value) {
+  if (value.length > 3) {
+    int length = value.length;
+    var new_val = '';
+    for (var i = 0; i <= length - 3; i++) {
+      if (i == length - 3) {
+        new_val = new_val + '.' + value[i] + 'km';
+      } else {
+        new_val = new_val + value[i];
+      }
+    }
+    return new_val;
+  } else {
+    return toCurrencyString(value, mantissaLength: 0, trailingSymbol: "m");
+  }
+}
+
 double maxWidth(context) {
   return MediaQuery.of(context).size.width;
 }

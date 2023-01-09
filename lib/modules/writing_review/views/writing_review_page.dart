@@ -60,92 +60,95 @@ class _WritingReviewPageState extends State<WritingReviewPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<WritingReviewCubit, WritingReviewState>(
-        listener: (context, state) {
-          if (state.isComplete ?? false) {
-            showDialog(
-                context: context,
-                barrierDismissible: true, // 바깥 영역 터치시 닫을지 여부
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                      content: Text("등록이 완료되었습니다."),
-                      insetPadding: const EdgeInsets.fromLTRB(0, 80, 0, 80),
-                      actions: [
-                        TextButton(
-                            child: const Text('확인'),
-                            onPressed: () {
-                              context.vRouter.pop();
-                              context.vRouter.pop();
-                              Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (_) => HospitalDetailScreen(
-                                          id: _writingReviewCubit
-                                              .hospitalDetail!.id!)));
-                            })
-                      ]);
-                });
-          }
-        },
-        builder: (context, state) => Form(
-              key: _formKey,
-              child: ListView(
-                children: <Widget>[
-                  _HospitalProfileTile(),
-                  _Divier,
-                  _ReceivedMedical(),
-                  _Receipt(),
-                  _PostReview(),
-                  GestureDetector(
-                      onTap: () => {},
-                      child: Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 30),
-                          child:
-                              Image.asset("assets/images/review_banner.png"))),
-                  _Information(),
-                  const SizedBox(height: 30),
-                  GestureDetector(
-                    onTap: () {
-                      final termsValidate = !terms.contains(false);
+    return GestureDetector(
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      child: BlocConsumer<WritingReviewCubit, WritingReviewState>(
+          listener: (context, state) {
+            if (state.isComplete ?? false) {
+              showDialog(
+                  context: context,
+                  barrierDismissible: true, // 바깥 영역 터치시 닫을지 여부
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                        content: Text("등록이 완료되었습니다."),
+                        insetPadding: const EdgeInsets.fromLTRB(0, 80, 0, 80),
+                        actions: [
+                          TextButton(
+                              child: const Text('확인'),
+                              onPressed: () {
+                                context.vRouter.pop();
+                                context.vRouter.pop();
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (_) => HospitalDetailScreen(
+                                            id: _writingReviewCubit
+                                                .hospitalDetail!.id!)));
+                              })
+                        ]);
+                  });
+            }
+          },
+          builder: (context, state) => Form(
+                key: _formKey,
+                child: ListView(
+                  children: <Widget>[
+                    _HospitalProfileTile(),
+                    _Divier,
+                    _ReceivedMedical(),
+                    _Receipt(),
+                    _PostReview(),
+                    GestureDetector(
+                        onTap: () => {},
+                        child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 30),
+                            child: Image.asset(
+                                "assets/images/review_banner.png"))),
+                    _Information(),
+                    const SizedBox(height: 30),
+                    GestureDetector(
+                      onTap: () {
+                        final termsValidate = !terms.contains(false);
 
-                      if (_formKey.currentState!.validate()) {
-                        _writingReviewCubit.emit(_writingReviewCubit.state
-                            .copyWith(
-                                rates: rates,
-                                reviewContent: reviewController.text,
-                                disease: diseaseController.text,
-                                writingImages: _reviewImages,
-                                receiptImages: _images));
+                        if (_formKey.currentState!.validate()) {
+                          _writingReviewCubit.emit(_writingReviewCubit.state
+                              .copyWith(
+                                  rates: rates,
+                                  reviewContent: reviewController.text,
+                                  disease: diseaseController.text,
+                                  writingImages: _reviewImages,
+                                  receiptImages: _images));
 
-                        if (_images.length > 0) {
-                          if (termsValidate == false) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text("약관을 동의해주세요.")));
+                          if (_images.length > 0) {
+                            if (termsValidate == false) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text("약관을 동의해주세요.")));
+                            } else {
+                              _writingReviewCubit.createReview();
+                            }
                           } else {
-                            _writingReviewCubit.createReview();
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text("영수증을 첨부해주세요.")));
                           }
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text("영수증을 첨부해주세요.")));
                         }
-                      }
-                    },
-                    child: Container(
-                      height: 60,
-                      decoration: BoxDecoration(
-                          border: Border.all(color: dividerColor),
-                          color: Color(0xfffbfbfb)),
-                      alignment: Alignment.center,
-                      child: Text(
-                        "병원 리뷰 등록하기",
-                        style: font_17_w900.copyWith(color: primaryColor),
+                      },
+                      child: Container(
+                        height: 60,
+                        decoration: BoxDecoration(
+                            border: Border.all(color: dividerColor),
+                            color: Color(0xfffbfbfb)),
+                        alignment: Alignment.center,
+                        child: Text(
+                          "병원 리뷰 등록하기",
+                          style: font_17_w900.copyWith(color: primaryColor),
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ));
+                  ],
+                ),
+              )),
+    );
   }
 
   Widget _HospitalProfileTile() {

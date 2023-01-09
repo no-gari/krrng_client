@@ -13,7 +13,6 @@ import '../../../support/style/format_unit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
-import 'package:vrouter/vrouter.dart';
 
 class HospitalDetailPage extends StatefulWidget {
   HospitalDetailPage({this.id});
@@ -110,7 +109,9 @@ class _HospitalDetailPageState extends State<HospitalDetailPage> {
                                   SvgPicture.asset('assets/icons/pin_s.svg',
                                       color: Theme.of(context).accentColor),
                                   SizedBox(width: 5),
-                                  Text(hospitalDetail.distance.toString() + 'm',
+                                  Text(
+                                      distanceFromString(
+                                          hospitalDetail.distance.toString()),
                                       style: TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold,
@@ -129,8 +130,7 @@ class _HospitalDetailPageState extends State<HospitalDetailPage> {
                                   margin: EdgeInsets.symmetric(horizontal: 8)),
                               Text(hospitalDetail.restDate ?? '',
                                   style: TextStyle(
-                                      fontSize: 15,
-                                      color: Theme.of(context).accentColor))
+                                      fontSize: 15, color: Colors.black))
                             ]),
                             SizedBox(height: 8),
                             Row(
@@ -169,13 +169,15 @@ class _HospitalDetailPageState extends State<HospitalDetailPage> {
                             SizedBox(height: 20),
                             GestureDetector(
                                 onTap: () {
-                                  final hospitalDetail = _hospitalCubit.state.hospitalDetail;
+                                  final hospitalDetail =
+                                      _hospitalCubit.state.hospitalDetail;
                                   if (hospitalDetail != null) {
-                                    Navigator.push(context,
+                                    Navigator.push(
+                                        context,
                                         MaterialPageRoute(
-                                            builder: (_) => WritingReviewScreen(hospitalDetail: hospitalDetail)
-                                        )
-                                    );
+                                            builder: (_) => WritingReviewScreen(
+                                                hospitalDetail:
+                                                    hospitalDetail)));
                                   }
                                 },
                                 child: Container(
