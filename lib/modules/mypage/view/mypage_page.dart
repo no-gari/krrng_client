@@ -380,10 +380,8 @@ class _MyPagePageState extends State<MyPagePage> {
                                 height: 10,
                                 color: Colors.grey,
                                 margin: EdgeInsets.symmetric(horizontal: 5)),
-                            Text(
-                              authState.user.animals![index].weight!,
-                              style: TextStyle(fontSize: 15),
-                            )
+                            Text(authState.user.animals![index].weight! + 'kg',
+                                style: TextStyle(fontSize: 15))
                           ])
                         ])
                   ]),

@@ -1,21 +1,20 @@
-import 'dart:io';
-import 'package:flutter/material.dart';
+import 'package:krrng_client/repositories/authentication_repository/authentication_repository.dart';
+import 'package:krrng_client/repositories/user_repository/src/user_repository.dart';
+import 'package:krrng_client/modules/authentication/signin/cubit/signin_cubit.dart';
+import 'package:krrng_client/modules/authentication/bloc/authentication_bloc.dart';
+import 'package:krrng_client/repositories/user_repository/models/user.dart';
+import 'package:krrng_client/support/networks/network_exceptions.dart';
+import 'package:krrng_client/modules/mypage/view/mypage_screen.dart';
+import 'package:krrng_client/support/networks/api_result.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:krrng_client/support/style/theme.dart';
+import 'package:krrng_client/modules/pet/enums.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
-import 'package:krrng_client/modules/authentication/bloc/authentication_bloc.dart';
-import 'package:krrng_client/modules/authentication/signin/cubit/signin_cubit.dart';
-import 'package:krrng_client/modules/mypage/view/mypage_screen.dart';
-import 'package:krrng_client/modules/pet/components/pet_textfield.dart';
-import 'package:krrng_client/modules/pet/enums.dart';
-import 'package:krrng_client/repositories/authentication_repository/authentication_repository.dart';
-import 'package:krrng_client/repositories/user_repository/models/user.dart';
-import 'package:krrng_client/repositories/user_repository/src/user_repository.dart';
-import 'package:krrng_client/support/networks/api_result.dart';
-import 'package:krrng_client/support/networks/network_exceptions.dart';
-import 'package:krrng_client/support/style/theme.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter/material.dart';
 import 'package:vrouter/vrouter.dart';
+import 'package:intl/intl.dart';
+import 'dart:io';
 
 class ProfileChangePage extends StatefulWidget {
   const ProfileChangePage({Key? key}) : super(key: key);
@@ -92,6 +91,9 @@ class _ProfileChangePageState extends State<ProfileChangePage> {
                   child: Text('변경하기',
                       style: font_17_w900.copyWith(color: primaryColor))),
               onPressed: () async {
+                setState(() {
+                  changed = true;
+                });
                 if (_image?.path != null) {
                   await _signInCubit
                       .updateProfile(
@@ -166,193 +168,229 @@ class _ProfileChangePageState extends State<ProfileChangePage> {
                 }
               });
         }),
-        body: SafeArea(
-            child: SingleChildScrollView(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: BlocConsumer<AuthenticationBloc, AuthenticationState>(
-                    listener: (context, state) {
-                  if (state.user.birthday != null) {
-                    setState(() {
-                      _birthdayController.text = state.user.birthday!;
-                      _pickedBirthday = DateFormat('yyyy-MM-dd')
-                          .parse(state.user.birthday ?? "");
-                    });
-                  }
-                  if (state.user.nickname != null) {
-                    setState(() {
-                      _nameEditingController.text = state.user.nickname!;
-                    });
-                  }
-                }, builder: (context, state) {
-                  if (state.status == AuthenticationStatus.authenticated) {
-                    return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(height: 30),
-                          GestureDetector(
-                              onTap: () async {
-                                PermissionStatus status =
-                                    await Permission.camera.request();
+        body: GestureDetector(
+            onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+            child: SafeArea(
+                child: changed == false
+                    ? SingleChildScrollView(
+                        padding: EdgeInsets.symmetric(horizontal: 16),
+                        child: BlocConsumer<AuthenticationBloc,
+                            AuthenticationState>(listener: (context, state) {
+                          if (state.user.birthday != null) {
+                            setState(() {
+                              _birthdayController.text = state.user.birthday!;
+                              _pickedBirthday = DateFormat('yyyy-MM-dd')
+                                  .parse(state.user.birthday ?? "");
+                            });
+                          }
+                          if (state.user.nickname != null) {
+                            setState(() {
+                              _nameEditingController.text =
+                                  state.user.nickname!;
+                            });
+                          }
+                        }, builder: (context, state) {
+                          if (state.status ==
+                              AuthenticationStatus.authenticated) {
+                            return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(height: 30),
+                                  GestureDetector(
+                                      onTap: () async {
+                                        PermissionStatus status =
+                                            await Permission.camera.request();
 
-                                if (status.isGranted == true) {
-                                  var image = await _picker.pickImage(
-                                      source: ImageSource.gallery);
-                                  setState(() {
-                                    if (image != null) {
-                                      _image = image;
-                                    }
-                                  });
-                                } else {
-                                  showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return AlertDialog(
-                                            content: Text("권한 설정을 확인해주세요."),
-                                            actions: [
-                                              TextButton(
-                                                  onPressed: () =>
-                                                      openAppSettings(),
-                                                  child: Text('설정하기')),
-                                            ]);
-                                      });
-                                }
-                              },
-                              child: Container(
-                                  padding: EdgeInsets.only(top: 30, bottom: 50),
-                                  alignment: Alignment.center,
-                                  child: CircleAvatar(
-                                    radius: 40,
-                                    backgroundColor: Colors.black12,
-                                    child: state.user.profileImage == null
-                                        ? _image == null
-                                            ? Icon(Icons.add,
-                                                size: 32, color: Colors.grey)
-                                            : Image.file(File(_image!.path),
-                                                fit: BoxFit.cover)
-                                        : _image == null
-                                            ? Container(
-                                                decoration: BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                    image: DecorationImage(
-                                                        image: NetworkImage(
-                                                            state.user
-                                                                .profileImage!),
-                                                        fit: BoxFit.cover)),
-                                              )
-                                            : ClipOval(
-                                                child: Image.file(
-                                                    File(_image!.path),
-                                                    width: 80,
-                                                    height: 80,
-                                                    fit: BoxFit.cover),
-                                              ),
-                                  ))),
-                          Text('닉네임',
-                              style: Theme.of(context).textTheme.headline3),
-                          SizedBox(height: 10),
-                          TextField(
-                              autofocus: true,
-                              controller: _nameEditingController,
-                              textAlignVertical: TextAlignVertical.center,
-                              decoration: InputDecoration(
-                                  contentPadding:
-                                      EdgeInsets.symmetric(horizontal: 15),
-                                  enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(15.0),
-                                      borderSide:
-                                          BorderSide(color: Color(0xFFDFE2E9))),
-                                  focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(15),
-                                      borderSide:
-                                          BorderSide(color: Color(0xFFDFE2E9))),
-                                  border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(15.0),
-                                      borderSide:
-                                          BorderSide(color: Color(0xFFDFE2E9))),
-                                  hintText: '이름을 입력 하세요.')),
-                          SizedBox(height: 25),
-                          Text('생년월일',
-                              style: Theme.of(context).textTheme.headline3),
-                          SizedBox(height: 10),
-                          TextFormField(
-                              controller: _birthdayController,
-                              readOnly: true,
-                              onTap: () async {
-                                DateTime? pickedDate = await showDatePicker(
-                                    confirmText: '확인',
-                                    cancelText: '취소',
-                                    context: context,
-                                    initialDate: DateTime.now(),
-                                    firstDate: DateTime(1960),
-                                    lastDate: DateTime.now());
-                                if (pickedDate != null) {
-                                  setState(() {
-                                    _pickedBirthday = pickedDate;
-                                    _birthdayController.text =
-                                        DateFormat('yyyy-MM-dd')
-                                            .format(pickedDate)
-                                            .toString();
-                                    print(_pickedBirthday);
-                                    print(_birthdayController.text);
-                                  });
-                                }
-                              },
-                              decoration: InputDecoration(
-                                  contentPadding:
-                                      EdgeInsets.symmetric(horizontal: 15),
-                                  enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(15.0),
-                                      borderSide:
-                                          BorderSide(color: Color(0xFFDFE2E9))),
-                                  focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(15),
-                                      borderSide:
-                                          BorderSide(color: Color(0xFFDFE2E9))),
-                                  border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(15.0),
-                                      borderSide: BorderSide(
-                                          color: Color(0xFFDFE2E9))))),
-                          SizedBox(height: 25),
-                          Text('성별',
-                              style: Theme.of(context).textTheme.headline3),
-                          SizedBox(height: 10),
-                          Wrap(children: [
-                            Container(
-                                height: 30,
-                                width: 70,
-                                child: Row(children: [
-                                  SizedBox(
-                                      width: 20,
-                                      height: 20,
-                                      child: Radio<SexChoice>(
-                                          value: SexChoice.male,
-                                          groupValue: _choice,
-                                          onChanged: (SexChoice? value) =>
-                                              setState(() => _choice = value))),
-                                  SizedBox(width: 5),
-                                  Text('남자', style: font_16_w900)
-                                ])),
-                            Container(
-                                height: 30,
-                                width: 100,
-                                child: Row(children: [
-                                  SizedBox(
-                                      width: 20,
-                                      height: 20,
-                                      child: Radio<SexChoice>(
-                                          value: SexChoice.female,
-                                          groupValue: _choice,
-                                          onChanged: (SexChoice? value) =>
-                                              setState(() => _choice = value))),
-                                  SizedBox(width: 5),
-                                  Text('여자', style: font_16_w900)
-                                ]))
-                          ])
-                        ]);
-                  }
-                  return Center(
-                      child: Image.asset('assets/images/indicator.gif',
-                          width: 100, height: 100));
-                }))));
+                                        if (status.isGranted == true) {
+                                          var image = await _picker.pickImage(
+                                              source: ImageSource.gallery);
+                                          setState(() {
+                                            if (image != null) {
+                                              _image = image;
+                                            }
+                                          });
+                                        } else {
+                                          showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return AlertDialog(
+                                                    content:
+                                                        Text("권한 설정을 확인해주세요."),
+                                                    actions: [
+                                                      TextButton(
+                                                          onPressed: () =>
+                                                              openAppSettings(),
+                                                          child: Text('설정하기')),
+                                                    ]);
+                                              });
+                                        }
+                                      },
+                                      child: Container(
+                                          padding: EdgeInsets.only(
+                                              top: 30, bottom: 50),
+                                          alignment: Alignment.center,
+                                          child: CircleAvatar(
+                                            radius: 40,
+                                            backgroundColor: Colors.black12,
+                                            child: state.user.profileImage ==
+                                                    null
+                                                ? _image == null
+                                                    ? Icon(Icons.add,
+                                                        size: 32,
+                                                        color: Colors.grey)
+                                                    : Image.file(
+                                                        File(_image!.path),
+                                                        fit: BoxFit.cover)
+                                                : _image == null
+                                                    ? Container(
+                                                        decoration: BoxDecoration(
+                                                            shape:
+                                                                BoxShape.circle,
+                                                            image: DecorationImage(
+                                                                image: NetworkImage(
+                                                                    state.user
+                                                                        .profileImage!),
+                                                                fit: BoxFit
+                                                                    .cover)),
+                                                      )
+                                                    : ClipOval(
+                                                        child: Image.file(
+                                                            File(_image!.path),
+                                                            width: 80,
+                                                            height: 80,
+                                                            fit: BoxFit.cover),
+                                                      ),
+                                          ))),
+                                  Text('닉네임',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headline3),
+                                  SizedBox(height: 10),
+                                  TextField(
+                                      autofocus: true,
+                                      controller: _nameEditingController,
+                                      textAlignVertical:
+                                          TextAlignVertical.center,
+                                      decoration: InputDecoration(
+                                          contentPadding: EdgeInsets.symmetric(
+                                              horizontal: 15),
+                                          enabledBorder: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(15.0),
+                                              borderSide: BorderSide(
+                                                  color: Color(0xFFDFE2E9))),
+                                          focusedBorder: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(15),
+                                              borderSide: BorderSide(
+                                                  color: Color(0xFFDFE2E9))),
+                                          border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(15.0),
+                                              borderSide: BorderSide(
+                                                  color: Color(0xFFDFE2E9))),
+                                          hintText: '이름을 입력 하세요.')),
+                                  SizedBox(height: 25),
+                                  Text('생년월일',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headline3),
+                                  SizedBox(height: 10),
+                                  TextFormField(
+                                      controller: _birthdayController,
+                                      readOnly: true,
+                                      onTap: () async {
+                                        DateTime? pickedDate =
+                                            await showDatePicker(
+                                                confirmText: '확인',
+                                                cancelText: '취소',
+                                                context: context,
+                                                initialDate: DateTime.now(),
+                                                firstDate: DateTime(1960),
+                                                lastDate: DateTime.now());
+                                        if (pickedDate != null) {
+                                          setState(() {
+                                            _pickedBirthday = pickedDate;
+                                            _birthdayController.text =
+                                                DateFormat('yyyy-MM-dd')
+                                                    .format(pickedDate)
+                                                    .toString();
+                                            print(_pickedBirthday);
+                                            print(_birthdayController.text);
+                                          });
+                                        }
+                                      },
+                                      decoration: InputDecoration(
+                                          contentPadding: EdgeInsets.symmetric(
+                                              horizontal: 15),
+                                          enabledBorder: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(15.0),
+                                              borderSide: BorderSide(
+                                                  color: Color(0xFFDFE2E9))),
+                                          focusedBorder: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(15),
+                                              borderSide: BorderSide(
+                                                  color: Color(0xFFDFE2E9))),
+                                          border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(15.0),
+                                              borderSide: BorderSide(
+                                                  color: Color(0xFFDFE2E9))))),
+                                  SizedBox(height: 25),
+                                  Text('성별',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headline3),
+                                  SizedBox(height: 10),
+                                  Wrap(children: [
+                                    Container(
+                                        height: 30,
+                                        width: 70,
+                                        child: Row(children: [
+                                          SizedBox(
+                                              width: 20,
+                                              height: 20,
+                                              child: Radio<SexChoice>(
+                                                  value: SexChoice.male,
+                                                  groupValue: _choice,
+                                                  onChanged:
+                                                      (SexChoice? value) =>
+                                                          setState(() =>
+                                                              _choice =
+                                                                  value))),
+                                          SizedBox(width: 5),
+                                          Text('남자', style: font_16_w900)
+                                        ])),
+                                    Container(
+                                        height: 30,
+                                        width: 100,
+                                        child: Row(children: [
+                                          SizedBox(
+                                              width: 20,
+                                              height: 20,
+                                              child: Radio<SexChoice>(
+                                                  value: SexChoice.female,
+                                                  groupValue: _choice,
+                                                  onChanged:
+                                                      (SexChoice? value) =>
+                                                          setState(() =>
+                                                              _choice =
+                                                                  value))),
+                                          SizedBox(width: 5),
+                                          Text('여자', style: font_16_w900)
+                                        ]))
+                                  ]),
+                                  SizedBox(height: 100),
+                                ]);
+                          }
+                          return Center(
+                              child: Image.asset('assets/images/indicator.gif',
+                                  width: 100, height: 100));
+                        }))
+                    : Center(
+                        child: Image.asset('assets/images/indicator.gif',
+                            width: 100, height: 100)))));
   }
 }
