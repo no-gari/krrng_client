@@ -212,22 +212,21 @@ class _HomePageState extends State<HomePage> {
                             }
                             return Column(children: [
                               Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 16.0),
-                                child: GestureDetector(
-                                    onTap: () => _authenticationBloc
-                                                .state.status ==
-                                            AuthenticationStatus.authenticated
-                                        ? context.vRouter.toNamed(
-                                            PetScreen.routeName,
-                                            pathParameters: {
-                                                'editValue': 'false',
-                                                'id': 'new'
-                                              })
-                                        : showLoginNeededDialog(context),
-                                    child: Image.asset(
-                                        "assets/images/mainbanner.png")),
-                              ),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16.0),
+                                  child: GestureDetector(
+                                      onTap: () => _authenticationBloc
+                                                  .state.status ==
+                                              AuthenticationStatus.authenticated
+                                          ? context.vRouter.toNamed(
+                                              PetScreen.routeName,
+                                              pathParameters: {
+                                                  'editValue': 'false',
+                                                  'id': 'new'
+                                                })
+                                          : showLoginNeededDialog(context),
+                                      child: Image.asset(
+                                          "assets/images/mainbanner.png"))),
                               SizedBox(height: 50)
                             ]);
                           }),
@@ -525,10 +524,8 @@ class _HomePageState extends State<HomePage> {
                               ]),
                               style: TextStyle(
                                   fontSize: 17, fontWeight: FontWeight.w900)),
-                          Text(
-                            authState.user.animals![index].kind.toString(),
-                            style: TextStyle(fontSize: 15),
-                          ),
+                          Text(authState.user.animals![index].kind.toString(),
+                              style: TextStyle(fontSize: 15)),
                           Row(children: [
                             Text(
                                 authState.user.animals![index].sexChoices ==
@@ -541,10 +538,8 @@ class _HomePageState extends State<HomePage> {
                                 height: 10,
                                 color: Colors.grey,
                                 margin: EdgeInsets.symmetric(horizontal: 5)),
-                            Text(
-                              authState.user.animals![index].weight!,
-                              style: TextStyle(fontSize: 15),
-                            )
+                            Text(authState.user.animals![index].weight! + 'kg',
+                                style: TextStyle(fontSize: 15))
                           ])
                         ])
                   ]),

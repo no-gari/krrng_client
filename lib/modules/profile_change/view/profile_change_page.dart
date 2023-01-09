@@ -129,19 +129,21 @@ class _ProfileChangePageState extends State<ProfileChangePage> {
                             ]);
                       });
                 } else {
-                  await _signInCubit.updateProfile(
-                      birthday: DateFormat('yyyy-MM-dd')
-                          .format(_pickedBirthday!)
-                          .trim(),
-                      nickname: _nameEditingController.text,
-                      sexChoices: _choice?.value)
+                  await _signInCubit
+                      .updateProfile(
+                          birthday: DateFormat('yyyy-MM-dd')
+                              .format(_pickedBirthday!)
+                              .trim(),
+                          nickname: _nameEditingController.text,
+                          sexChoices: _choice?.value)
                       .then((_) async {
                     ApiResult<User> apiResult =
-                    await RepositoryProvider.of<UserRepository>(context)
-                        .getUser();
+                        await RepositoryProvider.of<UserRepository>(context)
+                            .getUser();
                     apiResult.when(
                         success: (User? user) {
-                          _authenticationBloc.emit(AuthenticationState.authenticated(user!));
+                          _authenticationBloc
+                              .emit(AuthenticationState.authenticated(user!));
                         },
                         failure: (NetworkExceptions? error) {});
                   });
@@ -152,7 +154,7 @@ class _ProfileChangePageState extends State<ProfileChangePage> {
                         return AlertDialog(
                             content: Text("완료되었습니다."),
                             insetPadding:
-                            const EdgeInsets.fromLTRB(0, 80, 0, 80),
+                                const EdgeInsets.fromLTRB(0, 80, 0, 80),
                             actions: [
                               TextButton(
                                   child: const Text('확인'),
@@ -172,7 +174,8 @@ class _ProfileChangePageState extends State<ProfileChangePage> {
                   if (state.user.birthday != null) {
                     setState(() {
                       _birthdayController.text = state.user.birthday!;
-                      _pickedBirthday = DateFormat('yyyy-MM-dd').parse(state.user.birthday ?? "");
+                      _pickedBirthday = DateFormat('yyyy-MM-dd')
+                          .parse(state.user.birthday ?? "");
                     });
                   }
                   if (state.user.nickname != null) {
@@ -191,7 +194,15 @@ class _ProfileChangePageState extends State<ProfileChangePage> {
                                 PermissionStatus status =
                                     await Permission.camera.request();
 
-                                if (!status.isGranted) {
+                                if (status.isGranted == true) {
+                                  var image = await _picker.pickImage(
+                                      source: ImageSource.gallery);
+                                  setState(() {
+                                    if (image != null) {
+                                      _image = image;
+                                    }
+                                  });
+                                } else {
                                   showDialog(
                                       context: context,
                                       builder: (BuildContext context) {
@@ -204,14 +215,6 @@ class _ProfileChangePageState extends State<ProfileChangePage> {
                                                   child: Text('설정하기')),
                                             ]);
                                       });
-                                } else {
-                                  var image = await _picker.pickImage(
-                                      source: ImageSource.gallery);
-                                  setState(() {
-                                    if (image != null) {
-                                      _image = image;
-                                    }
-                                  });
                                 }
                               },
                               child: Container(
@@ -231,7 +234,9 @@ class _ProfileChangePageState extends State<ProfileChangePage> {
                                                 decoration: BoxDecoration(
                                                     shape: BoxShape.circle,
                                                     image: DecorationImage(
-                                                        image: NetworkImage(state.user.profileImage!),
+                                                        image: NetworkImage(
+                                                            state.user
+                                                                .profileImage!),
                                                         fit: BoxFit.cover)),
                                               )
                                             : ClipOval(

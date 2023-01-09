@@ -60,7 +60,7 @@ dependencies:
   flutter_sizer: ^1.0.5
   carousel_slider: ^4.1.1
   currency_formatter: ^1.2.1
-  permission_handler: ^9.2.0
+  permission_handler: ^10.2.0
   flutter_swiper_plus: ^2.0.4
   double_back_to_close: ^2.0.0
   cached_network_image: ^3.2.2

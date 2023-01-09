@@ -1,13 +1,11 @@
-import 'dart:io';
-import 'dart:async';
-import 'package:http_parser/http_parser.dart';
-import 'package:dio/dio.dart';
+import 'package:krrng_client/repositories/animal_repository/animal_repository.dart';
+import 'package:krrng_client/modules/authentication/bloc/authentication_bloc.dart';
+import 'package:krrng_client/support/networks/network_exceptions.dart';
+import 'package:krrng_client/modules/pet/enums.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:krrng_client/modules/authentication/bloc/authentication_bloc.dart';
-import 'package:krrng_client/modules/pet/enums.dart';
-import 'package:krrng_client/repositories/animal_repository/animal_repository.dart';
-import 'package:krrng_client/support/networks/network_exceptions.dart';
+import 'package:dio/dio.dart';
+import 'dart:async';
 
 part 'pet_state.dart';
 
@@ -60,6 +58,8 @@ class PetCubit extends Cubit<PetState> {
   }
 
   Future<void> registerPet() async {
+    emit(state.copyWith(isLoaded: false));
+
     Map<String, dynamic> body = {
       "image": state.image != null
           ? await MultipartFile.fromFile(state.image!)
@@ -78,7 +78,6 @@ class PetCubit extends Cubit<PetState> {
     };
 
     final data = FormData.fromMap(body);
-
     var response = await _animalRepository.createAnimal(data);
     response.when(success: (Animal? animal) {
       if (animal != null) {
@@ -87,7 +86,7 @@ class PetCubit extends Cubit<PetState> {
         animals.add(animal);
         user.copyWith(animals: animals);
         _authenticationBloc.add(AuthenticationUserChanged(user));
-        emit(state.copyWith(isComplete: true));
+        emit(state.copyWith(isComplete: true, isLoaded: true));
       }
     }, failure: (NetworkExceptions? error) {
       emit(state.copyWith(
@@ -116,6 +115,8 @@ class PetCubit extends Cubit<PetState> {
       "sexChoices": state.sex
     };
 
+    emit(state.copyWith(isLoaded: false));
+
     var response = await _animalRepository.updateAnimalById(state.id!, body);
     response.when(success: (Animal? animal) {
       if (animal != null) {
@@ -133,16 +134,15 @@ class PetCubit extends Cubit<PetState> {
             neutralizeChoice: animal.neuterChoices,
             allergicChoice: animal.hasAlergy,
             sex: animal.sexChoices,
-            isComplete: true));
+            isComplete: true,
+            isLoaded: true));
 
         var user = _authenticationBloc.state.user;
 
         var animals = _authenticationBloc.state.user.animals ?? [];
         final index = animals.indexWhere((element) => element.id == animal.id);
 
-        print(animals);
         animals[index] = animal;
-        print(animals);
         user.copyWith(animals: animals);
         _authenticationBloc.add(AuthenticationUserChanged(user));
         print(_authenticationBloc.state.user);
@@ -155,6 +155,8 @@ class PetCubit extends Cubit<PetState> {
   }
 
   Future<void> getPetById(String id) async {
+    emit(state.copyWith(isLoaded: false));
+
     var response = await _animalRepository.getAnimalById(id);
     response.when(success: (Animal? animal) {
       if (animal != null) {
@@ -172,7 +174,8 @@ class PetCubit extends Cubit<PetState> {
             interestedDisease: animal.interestedDisease,
             neutralizeChoice: animal.neuterChoices,
             allergicChoice: animal.hasAlergy,
-            sex: animal.sexChoices));
+            sex: animal.sexChoices,
+            isLoaded: true));
       }
     }, failure: (NetworkExceptions? error) {
       emit(state.copyWith(
@@ -182,9 +185,11 @@ class PetCubit extends Cubit<PetState> {
   }
 
   Future<void> deletePet(String id) async {
+    emit(state.copyWith(isLoaded: false));
+
     var response = await _animalRepository.deleteAnimalWithId(id);
     response.when(success: (dynamic response) {
-      emit(state.copyWith(isComplete: true));
+      emit(state.copyWith(isComplete: true, isLoaded: true));
     }, failure: (NetworkExceptions? error) {
       emit(state.copyWith(
           error: error,

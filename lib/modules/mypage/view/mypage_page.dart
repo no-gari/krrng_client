@@ -324,10 +324,11 @@ class _MyPagePageState extends State<MyPagePage> {
   GestureDetector buildAnimalTile(AuthenticationState authState, int index,
       String age, BuildContext context) {
     return GestureDetector(
-        onTap: () => context.vRouter.to(PetScreen.routeName, queryParameters: {
-              "edit": "true",
-              "id": "${authState.user.animals![index].id!}"
-            }),
+        onTap: () => context.vRouter.toNamed(PetScreen.routeName,
+                pathParameters: {
+                  "editValue": "true",
+                  "id": "${authState.user.animals![index].id!}"
+                }),
         child: Container(
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

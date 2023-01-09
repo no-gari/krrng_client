@@ -16,9 +16,10 @@ class PetState extends Equatable {
     this.allergicChoice,
     this.neutralizeChoice,
     this.isComplete,
+    this.isLoaded,
     this.error,
     this.errorMessage,
-});
+  });
 
   final int? id;
   final String? image;
@@ -34,6 +35,7 @@ class PetState extends Equatable {
   final String? allergicChoice;
   final String? neutralizeChoice;
   final bool? isComplete;
+  final bool? isLoaded;
   final NetworkExceptions? error;
   final String? errorMessage;
 
@@ -52,34 +54,49 @@ class PetState extends Equatable {
     String? allergicChoice,
     String? neutralizeChoice,
     bool? isComplete,
+    bool? isLoaded,
     NetworkExceptions? error,
     String? errorMessage,
   }) {
     return PetState(
-      id: id ?? this.id,
-      image: image ?? this.image,
-      kind: kind ?? this.kind,
-      sort: sort ?? this.sort,
-      name: name ?? this.name,
-      birthday: birthday ?? this.birthday,
-      weight: weight ?? this.weight,
-      sex: sex ?? this.sex,
-      hospitalAddress: hospitalAddress ?? this.hospitalAddress,
-      hospitalAddressDetail: hospitalAddressDetail ?? this.hospitalAddressDetail,
-      interestedDisease: interestedDisease ?? this.interestedDisease,
-      allergicChoice: allergicChoice ?? this.allergicChoice,
-      neutralizeChoice: neutralizeChoice ?? this.neutralizeChoice,
-      isComplete: isComplete ?? this.isComplete,
-      error: error ?? this.error,
-      errorMessage: errorMessage ?? this.errorMessage
-    );
+        id: id ?? this.id,
+        image: image ?? this.image,
+        kind: kind ?? this.kind,
+        sort: sort ?? this.sort,
+        name: name ?? this.name,
+        birthday: birthday ?? this.birthday,
+        weight: weight ?? this.weight,
+        sex: sex ?? this.sex,
+        hospitalAddress: hospitalAddress ?? this.hospitalAddress,
+        hospitalAddressDetail:
+            hospitalAddressDetail ?? this.hospitalAddressDetail,
+        interestedDisease: interestedDisease ?? this.interestedDisease,
+        allergicChoice: allergicChoice ?? this.allergicChoice,
+        neutralizeChoice: neutralizeChoice ?? this.neutralizeChoice,
+        isComplete: isComplete ?? this.isComplete,
+        isLoaded: isLoaded ?? this.isLoaded,
+        error: error ?? this.error,
+        errorMessage: errorMessage ?? this.errorMessage);
   }
 
   @override
   List<Object?> get props => [
-    id, image, sort, kind, name, birthday, weight, sex,
-    hospitalAddress, hospitalAddressDetail,
-    interestedDisease, allergicChoice, neutralizeChoice, isComplete,
-    error, errorMessage
-  ];
+        id,
+        image,
+        sort,
+        kind,
+        name,
+        birthday,
+        weight,
+        sex,
+        hospitalAddress,
+        hospitalAddressDetail,
+        interestedDisease,
+        allergicChoice,
+        neutralizeChoice,
+        isComplete,
+        isLoaded,
+        error,
+        errorMessage
+      ];
 }
