@@ -1,8 +1,8 @@
-import 'package:krrng_client/repositories/hospital_repository/models/review_image.dart';
 import 'package:krrng_client/modules/hospital_detail/components/hospital_swiper.dart';
+import 'package:krrng_client/repositories/authentication_repository/src/authentication_repository.dart';
 import 'package:krrng_client/repositories/hospital_repository/models/best_part.dart';
+import 'package:krrng_client/modules/authentication/bloc/authentication_bloc.dart';
 import 'package:krrng_client/modules/hospital_detail/components/review_tile.dart';
-import 'package:krrng_client/repositories/hospital_repository/models/review.dart';
 import 'package:krrng_client/repositories/hospital_repository/models/price.dart';
 import '../../../repositories/hospital_repository/models/available_animal.dart';
 import 'package:krrng_client/modules/hospital/cubit/hospital_cubit.dart';
@@ -25,38 +25,21 @@ class HospitalDetailPage extends StatefulWidget {
 
 class _HospitalDetailPageState extends State<HospitalDetailPage> {
   late HospitalCubit _hospitalCubit;
+  late AuthenticationBloc _authenticationBloc;
 
   @override
   void initState() {
     super.initState();
     _hospitalCubit = BlocProvider.of<HospitalCubit>(context);
-    _hospitalCubit.getHospitalDetail(widget.id!);
+    _authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
+    _hospitalCubit.getHospitalDetail(widget.id!,
+        _authenticationBloc.state.status == AuthenticationStatus.authenticated);
   }
-
-  final imageList = [
-    'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/640px-Image_created_with_a_mobile_phone.png',
-    'https://media.istockphoto.com/photos/canadian-rockies-banff-national-park-dramatic-landscape-picture-id1342152935?b=1&k=20&m=1342152935&s=170667a&w=0&h=q9-vhO5MC7zwaxX8_zFUiqMnQJ5udMjEBf0npeCCAGs=',
-    'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/640px-Image_created_with_a_mobile_phone.png',
-    'https://media.istockphoto.com/photos/canadian-rockies-banff-national-park-dramatic-landscape-picture-id1342152935?b=1&k=20&m=1342152935&s=170667a&w=0&h=q9-vhO5MC7zwaxX8_zFUiqMnQJ5udMjEBf0npeCCAGs='
-  ];
 
   int _selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-    final List<Review> testReivew = [
-      Review(
-        nickname: '하이하이하이',
-        rates: 4,
-        diagnosis: '내시경',
-        createdAt: '2022.09.13 12:55',
-        reviewImage: List<ReviewImage>.generate(imageList.length,
-            (index) => ReviewImage(id: index + 1, image: imageList[index])),
-        content: '강아지가 아플때마다 자주 가는데 항상 친절하고 과잉진료 없이 잘 치료했습니다. 앞으로도 자주 방문 어쩌구',
-        likes: 15,
-      )
-    ];
-
     return Scaffold(
         appBar: AppBar(),
         body: SafeArea(child: BlocBuilder<HospitalCubit, HospitalState>(
@@ -75,7 +58,7 @@ class _HospitalDetailPageState extends State<HospitalDetailPage> {
                       child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(hospitalDetail!.name ?? '',
+                            Text(hospitalDetail.name ?? '',
                                 style: TextStyle(
                                     fontSize: 22, fontWeight: FontWeight.w900)),
                             SizedBox(height: 10),
@@ -147,10 +130,9 @@ class _HospitalDetailPageState extends State<HospitalDetailPage> {
                                       margin:
                                           EdgeInsets.symmetric(horizontal: 8)),
                                   Flexible(
-                                    child: Text(
-                                        hospitalDetail.availableTime ?? '',
-                                        style: TextStyle(fontSize: 15)),
-                                  )
+                                      child: Text(
+                                          hospitalDetail.availableTime ?? '',
+                                          style: TextStyle(fontSize: 15)))
                                 ]),
                             SizedBox(height: 8),
                             Row(children: [
@@ -259,6 +241,13 @@ class _HospitalDetailPageState extends State<HospitalDetailPage> {
                                               ? Colors.white
                                               : Colors.black12),
                                       ReviewTile(
+                                          likeOnTap: () =>
+                                              _hospitalCubit.updateIsLike(
+                                                  review.id!,
+                                                  _authenticationBloc
+                                                          .state.status ==
+                                                      AuthenticationStatus
+                                                          .authenticated),
                                           onTap: () => Navigator.push(
                                               context,
                                               MaterialPageRoute(
@@ -308,7 +297,7 @@ class _HospitalDetailPageState extends State<HospitalDetailPage> {
                         padding: const EdgeInsets.only(top: 5),
                         child: Text(bestPart.name!,
                             style: TextStyle(fontSize: 15)))
-                  ])),
+                  ]))
           ]),
           SizedBox(height: 30),
           Text('진료 반려 동물',
@@ -338,15 +327,14 @@ class _HospitalDetailPageState extends State<HospitalDetailPage> {
               style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
           for (var price in priceList!)
             Padding(
-              padding: EdgeInsets.only(top: 20),
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(price.name!, style: TextStyle(fontSize: 15)),
-                    Text(currencyFromStringWon(price.price.toString()) + '~',
-                        style: TextStyle(fontSize: 15))
-                  ]),
-            ),
+                padding: EdgeInsets.only(top: 20),
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(price.name!, style: TextStyle(fontSize: 15)),
+                      Text(currencyFromStringWon(price.price.toString()) + '~',
+                          style: TextStyle(fontSize: 15))
+                    ]))
         ]));
   }
 }

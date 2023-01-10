@@ -60,14 +60,18 @@ class HospitalRepository {
     }
   }
 
-  Future<ApiResult<dynamic>> getHospitalDetail(LatLng latLng, int id) async {
+  Future<ApiResult<dynamic>> getHospitalDetail(
+      LatLng latLng, int id, bool isAuthenticated) async {
     Map<String, dynamic> body = {
       "userLatitude": latLng.latitude,
       "userLongitude": latLng.longitude
     };
     try {
-      var response = await _dioClient.get('/dev/api/v1/hospital/detail/${id}/',
-          queryParameters: body);
+      var response = isAuthenticated == true
+          ? await _dioClient.getWithAuth('/dev/api/v1/hospital/detail/${id}/',
+              queryParameters: body)
+          : await _dioClient.get('/dev/api/v1/hospital/detail/${id}/',
+              queryParameters: body);
       return ApiResult.success(data: response);
     } catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
@@ -88,6 +92,16 @@ class HospitalRepository {
     try {
       var response = await _dioClient
           .postWithAuthForMultiPart('/dev/api/v1/review/create/', data: data);
+      return ApiResult.success(data: response);
+    } catch (e) {
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e));
+    }
+  }
+
+  Future<ApiResult<dynamic>> updateIsLike(int id) async {
+    try {
+      var response =
+          await _dioClient.put('/dev/api/v1/review/${id}/update-like/');
       return ApiResult.success(data: response);
     } catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));

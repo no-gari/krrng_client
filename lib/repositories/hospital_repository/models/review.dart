@@ -7,6 +7,7 @@ part 'review.g.dart';
 @JsonSerializable()
 class Review extends Equatable {
   const Review({
+    this.id,
     this.nickname,
     this.diagnosis,
     this.rates,
@@ -17,6 +18,7 @@ class Review extends Equatable {
     this.isLike,
   });
 
+  final int? id;
   final String? nickname;
   final String? diagnosis;
   final double? rates;
@@ -31,6 +33,7 @@ class Review extends Equatable {
 
   @override
   List<Object?> get props => [
+        id,
         nickname,
         diagnosis,
         rates,

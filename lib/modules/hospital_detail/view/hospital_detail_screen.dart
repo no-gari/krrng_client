@@ -1,3 +1,4 @@
+import 'package:krrng_client/modules/authentication/bloc/authentication_bloc.dart';
 import 'package:krrng_client/modules/hospital/cubit/hospital_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +14,9 @@ class HospitalDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
-        value: BlocProvider.of<HospitalCubit>(context),
-        child: HospitalDetailPage(id: id));
+        value: BlocProvider.of<AuthenticationBloc>(context),
+        child: BlocProvider.value(
+            value: BlocProvider.of<HospitalCubit>(context),
+            child: HospitalDetailPage(id: id)));
   }
 }

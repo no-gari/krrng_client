@@ -4,6 +4,7 @@ import 'package:krrng_client/repositories/hospital_repository/models/models.dart
 import 'package:krrng_client/repositories/map_repository/map_repository.dart';
 import 'package:krrng_client/repositories/map_repository/models/mapData.dart';
 import 'package:krrng_client/repositories/map_repository/models/models.dart';
+import 'package:krrng_client/support/networks/api_result.dart';
 import 'package:krrng_client/support/networks/network_exceptions.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -133,13 +134,14 @@ class HospitalCubit extends Cubit<HospitalState> {
     }
   }
 
-  Future<void> getHospitalDetail(int id) async {
+  Future<void> getHospitalDetail(int id, bool isAuthenticated) async {
     final location = state.location;
 
     emit(state.copyWith(isLoaded: false));
 
     if (location != null) {
-      var response = await _hospitalRepository.getHospitalDetail(location, id);
+      var response = await _hospitalRepository.getHospitalDetail(
+          location, id, isAuthenticated);
       response.when(success: (dynamic? hospital) {
         emit(state.copyWith(
             isLoaded: true, hospitalDetail: HospitalDetail.fromJson(hospital)));
@@ -149,5 +151,15 @@ class HospitalCubit extends Cubit<HospitalState> {
             errorMessage: NetworkExceptions.getErrorMessage(error!)));
       });
     }
+  }
+
+  Future<void> updateIsLike(int id, bool isAuthenticated) async {
+    ApiResult<dynamic> apiResult = await _hospitalRepository.updateIsLike(id);
+
+    apiResult.when(success: (dynamic result) {
+      getHospitalDetail(state.hospitalDetail!.id!, isAuthenticated);
+    }, failure: (NetworkExceptions? error) {
+      print(error);
+    });
   }
 }
