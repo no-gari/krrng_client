@@ -17,7 +17,7 @@ import GoogleMaps
           default: break
           }
       }
-    GMSServices.provideAPIKey("AIzaSyCM1bG1JdZMeUvt2YPc5W127zS_KFwO2mY")
+    GMSServices.provideAPIKey("AIzaSyBjY68K2AlX_rY-Ut4BcAcP4DbM-uz83mk")
     GeneratedPluginRegistrant.register(with: self)
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }

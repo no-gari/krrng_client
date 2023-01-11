@@ -1,5 +1,5 @@
-import 'package:krrng_client/modules/hospital_detail/components/hospital_swiper.dart';
 import 'package:krrng_client/repositories/authentication_repository/src/authentication_repository.dart';
+import 'package:krrng_client/modules/hospital_detail/components/hospital_swiper.dart';
 import 'package:krrng_client/repositories/hospital_repository/models/best_part.dart';
 import 'package:krrng_client/modules/authentication/bloc/authentication_bloc.dart';
 import 'package:krrng_client/modules/hospital_detail/components/review_tile.dart';
