@@ -146,12 +146,11 @@ class _HospitalPageState extends State<HospitalPage> {
                   },
                   onCameraIdle: () {
                     if (latlng != null && state.isMap == true) {
-                      _hospitalCubit.updatePosition(latlng!);
-                      _hospitalCubit
-                          .currentLocation(_hospitalCubit.state.location!);
                       Future.delayed(Duration(milliseconds: 500), () {
                         setState(() => place = state.currentPlace);
                         _onDrawMarket(latlng!);
+                        _hospitalCubit.updatePosition(latlng!);
+                        _hospitalCubit.currentLocation(_hospitalCubit.state.location!);
                       });
                     }
                   },

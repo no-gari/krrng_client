@@ -49,7 +49,9 @@ class HospitalCubit extends Cubit<HospitalState> {
       emit(state.copyWith(location: LatLng(lat, lon)));
       currentLocation(LatLng(lat, lon));
     } else {
-      currentLocation(state.location!);
+      var defaultLocation = LatLng(37.490903970499, 127.03837557412);
+      emit(state.copyWith(location:defaultLocation));
+      currentLocation(defaultLocation);
     }
   }
 
