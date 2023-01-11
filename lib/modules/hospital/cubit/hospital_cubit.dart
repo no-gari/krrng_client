@@ -10,6 +10,7 @@ import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:equatable/equatable.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 part 'hospital_state.dart';
 
@@ -38,13 +39,18 @@ class HospitalCubit extends Cubit<HospitalState> {
   }
 
   Future<void> currentPosition() async {
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
-    var lat = position.latitude;
-    var lon = position.longitude;
 
-    emit(state.copyWith(location: LatLng(lat, lon)));
-    currentLocation(LatLng(lat, lon));
+    if (await Permission.location.request().isGranted) {
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+      var lat = position.latitude;
+      var lon = position.longitude;
+
+      emit(state.copyWith(location: LatLng(lat, lon)));
+      currentLocation(LatLng(lat, lon));
+    } else {
+      currentLocation(state.location!);
+    }
   }
 
   Future<void> updatePosition(LatLng latLng) async {
