@@ -1,15 +1,10 @@
-import 'dart:convert';
-
-import 'package:dio/dio.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:krrng_client/modules/authentication/bloc/authentication_bloc.dart';
 import 'package:krrng_client/repositories/authentication_repository/src/authentication_repository.dart';
-import 'package:krrng_client/repositories/map_repository/models/mapResponse.dart';
 import 'package:krrng_client/support/networks/network_exceptions.dart';
 import 'package:krrng_client/support/networks/api_result.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:dio/dio.dart';
 
 part 'signin_state.dart';
 
@@ -27,8 +22,6 @@ class SignInCubit extends Cubit<SignInState> {
 
     ApiResult<Map> apiResult = await _authenticationRepository.signInWithSns(
         code: code, email: email, nickname: nickname, socialType: socialType);
-
-    print('================cubit====================');
 
     apiResult.when(success: (Map? response) {
       prefs.setString('access', response!['access']);
@@ -89,6 +82,16 @@ class SignInCubit extends Cubit<SignInState> {
   Future<void> updatePasswordSetting({required String? password}) async {
     var response =
         await _authenticationRepository.changePassworInSetting(password!);
+
+    response.when(success: (void result) {
+      return true;
+    }, failure: (NetworkExceptions? error) {
+      return false;
+    });
+  }
+
+  Future<void> deleteUser() async {
+    var response = await _authenticationRepository.deleteUser();
 
     response.when(success: (void result) {
       return true;

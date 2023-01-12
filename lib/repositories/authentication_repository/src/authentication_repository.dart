@@ -36,7 +36,7 @@ class AuthenticationRepository {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (prefs.containsKey('access')) {
       _controller.add(AuthenticationStatus.unauthenticated);
-      prefs.remove("access");
+      await prefs.remove("access");
     } else {
       _controller.add(AuthenticationStatus.unauthenticated);
     }
@@ -210,6 +210,15 @@ class AuthenticationRepository {
       var body = {'phone': phoneNumber, 'password': password};
       var response =
           await _dioClient.post('/dev/api/v1/user/findpw-change/', data: body);
+      return ApiResult.success(data: response);
+    } catch (e) {
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e));
+    }
+  }
+
+  Future<ApiResult<void>> deleteUser() async {
+    try {
+      var response = await _dioClient.delete('/dev/api/v1/user/delete/');
       return ApiResult.success(data: response);
     } catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));

@@ -4,13 +4,13 @@ import 'package:krrng_client/repositories/hospital_repository/models/models.dart
 import 'package:krrng_client/repositories/map_repository/map_repository.dart';
 import 'package:krrng_client/repositories/map_repository/models/mapData.dart';
 import 'package:krrng_client/repositories/map_repository/models/models.dart';
-import 'package:krrng_client/support/networks/api_result.dart';
 import 'package:krrng_client/support/networks/network_exceptions.dart';
+import 'package:krrng_client/support/networks/api_result.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:equatable/equatable.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 part 'hospital_state.dart';
 
@@ -39,7 +39,6 @@ class HospitalCubit extends Cubit<HospitalState> {
   }
 
   Future<void> currentPosition() async {
-
     if (await Permission.location.request().isGranted) {
       Position position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high);
@@ -50,7 +49,7 @@ class HospitalCubit extends Cubit<HospitalState> {
       currentLocation(LatLng(lat, lon));
     } else {
       var defaultLocation = LatLng(37.490903970499, 127.03837557412);
-      emit(state.copyWith(location:defaultLocation));
+      emit(state.copyWith(location: defaultLocation));
       currentLocation(defaultLocation);
     }
   }

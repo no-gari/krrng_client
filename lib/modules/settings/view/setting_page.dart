@@ -1,14 +1,14 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:krrng_client/modules/ads_request/view/ads_request_screen.dart';
-import 'package:krrng_client/modules/authentication/bloc/authentication_bloc.dart';
+import 'package:krrng_client/repositories/authentication_repository/src/authentication_repository.dart';
 import 'package:krrng_client/modules/authentication/signin/cubit/signin_cubit.dart';
+import 'package:krrng_client/modules/authentication/bloc/authentication_bloc.dart';
+import 'package:krrng_client/modules/version_info/page/version_info_screen.dart';
 import 'package:krrng_client/modules/delete_account/delete_account_screen.dart';
-import 'package:krrng_client/modules/mypage/components/sub_menu.dart';
-import 'package:flutter/material.dart';
+import 'package:krrng_client/modules/ads_request/view/ads_request_screen.dart';
 import 'package:krrng_client/modules/terms_of_use/personal_info_screen.dart';
 import 'package:krrng_client/modules/terms_of_use/terms_of_use_screen.dart';
-import 'package:krrng_client/modules/version_info/page/version_info_screen.dart';
-import 'package:krrng_client/repositories/authentication_repository/src/authentication_repository.dart';
+import 'package:krrng_client/modules/mypage/components/sub_menu.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter/material.dart';
 import 'package:vrouter/vrouter.dart';
 
 class SettingPage extends StatefulWidget {
@@ -79,7 +79,6 @@ class _SettingPageState extends State<SettingPage> {
               height: 0.5,
               width: double.maxFinite,
               color: Colors.black12),
-          // SubMenu(title: '오픈 라이선스'),
           Container(
               margin: EdgeInsets.symmetric(horizontal: 16),
               height: 0.5,
@@ -96,12 +95,6 @@ class _SettingPageState extends State<SettingPage> {
           SubMenu(
               title: '개인정보 및 취급방침',
               onTap: () => context.vRouter.to(PersonalInfoScreen.routeName)),
-          // Container(
-          //     margin: EdgeInsets.symmetric(horizontal: 16),
-          //     height: 0.5,
-          //     width: double.maxFinite,
-          //     color: Colors.black12),
-          // SubMenu(title: '마케팅 수신 동의'),웃
           BlocBuilder<AuthenticationBloc, AuthenticationState>(
               builder: (context, authState) {
             if (authState.status == AuthenticationStatus.authenticated)
@@ -111,8 +104,31 @@ class _SettingPageState extends State<SettingPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         GestureDetector(
-                            onTap: () => context.vRouter
-                                .to(DeleteAccountScreen.routeName),
+                            onTap: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                        title: Text("회원탈퇴 하시겠습니까?"),
+                                        actions: [
+                                          MaterialButton(
+                                              onPressed: () {
+                                                RepositoryProvider.of<
+                                                            AuthenticationRepository>(
+                                                        context)
+                                                    .deleteUser();
+                                                RepositoryProvider.of<
+                                                            AuthenticationRepository>(
+                                                        context)
+                                                    .logOut();
+                                                context.vRouter.to(
+                                                    DeleteAccountScreen
+                                                        .routeName);
+                                              },
+                                              child: Text("확인"))
+                                        ]);
+                                  });
+                            },
                             child: Text('회원탈퇴',
                                 style: TextStyle(
                                     fontSize: 16,
@@ -128,7 +144,7 @@ class _SettingPageState extends State<SettingPage> {
                                   context: context,
                                   builder: (context) {
                                     return AlertDialog(
-                                        title: const Text("로그아웃 하시겠습니까?"),
+                                        title: Text("로그아웃 하시겠습니까?"),
                                         actions: [
                                           MaterialButton(
                                               onPressed: () {
@@ -139,14 +155,14 @@ class _SettingPageState extends State<SettingPage> {
                                                 Navigator.pop(context);
                                                 Navigator.pop(context);
                                               },
-                                              child: const Text("확인"))
+                                              child: Text("확인"))
                                         ]);
                                   });
                             },
                             child: Text('로그아웃',
                                 style: TextStyle(
                                     fontSize: 16,
-                                    decoration: TextDecoration.underline))),
+                                    decoration: TextDecoration.underline)))
                       ]));
             return Container();
           })

@@ -155,57 +155,51 @@ class _HomePageState extends State<HomePage> {
                                                         context);
                                                   })),
                                           InkWell(
-                                            onTap: () => context.vRouter
-                                                .toNamed(PetScreen.routeName,
-                                                    pathParameters: {
-                                                  'editValue': 'false',
-                                                  'id': 'new'
-                                                }),
-                                            child: Container(
-                                                child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.start,
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      CircleAvatar(
-                                                          radius: 35,
-                                                          backgroundColor:
-                                                              Colors.black
-                                                                  .withOpacity(
-                                                                      0.04),
-                                                          child: Icon(Icons.add,
-                                                              size: 32,
-                                                              color:
-                                                                  Colors.grey)),
-                                                      SizedBox(width: 15),
-                                                      Text('등록하기',
-                                                          style: TextStyle(
-                                                              fontSize: 17,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                              color:
-                                                                  Colors.grey))
-                                                    ]),
-                                                margin: EdgeInsets.symmetric(
-                                                    horizontal: 16),
-                                                padding: EdgeInsets.symmetric(
-                                                    horizontal: 20),
-                                                height: 112,
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.85,
-                                                decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            15),
-                                                    border: Border.all(
-                                                        color: Color(
-                                                            0xFFDFE2E9)))),
-                                          )
+                                              onTap: () => context.vRouter.toNamed(
+                                                      PetScreen.routeName,
+                                                      pathParameters: {
+                                                        'editValue': 'false',
+                                                        'id': 'new'
+                                                      }),
+                                              child: Container(
+                                                  child: Row(
+                                                      mainAxisAlignment: MainAxisAlignment
+                                                          .start,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        CircleAvatar(
+                                                            radius: 35,
+                                                            backgroundColor:
+                                                                Colors.black
+                                                                    .withOpacity(
+                                                                        0.04),
+                                                            child: Icon(
+                                                                Icons.add,
+                                                                size: 32,
+                                                                color: Colors
+                                                                    .grey)),
+                                                        SizedBox(width: 15),
+                                                        Text('등록하기',
+                                                            style: TextStyle(
+                                                                fontSize: 17,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                color: Colors
+                                                                    .grey))
+                                                      ]),
+                                                  margin: EdgeInsets.symmetric(
+                                                      horizontal: 16),
+                                                  padding: EdgeInsets.symmetric(
+                                                      horizontal: 20),
+                                                  height: 112,
+                                                  width: MediaQuery.of(context).size.width *
+                                                      0.85,
+                                                  decoration: BoxDecoration(
+                                                      borderRadius: BorderRadius.circular(15),
+                                                      border: Border.all(color: Color(0xFFDFE2E9)))))
                                         ])),
                                 SizedBox(height: 50)
                               ]);
