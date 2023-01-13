@@ -9,6 +9,10 @@ import 'package:krrng_client/modules/terms_of_use/terms_of_use_screen.dart';
 import 'package:krrng_client/modules/mypage/components/sub_menu.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:krrng_client/repositories/user_repository/models/user.dart';
+import 'package:krrng_client/repositories/user_repository/src/user_repository.dart';
+import 'package:krrng_client/support/networks/api_result.dart';
+import 'package:krrng_client/support/networks/network_exceptions.dart';
 import 'package:vrouter/vrouter.dart';
 
 class SettingPage extends StatefulWidget {
@@ -65,7 +69,7 @@ class _SettingPageState extends State<SettingPage> {
               height: 0.5,
               width: double.maxFinite,
               color: Colors.black12),
-          SubMenu(title: '서비스 문의'),
+          // SubMenu(title: '서비스 문의'),
           Container(
               margin: EdgeInsets.symmetric(horizontal: 16),
               height: 0.5,
@@ -112,18 +116,19 @@ class _SettingPageState extends State<SettingPage> {
                                         title: Text("회원탈퇴 하시겠습니까?"),
                                         actions: [
                                           MaterialButton(
-                                              onPressed: () {
-                                                RepositoryProvider.of<
+                                              onPressed: () async {
+                                                await RepositoryProvider.of<
                                                             AuthenticationRepository>(
                                                         context)
                                                     .deleteUser();
-                                                RepositoryProvider.of<
-                                                            AuthenticationRepository>(
-                                                        context)
-                                                    .logOut();
-                                                context.vRouter.to(
-                                                    DeleteAccountScreen
-                                                        .routeName);
+                                                _authenticationBloc.emit(
+                                                    AuthenticationState
+                                                        .unauthenticated());
+                                                // context.vRouter.to(
+                                                //     DeleteAccountScreen
+                                                //         .routeName);
+                                                Navigator.pop(context);
+                                                Navigator.pop(context);
                                               },
                                               child: Text("확인"))
                                         ]);

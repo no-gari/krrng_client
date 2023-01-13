@@ -271,9 +271,11 @@ class _MyPagePageState extends State<MyPagePage> {
                   title: '친구초대',
                   onTap: () => context.vRouter.to(InviteScreen.routeName)),
               SubMenu(
-                title: '내가 쓴 리뷰',
-                onTap: () => context.vRouter.to(MyReviewScreen.routeName),
-              ),
+                  title: '내가 쓴 리뷰',
+                  onTap: () => _authenticationBloc.state.status ==
+                          AuthenticationStatus.authenticated
+                      ? context.vRouter.to(MyReviewScreen.routeName)
+                      : showLoginNeededDialog(context)),
               // SubMenu(title: '내가 즐겨찾는 상품'),
               SubMenu(
                   title: '자주 묻는 질문 (FAQ)',

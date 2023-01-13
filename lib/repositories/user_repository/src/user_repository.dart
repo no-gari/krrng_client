@@ -1,8 +1,6 @@
-import 'package:krrng_client/repositories/animal_repository/animal_repository.dart';
 import 'package:krrng_client/repositories/user_repository/models/user.dart';
 import 'package:krrng_client/support/networks/api_result.dart';
 import 'package:krrng_client/support/networks/dio_client.dart';
-import 'dart:convert';
 
 class UserGetFailure implements Exception {}
 

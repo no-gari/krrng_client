@@ -2,11 +2,11 @@ import 'package:krrng_client/modules/authentication/signin/view/signin_screen.da
 import 'package:krrng_client/modules/authentication/signin/view/sns_phone_screen.dart';
 import 'package:krrng_client/modules/authentication/signup/view/signup_screen.dart';
 import 'package:krrng_client/modules/ads_request/view/ads_request_screen.dart';
+import 'package:krrng_client/modules/authentication/signup/view/signup_temp_screen.dart';
 import 'package:krrng_client/modules/delete_account/delete_account_result_screen.dart';
 import 'package:krrng_client/modules/delete_account/delete_account_screen.dart';
 import 'package:krrng_client/modules/faq/page/faq_screen.dart';
 import 'package:krrng_client/modules/hospital/view/hospital_screen.dart';
-import 'package:krrng_client/modules/hospital_detail/view/hospital_detail_screen.dart';
 import 'package:krrng_client/modules/hospital_search/view/hospital_search_screen.dart';
 import 'package:krrng_client/modules/invite/page/invite_screen.dart';
 import 'package:krrng_client/modules/my_reviews/view/my_review_screen.dart';
@@ -26,7 +26,6 @@ import 'package:krrng_client/modules/store/view/store_screen.dart';
 import 'package:krrng_client/modules/terms_of_use/personal_info_screen.dart';
 import 'package:krrng_client/modules/terms_of_use/terms_of_use_screen.dart';
 import 'package:krrng_client/modules/version_info/page/version_info_screen.dart';
-import 'package:krrng_client/modules/writing_review/views/views.dart';
 import 'package:vrouter/vrouter.dart';
 
 import 'modules/authentication/finding/views/views.dart';
@@ -88,6 +87,7 @@ final routes = [
         widget: SigninScreen(),
         stackedRoutes: [
           VWidget(path: SignupScreen.routeName, widget: SignupScreen()),
+          VWidget(path: SignupTempScreen.routeName, widget: SignupTempScreen()),
           VWidget(path: SnsPhoneScreen.routeName, widget: SnsPhoneScreen()),
           VWidget(path: FindingScreen.routeName, widget: FindingScreen()),
           VWidget(

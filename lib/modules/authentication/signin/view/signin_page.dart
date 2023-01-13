@@ -3,6 +3,7 @@ import 'package:krrng_client/modules/authentication/signin/cubit/signin_cubit.da
 import 'package:krrng_client/modules/authentication/signup/view/signup_screen.dart';
 import 'package:krrng_client/modules/authentication/bloc/authentication_bloc.dart';
 import 'package:krrng_client/modules/authentication/finding/views/views.dart';
+import 'package:krrng_client/modules/authentication/signup/view/signup_temp_screen.dart';
 import 'package:krrng_client/modules/main/main_screen.dart';
 import 'package:krrng_client/repositories/authentication_repository/authentication_repository.dart';
 import 'package:krrng_client/support/style/format_unit.dart';
@@ -125,11 +126,10 @@ class _SigninPageState extends State<SigninPage> {
         body: BlocListener<AuthenticationBloc, AuthenticationState>(
             listener: (context, state) async {
               if (state.status == AuthenticationStatus.authenticated) {
-                state.user.phone == null
-                    ? context.vRouter
-                        .to(SnsPhoneScreen.routeName, isReplacement: true)
-                    : context.vRouter
-                        .to(MainScreen.routeName, isReplacement: true);
+                // state.user.phone == null
+                //     ? context.vRouter
+                //         .to(SnsPhoneScreen.routeName, isReplacement: true)
+                context.vRouter.to(MainScreen.routeName, isReplacement: true);
               }
             },
             child: BlocListener<SignInCubit, SignInState>(
@@ -233,24 +233,66 @@ class _SigninPageState extends State<SigninPage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               GestureDetector(
-                                  onTap: () => context.vRouter.to(
-                                      FindingScreen.routeName,
-                                      isReplacement: true,
-                                      queryParameters: {"key": "id"}),
+                                  onTap: () => showDialog(
+                                      context: context,
+                                      barrierDismissible:
+                                          true, // 바깥 영역 터치시 닫을지 여부
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          content: Text(
+                                              "krrng.official@gmail.com으로 문의 부탁드립니다."),
+                                          insetPadding:
+                                              const EdgeInsets.fromLTRB(
+                                                  0, 80, 0, 80),
+                                          actions: [
+                                            TextButton(
+                                              child: const Text('확인'),
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+                                          ],
+                                        );
+                                      }),
+                                  // context.vRouter.to(
+                                  // FindingScreen.routeName,
+                                  // isReplacement: true,
+                                  // queryParameters: {"key": "id"}),
                                   child: Text('아이디 찾기',
                                       style: TextStyle(fontSize: 14))),
                               _TextRowSpacing(),
                               GestureDetector(
-                                  onTap: () => context.vRouter.to(
-                                      FindingScreen.routeName,
-                                      isReplacement: true,
-                                      queryParameters: {"key": "password"}),
+                                  onTap: () => showDialog(
+                                      context: context,
+                                      barrierDismissible:
+                                          true, // 바깥 영역 터치시 닫을지 여부
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          content: Text(
+                                              "krrng.official@gmail.com으로 문의 부탁드립니다."),
+                                          insetPadding:
+                                              const EdgeInsets.fromLTRB(
+                                                  0, 80, 0, 80),
+                                          actions: [
+                                            TextButton(
+                                              child: const Text('확인'),
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+                                          ],
+                                        );
+                                      }),
+                                  // context.vRouter.to(
+                                  // FindingScreen.routeName,
+                                  // isReplacement: true,
+                                  // queryParameters: {"key": "password"}),
                                   child: Text('비밀번호 찾기',
                                       style: TextStyle(fontSize: 14))),
                               _TextRowSpacing(),
                               GestureDetector(
                                   onTap: () => context.vRouter.to(
-                                      SignupScreen.routeName,
+                                      SignupTempScreen.routeName,
                                       isReplacement: true),
                                   child: Text('회원가입',
                                       style: TextStyle(fontSize: 14)))

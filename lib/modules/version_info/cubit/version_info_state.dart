@@ -8,14 +8,14 @@ class VersionInfoState extends Equatable {
       this.error,
       this.errorMessage});
 
-  final num? version;
+  final String? version;
   final bool? isLoaded;
   final bool? isLoading;
   final NetworkExceptions? error;
   final String? errorMessage;
 
   VersionInfoState copyWith({
-    num? version,
+    String? version,
     bool? isLoaded,
     bool? isLoading,
     NetworkExceptions? error,

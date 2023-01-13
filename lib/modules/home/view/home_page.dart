@@ -301,7 +301,7 @@ class _HomePageState extends State<HomePage> {
                                                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(15.0), borderSide: BorderSide(color: Color(0xFFDFE2E9))),
                                                       hintText: '중성화 수술',
                                                       hintStyle: TextStyle(color: Colors.grey, fontSize: 16),
-                                                      suffixIcon: IconButton(icon: SvgPicture.asset('assets/icons/search_icon.svg', color: Colors.grey), color: Colors.black, onPressed: () => _textEditingController.clear()))))),
+                                                      suffixIcon: IconButton(icon: SvgPicture.asset('assets/icons/search_icon.svg', color: Colors.grey), color: Colors.black, onPressed: () {}))))),
                                       SizedBox(width: 10),
                                       SizedBox(width: 10),
                                       GestureDetector(

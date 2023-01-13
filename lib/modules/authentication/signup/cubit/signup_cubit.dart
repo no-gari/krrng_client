@@ -1,9 +1,9 @@
-import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
 import 'package:krrng_client/repositories/authentication_repository/authentication_repository.dart';
-import 'package:krrng_client/support/networks/api_result.dart';
 import 'package:krrng_client/support/networks/network_exceptions.dart';
+import 'package:krrng_client/support/networks/api_result.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:equatable/equatable.dart';
+import 'package:bloc/bloc.dart';
 
 part 'signup_state.dart';
 
@@ -76,6 +76,22 @@ class SignupCubit extends Cubit<SignupState> {
     final phoneNumber = state.phoneNumber ?? "";
     ApiResult<Map> response =
         await _authenticationRepository.signup(userId, password, phoneNumber);
+
+    response.when(success: (Map? result) async {
+      final accessToken = result?["access"] as String;
+
+      final SharedPreferences pref = await SharedPreferences.getInstance();
+      pref.setString('access', accessToken);
+    }, failure: (NetworkExceptions? error) {
+      emit(state.copyWith(
+          error: error,
+          errorMessage: NetworkExceptions.getErrorMessage(error!)));
+    });
+  }
+
+  Future<void> signupTemp(String userId, String password) async {
+    ApiResult<Map> response =
+        await _authenticationRepository.signupTemp(userId, password);
 
     response.when(success: (Map? result) async {
       final accessToken = result?["access"] as String;

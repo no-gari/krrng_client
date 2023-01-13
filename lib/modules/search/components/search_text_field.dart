@@ -59,7 +59,6 @@ class SearchTextField extends StatelessWidget {
                 icon:
                     SvgPicture.asset('assets/icons/search_icon.svg', width: 20),
                 color: Colors.black,
-                onPressed: () =>
-                    context.vRouter.to(SearchResultScreen.routeName))));
+                onPressed: () {})));
   }
 }

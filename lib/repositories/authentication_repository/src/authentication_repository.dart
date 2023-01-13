@@ -1,8 +1,8 @@
-import 'package:dio/dio.dart';
 import 'package:krrng_client/support/networks/network_exceptions.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:krrng_client/support/networks/api_result.dart';
 import 'package:krrng_client/support/networks/dio_client.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:dio/dio.dart';
 import 'dart:convert';
 import 'dart:async';
 
@@ -146,6 +146,18 @@ class AuthenticationRepository {
       var body = {'userId': userId, 'password': password, 'phone': phoneNumber};
       var response =
           await _dioClient.post('/dev/api/v1/user/email-signup/', data: body);
+
+      return ApiResult.success(data: response);
+    } catch (e) {
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e));
+    }
+  }
+
+  Future<ApiResult<Map>> signupTemp(String userId, String password) async {
+    try {
+      var body = {'userId': userId, 'password': password};
+      var response = await _dioClient
+          .post('/dev/api/v1/user/email-signup/temp/', data: body);
 
       return ApiResult.success(data: response);
     } catch (e) {

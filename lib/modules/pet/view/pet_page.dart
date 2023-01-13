@@ -1,8 +1,12 @@
+import 'package:krrng_client/repositories/user_repository/src/user_repository.dart';
 import 'package:krrng_client/modules/authentication/bloc/authentication_bloc.dart';
-import 'package:krrng_client/modules/main/main_screen.dart';
+import 'package:krrng_client/repositories/user_repository/models/user.dart';
+import 'package:krrng_client/support/networks/network_exceptions.dart';
 import 'package:krrng_client/modules/pet/cubit/kind_cubit.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:krrng_client/modules/pet/cubit/pet_cubit.dart';
+import 'package:krrng_client/support/networks/api_result.dart';
+import 'package:krrng_client/modules/main/main_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:krrng_client/support/style/theme.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -72,6 +76,16 @@ class _PetPageState extends State<PetPage> {
     _kopoController.dispose();
     _interestController.dispose();
     super.dispose();
+  }
+
+  void getUser() async {
+    ApiResult<User> apiResult =
+        await RepositoryProvider.of<UserRepository>(context).getUser();
+    apiResult.when(success: (User? user) {
+      _authenticationBloc.emit(AuthenticationState.authenticated(user!));
+    }, failure: (NetworkExceptions? error) {
+      _authenticationBloc.emit(AuthenticationState.unauthenticated());
+    });
   }
 
   @override
@@ -594,8 +608,11 @@ class _PetPageState extends State<PetPage> {
                                               style: font_14_w500),
                                           const SizedBox(height: 20),
                                           GestureDetector(
-                                              onTap: () => _petCubit.deletePet(
-                                                  state.id!.toString()),
+                                              onTap: () async {
+                                                await _petCubit.deletePet(
+                                                    state.id!.toString());
+                                                getUser();
+                                              },
                                               child: Text('반려동물 정보 삭제하기',
                                                   style: font_16_w700.copyWith(
                                                       color: Colors.red,

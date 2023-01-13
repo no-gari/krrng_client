@@ -45,8 +45,8 @@ class _SignupPageState extends State<SignupPage> {
                 actions: [
                   TextButton(
                     child: const Text('확인'),
-                    onPressed: () {
-                      _signupCubit.signup();
+                    onPressed: () async {
+                      await _signupCubit.signup();
                       Navigator.of(context).pop();
                       context.vRouter.to(SigninScreen.routeName);
                     },
