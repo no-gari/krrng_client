@@ -328,13 +328,14 @@ class _SigninPageState extends State<SigninPage> {
                                   onTap: () => _loginButtonPressed(),
                                   child: SvgPicture.asset(
                                       'assets/icons/kakao.svg')),
-                              const SizedBox(width: 20),
-                              GestureDetector(
-                                  onTap: () => _appleLoginButtonPressed(),
-                                  child: CircleAvatar(
-                                      backgroundColor: Colors.black,
-                                      child: Icon(Icons.apple,
-                                          color: Colors.white, size: 25)))
+                              if (Platform.isIOS) const SizedBox(width: 20),
+                              if (Platform.isIOS)
+                                GestureDetector(
+                                    onTap: () => _appleLoginButtonPressed(),
+                                    child: CircleAvatar(
+                                        backgroundColor: Colors.black,
+                                        child: Icon(Icons.apple,
+                                            color: Colors.white, size: 25)))
                             ])
                       ])
                     ])))));
